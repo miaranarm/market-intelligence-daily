@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
-from src.market_report import evaluate_forecasts, render_professional_html
+from src.market_report import evaluate_forecasts, infer_macro_impact, render_professional_html
 
 
 class ForecastEvaluationTests(unittest.TestCase):
@@ -23,6 +23,16 @@ class ForecastEvaluationTests(unittest.TestCase):
         self.assertEqual(result["by_horizon"]["1"]["accuracy_pct"], 100.0)
         self.assertEqual(result["by_horizon"]["5"]["accuracy_pct"], 100.0)
         self.assertEqual(result["pending"], 1)
+
+    def test_macro_classifier_is_conditional_and_names_relevant_assets(self):
+        theme, categories, impact = infer_macro_impact("US inflation data surprises markets")
+        self.assertEqual(theme, "Inflation")
+        self.assertIn("obligations", categories)
+        self.assertIn("Comparer impérativement", impact)
+        theme, categories, impact = infer_macro_impact("Oil prices rise after supply disruption")
+        self.assertEqual(theme, "Énergie et matières premières")
+        self.assertIn("matières premières", categories)
+        self.assertIn("choc d'offre", impact)
 
     def test_professional_html_renders_sections_tables_and_source_links(self):
         plain = (
