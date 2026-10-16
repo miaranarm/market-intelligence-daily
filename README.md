@@ -22,6 +22,10 @@ Public repository for a multi-asset market-intelligence system with three planne
 
 **Current validation:** The public Pages URL has been opened successfully. Multiple manual report workflows have completed end to end, including tests, report generation, history commit and email-link delivery. The scheduled delivery cycle should continue to be monitored. The prototype collects market prices and headlines, adds a limited SEC XBRL fundamentals sample for selected US issuers, keeps technical/quantitative indicators out of the reader-facing report, emails a single link after the report page is committed, and saves snapshots for later audit. Because this repository is public, the tracked snapshots under `data/` are also public. Technical indicators (such as RSI and moving averages) must not appear in the reader-facing report. The system does not yet provide a complete company-by-company fundamental model or statistically calibrated directional probabilities. Its current probability estimates are an explicitly labeled heuristic that must be audited against future outcomes.
 
+## Workflow monitoring and recovery
+
+The `Workflow watchdog` reacts to completion events from report generation, code validation, and GitHub Pages deployment. If one fails, times out, or is cancelled, it posts a diagnostic link to [the control issue](https://github.com/miaranarm/market-intelligence-daily/issues/1). This is event-driven monitoring rather than a 10-second polling loop. It intentionally does not retry report generation automatically, which could otherwise create repeated commits or duplicate emails. Inspect the linked run, correct the cause, and rerun the appropriate workflow from Actions.
+
 ## Configure Gmail securely
 
 Use the Gmail account that will send the emails. Do not use your normal Gmail password.
