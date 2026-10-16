@@ -100,8 +100,8 @@ NEWS_FEEDS = [
     ("US Energy Information Administration — énergie", "https://www.eia.gov/rss/todayinenergy.xml"),
     ("Bank of England — actualités et stabilité financière", "https://www.bankofengland.co.uk/rss/news"),
     ("Bank of Japan — actualités, politique monétaire et statistiques", "https://www.boj.or.jp/en/rss/whatsnew.xml"),
-    ("Fonds monétaire international — actualités et analyses macroéconomiques", "https://www.imf.org/en/News/RSS?language=eng"),
-    ("Banque mondiale — actualités économiques et développement", "https://www.worldbank.org/en/news/all?display=RSS"),
+    ("Google News — recherche ciblée FMI, liens vers les domaines officiels", "https://news.google.com/rss/search?q=site%3Aimf.org%2Fen%2Fnews+OR+site%3Amediacenter.imf.org+economy+financial+stability&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — recherche ciblée Banque mondiale, liens vers les domaines officiels", "https://news.google.com/rss/search?q=site%3Aworldbank.org%2Fen%2Fnews+OR+site%3Ablogs.worldbank.org+economy+debt+growth+markets&hl=en-US&gl=US&ceid=US:en"),
     # Cross-checking across several publishers; aggregator headlines are leads, not independent proof.
     ("Google News — macroéconomie mondiale et banques centrales", "https://news.google.com/rss/search?q=inflation+employment+GDP+central+banks+interest+rates&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — marchés et économie", "https://news.google.com/rss/search?q=global+markets+economy+central+banks&hl=en-US&gl=US&ceid=US:en"),
@@ -1223,7 +1223,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     ]
 
     append_funnel_report(lines, report_type, rows, news, previous, prior_morning, prior_update, data_errors, news_errors, company_fundamentals)
-    lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Actualités : flux officiels Fed, BLS, BCE, EIA, Banque d'Angleterre et Banque du Japon; Google News sert aussi de veille et de solution de repli, pas de preuve indépendante. Vérifier l'éditeur et le lien de chaque article.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}; erreurs données fondamentales SEC : {len(fundamentals_errors)}."]
+    lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Actualités : flux officiels Fed, BLS, BCE, EIA, Banque d'Angleterre et Banque du Japon; des recherches Google News ciblent aussi les domaines du FMI et de la Banque mondiale, mais restent des outils de découverte, pas des preuves indépendantes. Vérifier l'éditeur et le lien de chaque article.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}; erreurs données fondamentales SEC : {len(fundamentals_errors)}."]
     if data_errors:
         lines += ["", "DONNÉES MANQUANTES"] + [f"- {e}" for e in data_errors[:20]]
     if news_errors:
