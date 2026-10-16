@@ -1,0 +1,43 @@
+name: Workflow watchdog
+
+on:
+  # React as soon as either main pipeline finishes; GitHub does not support 10-second cron polling.
+  workflow_run:
+    workflows:
+      - Generate market report
+      - Validate market report
+    types: [completed]
+
+permissions:
+  actions: read
+  issues: write
+
+jobs:
+  report-failure:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' || github.event.workflow_run.conclusion == 'cancelled' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish a failure notice to the control issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const conclusion = run.conclusion || 'unknown';
+            const body = [
+              '## Workflow watchdog — intervention needed',
+              '',
+              `- Workflow: **${run.name}**`,
+              `- Result: **${conclusion}**`,
+              `- Branch: ${run.head_branch || 'unknown'}`,
+              `- Commit: ${(run.head_sha || '').slice(0, 12)}`,
+              `- Run: ${run.html_url}`,
+              '',
+              'Le watchdog signale l’échec, mais ne relance pas automatiquement le rapport afin d’éviter une boucle infinie ou des e-mails répétés.',
+              'Après correction, relancez le workflow concerné depuis Actions ou utilisez la commande de contrôle prévue pour le rapport.'
+            ].join('\\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 1,
+              body
+            });
