@@ -705,7 +705,7 @@ def fetch_bls_macro_fallback(missing_ids: set[str]) -> tuple[list[dict[str, Any]
             year, month = max(observations)
             value = observations[(year, month)]
             item: dict[str, Any] = {
-                "id": key, "name": name, "unit": unit, "date": f"{year:04d}-{month:02d}-01",
+                "id": key, "display_id": bls_id, "name": name, "unit": unit, "date": f"{year:04d}-{month:02d}-01",
                 "value": value, "source": f"https://data.bls.gov/timeseries/{bls_id}",
                 "provider": "BLS — source officielle de repli",
             }
@@ -747,7 +747,8 @@ def append_macro_series(lines: list[str], series: list[dict[str, Any]]) -> None:
         else:
             value = f"{item['value']:.3f} {item['unit']}"
         provider = item.get("provider", "FRED")
-        lines.append(f"- {item['name']} ({item['id']}) : {value}; observation du {item['date']}; fournisseur : {provider}; source : {item['source']}.")
+        display_id = item.get("display_id", item["id"])
+        lines.append(f"- {item['name']} ({display_id}) : {value}; observation du {item['date']}; fournisseur : {provider}; source : {item['source']}.")
 
 
 def infer_macro_impact(headline: str) -> tuple[str, str, str]:
