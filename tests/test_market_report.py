@@ -23,12 +23,12 @@ class PriceFreshnessTests(unittest.TestCase):
 
 
 class NewsSourceCoverageTests(unittest.TestCase):
-    def test_major_multilateral_primary_sources_are_configured(self):
+    def test_multilateral_sources_have_targeted_discovery_queries(self):
         feeds = dict(NEWS_FEEDS)
-        self.assertIn("https://www.imf.org/en/News/RSS?language=eng", feeds.values())
-        self.assertIn("https://www.worldbank.org/en/news/all?display=RSS", feeds.values())
-        self.assertTrue(any("Fonds monétaire international" in name for name in feeds))
-        self.assertTrue(any("Banque mondiale" in name for name in feeds))
+        self.assertTrue(any("site%3Aimf.org" in url and "Google News" in name for name, url in feeds.items()))
+        self.assertTrue(any("site%3Aworldbank.org" in url and "Google News" in name for name, url in feeds.items()))
+        self.assertTrue(any("Federal Reserve" in name for name in feeds))
+        self.assertTrue(any("Bank of Japan" in name for name in feeds))
 
 
 class FeedFormatCompatibilityTests(unittest.TestCase):
