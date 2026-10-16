@@ -38,6 +38,12 @@ ASSETS: dict[str, dict[str, str]] = {
     "^N225": {"name": "Nikkei 225", "class": "Japanese equity index"},
     "^HSI": {"name": "Hang Seng", "class": "Hong Kong equity index"},
     "^VIX": {"name": "VIX volatility index", "class": "Implied volatility"},
+    "ES=F": {"name": "S&P 500 E-mini futures", "class": "Equity index futures"},
+    "NQ=F": {"name": "Nasdaq 100 E-mini futures", "class": "Equity index futures"},
+    "YM=F": {"name": "Dow Jones E-mini futures", "class": "Equity index futures"},
+    "RTY=F": {"name": "Russell 2000 E-mini futures", "class": "Equity index futures"},
+    "ZN=F": {"name": "US Treasury 10-year note futures", "class": "Bond futures"},
+    "ZB=F": {"name": "US Treasury bond futures", "class": "Bond futures"},
     "^TNX": {"name": "US 10-year Treasury yield", "class": "Rates"},
     "DX-Y.NYB": {"name": "US Dollar Index", "class": "FX"},
     "EURUSD=X": {"name": "EUR/USD", "class": "FX"},
@@ -52,6 +58,12 @@ ASSETS: dict[str, dict[str, str]] = {
     "SPY": {"name": "SPDR S&P 500 ETF", "class": "ETF"},
     "QQQ": {"name": "Invesco Nasdaq 100 ETF", "class": "ETF"},
     "TLT": {"name": "US Treasury 20+ year ETF", "class": "Bond ETF"},
+    "IEF": {"name": "iShares 7–10 Year Treasury ETF", "class": "Bond ETF"},
+    "BND": {"name": "Vanguard Total Bond Market ETF", "class": "Bond ETF"},
+    "LQD": {"name": "Investment-grade corporate bond ETF", "class": "Bond ETF"},
+    "EFA": {"name": "Developed markets ex-US equity ETF", "class": "ETF"},
+    "EEM": {"name": "Emerging markets equity ETF", "class": "ETF"},
+    "IWM": {"name": "Russell 2000 small-cap equity ETF", "class": "ETF"},
     "HYG": {"name": "High-yield corporate bond ETF", "class": "Credit ETF"},
     "GLD": {"name": "Gold ETF", "class": "ETF"},
     "AAPL": {"name": "Apple", "class": "US equity"},
@@ -309,12 +321,15 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     lines += ["", "PANORAMA DES MARCHÉS — MOUVEMENTS OBSERVÉS",
               "Les chiffres ci-dessous décrivent les mouvements de prix, pas des indicateurs techniques ni des ordres de trading.",
               "Actif | Classe | Dernier prix | Dernière séance disponible | 5 séances | 1 mois"]
-    priority_classes = {"US equity index", "European equity index", "UK equity index",
-                        "Japanese equity index", "Hong Kong equity index", "Rates", "FX",
-                        "Commodity", "Crypto", "Bond ETF", "Credit ETF"}
-    selected = [r for r in rows if r.asset_class in priority_classes]
-    selected.sort(key=lambda r: max(abs(r.daily_pct or 0), abs(r.five_day_pct or 0)), reverse=True)
-    for r in selected[:18]:
+    # Include every successfully collected asset, not only a hand-picked subset.
+    # This prevents major indices, individual equities, and broad ETFs from
+    # disappearing from the reader-facing panorama when their moves are small.
+    selected = sorted(
+        rows,
+        key=lambda r: max(abs(r.daily_pct or 0), abs(r.five_day_pct or 0)),
+        reverse=True,
+    )
+    for r in selected:
         lines.append(
             f"{r.name} ({r.ticker}) | {r.asset_class} | {fmt(r.price)} | "
             f"{fmt(r.daily_pct, '%')} | {fmt(r.five_day_pct, '%')} | {fmt(r.one_month_pct, '%')}"
