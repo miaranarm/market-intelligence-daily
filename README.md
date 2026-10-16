@@ -15,7 +15,7 @@ Public repository for a multi-asset market-intelligence system with three planne
 - [ ] Prototype run validated against live sources and email delivery.
 - [ ] Scheduled reports enabled only after the prototype is validated.
 
-**Important:** The scheduled market reports are not enabled yet. The prototype collects market prices and headlines, retains technical/quantitative indicators internally for analysis, emails a decision-oriented report when manually launched, and saves snapshots for later audit. Technical indicators (such as RSI and moving averages) must not appear in the reader-facing report. The system does not yet provide a complete fundamental analysis or calibrated directional probabilities.
+**Important:** The scheduled market reports are not enabled yet. The prototype collects market prices and headlines, keeps technical/quantitative indicators out of the reader-facing report, emails a single link after the report page is committed, and saves snapshots for later audit. Because this repository is public, the tracked snapshots under `data/` are also public. Technical indicators (such as RSI and moving averages) must not appear in the reader-facing report. The system does not yet provide a complete fundamental analysis or calibrated directional probabilities.
 
 ## Configure Gmail securely
 
