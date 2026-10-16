@@ -652,12 +652,83 @@ def fetch_fred_macro_series() -> tuple[list[dict[str, Any]], list[str]]:
     return [rows_by_id[series_id] for series_id in FRED_SERIES if series_id in rows_by_id], errors
 
 
+def fetch_bls_macro_fallback(missing_ids: set[str]) -> tuple[list[dict[str, Any]], list[str]]:
+    """Use BLS's public API as an official fallback for CPI, unemployment and payrolls when FRED is unreachable."""
+    aliases = {
+        "CPIAUCSL": ("CUUR0000SA0", "Indice CPI-U non désaisonnalisé (BLS)", "indice; variation annuelle calculée"),
+        "UNRATE": ("LNS14000000", "Taux de chômage américain (BLS)", "% de la population active"),
+        "PAYEMS": ("CES0000000001", "Emploi salarié non agricole (BLS)", "milliers de personnes"),
+    }
+    requested = [key for key in aliases if key in missing_ids]
+    if not requested:
+        return [], []
+    now_year = datetime.now(TZ).year
+    payload = {
+        "seriesid": [aliases[key][0] for key in requested],
+        "startyear": str(now_year - 2),
+        "endyear": str(now_year),
+    }
+    url = "https://api.bls.gov/publicAPI/v1/timeseries/data/"
+    try:
+        response = requests.post(url, json=payload, headers={"User-Agent": USER_AGENT, "Content-Type": "application/json"}, timeout=12)
+        response.raise_for_status()
+        body = response.json()
+        if body.get("status") != "REQUEST_SUCCEEDED":
+            messages = body.get("message") or ["BLS API n'a pas confirmé le succès"]
+            raise ValueError("; ".join(str(x) for x in messages)[:180])
+        month_numbers = {f"M{i:02d}": i for i in range(1, 13)}
+        results: list[dict[str, Any]] = []
+        series_payloads = {x.get("seriesID"): x.get("data", []) for x in body.get("Results", {}).get("series", [])}
+        for key in requested:
+            bls_id, name, unit = aliases[key]
+            observations: dict[tuple[int, int], float] = {}
+            for point in series_payloads.get(bls_id, []):
+                try:
+                    year = int(point["year"])
+                    month = month_numbers.get(str(point.get("period", "")))
+                    value = float(point["value"])
+                    if month is not None and math.isfinite(value):
+                        observations[(year, month)] = value
+                except (KeyError, TypeError, ValueError):
+                    continue
+            if not observations:
+                continue
+            year, month = max(observations)
+            value = observations[(year, month)]
+            item: dict[str, Any] = {
+                "id": key, "name": name, "unit": unit, "date": f"{year:04d}-{month:02d}-01",
+                "value": value, "source": f"https://data.bls.gov/timeseries/{bls_id}",
+                "provider": "BLS — source officielle de repli",
+            }
+            if key == "CPIAUCSL":
+                prior = observations.get((year - 1, month))
+                if prior not in (None, 0):
+                    item["yoy_pct"] = round((value / prior - 1) * 100, 2)
+            results.append(item)
+        missing_after_parse = set(requested) - {x["id"] for x in results}
+        errors = [f"BLS {key}: aucune observation mensuelle exploitable" for key in sorted(missing_after_parse)]
+        return results, errors
+    except Exception as exc:
+        return [], [f"BLS API de repli: {type(exc).__name__}: {str(exc)[:160]}"]
+
+
+def fetch_macro_series_with_fallback() -> tuple[list[dict[str, Any]], list[str]]:
+    """Prefer FRED; fill missing US CPI, unemployment and payroll data from the official BLS API."""
+    fred_rows, fred_errors = fetch_fred_macro_series()
+    missing = {"CPIAUCSL", "UNRATE", "PAYEMS"} - {x["id"] for x in fred_rows}
+    fallback_rows, fallback_errors = fetch_bls_macro_fallback(missing)
+    combined = {x["id"]: x for x in fred_rows}
+    combined.update({x["id"]: x for x in fallback_rows if x["id"] not in combined})
+    rows = [combined[key] for key in FRED_SERIES if key in combined]
+    return rows, fred_errors + fallback_errors
+
+
 def append_macro_series(lines: list[str], series: list[dict[str, Any]]) -> None:
-    """Render observed official macro time-series, clearly distinguishing CPI index from calculated inflation."""
-    lines += ["", "INDICATEURS MACROÉCONOMIQUES STRUCTURÉS — FRED",
-              "Observations issues de séries statistiques FRED, dont plusieurs sont produites par des organismes publics américains. La date de chaque observation est indiquée; les fréquences diffèrent selon les séries et les valeurs ne sont pas nécessairement du jour."]
+    """Render official macro time-series, clearly distinguishing providers and calculated CPI inflation."""
+    lines += ["", "INDICATEURS MACROÉCONOMIQUES STRUCTURÉS — FRED ET SOURCE OFFICIELLE DE REPLI",
+              "La source et la date de chaque observation sont indiquées. Les fréquences et délais de publication diffèrent; les valeurs ne sont pas nécessairement du jour."]
     if not series:
-        lines.append("- Aucune série FRED exploitable dans cette exécution; consulter la section qualité et sources.")
+        lines.append("- Aucune série macroéconomique exploitable dans cette exécution; consulter la section qualité et sources.")
         return
     for item in series:
         if item["id"] == "CPIAUCSL":
@@ -666,7 +737,8 @@ def append_macro_series(lines: list[str], series: list[dict[str, Any]]) -> None:
             value = f"{item['value']:.3f}{extra}"
         else:
             value = f"{item['value']:.3f} {item['unit']}"
-        lines.append(f"- {item['name']} ({item['id']}) : {value}; observation du {item['date']}; source : {item['source']}.")
+        provider = item.get("provider", "FRED")
+        lines.append(f"- {item['name']} ({item['id']}) : {value}; observation du {item['date']}; fournisseur : {provider}; source : {item['source']}.")
 
 
 def infer_macro_impact(headline: str) -> tuple[str, str, str]:
@@ -1312,7 +1384,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     rows = [analyse_asset(ticker, frame) for ticker, frame in data.items()]
     news, news_errors = fetch_news()
     company_fundamentals, fundamentals_errors = fetch_company_fundamentals()
-    macro_series, macro_errors = fetch_fred_macro_series()
+    macro_series, macro_errors = fetch_macro_series_with_fallback()
     rows.sort(key=lambda r: (r.asset_class, r.name))
     previous = read_state().get("forecasts", [])
     prior_morning = next((x for x in reversed(previous) if x.get("report_type") == "morning"), None)
@@ -1337,7 +1409,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
 
     append_macro_series(lines, macro_series)
     append_funnel_report(lines, report_type, rows, news, previous, prior_morning, prior_update, data_errors, news_errors, company_fundamentals)
-    lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Séries macroéconomiques : FRED public CSV; la source primaire de chaque série est indiquée sur la page FRED correspondante. Les fréquences et délais de publication diffèrent.", "- Actualités : flux officiels Fed, BEA, Census Bureau, BCE, EIA, Banque d'Angleterre et Banque du Japon. Les publications BLS emploi/CPI/PPI sont repérées par des recherches ciblées Google News vers les archives BLS; une recherche ciblée DOL complète les demandes d'allocations chômage. Les recherches FMI/Banque mondiale sont aussi des outils de découverte, pas des preuves indépendantes : ouvrir et vérifier la publication institutionnelle originale avant de retenir un chiffre.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}; erreurs données fondamentales SEC : {len(fundamentals_errors)}; erreurs séries macro FRED : {len(macro_errors)}."]
+    lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Séries macroéconomiques : FRED en priorité; repli vers l’API publique officielle BLS pour CPI, chômage et emploi si FRED est indisponible. Les dates et sources sont indiquées; fréquences et délais diffèrent.", "- Actualités : flux officiels Fed, BEA, Census Bureau, BCE, EIA, Banque d'Angleterre et Banque du Japon. Les publications BLS emploi/CPI/PPI sont repérées par des recherches ciblées Google News vers les archives BLS; une recherche ciblée DOL complète les demandes d'allocations chômage. Les recherches FMI/Banque mondiale sont aussi des outils de découverte, pas des preuves indépendantes : ouvrir et vérifier la publication institutionnelle originale avant de retenir un chiffre.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}; erreurs données fondamentales SEC : {len(fundamentals_errors)}; erreurs de collecte macro (FRED puis repli BLS) : {len(macro_errors)}."]
     if data_errors:
         lines += ["", "DONNÉES MANQUANTES"] + [f"- {e}" for e in data_errors[:20]]
     if news_errors:
@@ -1345,7 +1417,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     if fundamentals_errors:
         lines += ["", "ERREURS DONNÉES FONDAMENTALES SEC"] + [f"- {e}" for e in fundamentals_errors[:15]]
     if macro_errors:
-        lines += ["", "ERREURS SÉRIES MACRO FRED"] + [f"- {e}" for e in macro_errors]
+        lines += ["", "ERREURS DE COLLECTE MACRO (FRED / REPLI BLS)"] + [f"- {e}" for e in macro_errors]
     lines += ["", "Avertissement : contenu informatif et expérimental, pas un conseil d'investissement. Vérifier les données et les actualités avant toute décision."]
     plain = "\n".join(lines)
 
