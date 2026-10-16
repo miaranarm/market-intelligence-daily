@@ -580,11 +580,11 @@ def _parse_fred_csv(csv_text: str) -> list[dict[str, Any]]:
     if not csv_text.strip():
         return []
     frame = pd.read_csv(io.StringIO(csv_text), na_values=[".", ""])
-    if frame.empty:
-        return []
     date_col = next((c for c in frame.columns if str(c).casefold() in ("observation_date", "date")), None)
     if date_col is None:
         raise ValueError("colonne de date absente du CSV FRED")
+    if frame.empty:
+        return []
     frame[date_col] = pd.to_datetime(frame[date_col], errors="coerce")
     frame = frame.dropna(subset=[date_col]).sort_values(date_col)
     result: list[dict[str, Any]] = []
