@@ -72,6 +72,23 @@ ASSETS: dict[str, dict[str, str]] = {
     "MSFT": {"name": "Microsoft", "class": "US equity"},
     "NVDA": {"name": "Nvidia", "class": "US equity"},
     "AMZN": {"name": "Amazon", "class": "US equity"},
+    "GOOGL": {"name": "Alphabet", "class": "US equity"},
+    "META": {"name": "Meta Platforms", "class": "US equity"},
+    "TSLA": {"name": "Tesla", "class": "US equity"},
+    "AVGO": {"name": "Broadcom", "class": "US equity"},
+    "JPM": {"name": "JPMorgan Chase", "class": "US equity"},
+    "BAC": {"name": "Bank of America", "class": "US equity"},
+    "XOM": {"name": "Exxon Mobil", "class": "US equity"},
+    "LLY": {"name": "Eli Lilly", "class": "US equity"},
+    "WMT": {"name": "Walmart", "class": "US equity"},
+    "COST": {"name": "Costco", "class": "US equity"},
+    "CAT": {"name": "Caterpillar", "class": "US equity"},
+    "VFIAX": {"name": "Vanguard 500 Index Fund Admiral Shares", "class": "Mutual fund"},
+    "FXAIX": {"name": "Fidelity 500 Index Fund", "class": "Mutual fund"},
+    "VTSAX": {"name": "Vanguard Total Stock Market Index Fund Admiral Shares", "class": "Mutual fund"},
+    "VWELX": {"name": "Vanguard Wellington Fund", "class": "Balanced mutual fund"},
+    "FBALX": {"name": "Fidelity Balanced Fund", "class": "Balanced mutual fund"},
+    "FTBFX": {"name": "Fidelity Total Bond Fund", "class": "Bond mutual fund"},
 }
 
 NEWS_FEEDS = [
@@ -83,7 +100,14 @@ NEWS_FEEDS = [
     # Cross-checking across several publishers; aggregator headlines are leads, not independent proof.
     ("Google News — macroéconomie mondiale et banques centrales", "https://news.google.com/rss/search?q=inflation+employment+GDP+central+banks+interest+rates&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — marchés et économie", "https://news.google.com/rss/search?q=global+markets+economy+central+banks&hl=en-US&gl=US&ceid=US:en"),
-    ("Google News — entreprises et résultats", "https://news.google.com/rss/search?q=stocks+earnings+corporate+results&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — résultats mondiaux des entreprises", "https://news.google.com/rss/search?q=company+earnings+quarterly+results+guidance+revenue+profit&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — résultats et prévisions États-Unis", "https://news.google.com/rss/search?q=US+earnings+beat+miss+analyst+estimates+guidance&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — résultats Europe et Royaume-Uni", "https://news.google.com/rss/search?q=European+UK+company+earnings+quarterly+results&hl=en-GB&gl=GB&ceid=GB:en"),
+    ("Google News — résultats Asie et Chine", "https://news.google.com/rss/search?q=Asia+China+Japan+company+earnings+results+guidance&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — technologie et semi-conducteurs", "https://news.google.com/rss/search?q=technology+semiconductor+earnings+AI+capital+expenditure&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — banques et crédit", "https://news.google.com/rss/search?q=bank+earnings+net+interest+margin+credit+losses&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — énergie et industrie", "https://news.google.com/rss/search?q=energy+industrial+company+earnings+production+guidance&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — consommation et santé", "https://news.google.com/rss/search?q=consumer+healthcare+company+earnings+sales+guidance&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — matières premières et géopolitique", "https://news.google.com/rss/search?q=oil+gold+commodities+geopolitics&hl=en-US&gl=US&ceid=US:en"),
 ]
 
@@ -210,7 +234,7 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
         for batch in feed_batches:
             if item_index < len(batch):
                 items.append(batch[item_index])
-    return items[:24], errors
+    return items[:36], errors
 
 
 def infer_macro_impact(headline: str) -> tuple[str, str, str]:
@@ -237,7 +261,7 @@ def infer_macro_impact(headline: str) -> tuple[str, str, str]:
     if any(k in text for k in ("geopolitical", "war ", "conflict", "attack", "ceasefire", "sanctions", "election", "political crisis")):
         return ("Géopolitique et risque", "matières premières, devises refuges, obligations, indices/futures, actions, crypto et fonds",
                 "Identifier d'abord les actifs directement exposés et la transmission par l'énergie, le commerce ou les sanctions. Une hausse de l'aversion au risque peut favoriser certains actifs refuges, mais les réactions sont instables et peuvent s'inverser rapidement. Ne pas déduire automatiquement un mouvement de marché du seul titre.")
-    if any(k in text for k in ("earnings", "quarterly results", "profit warning", "revenue", "guidance", "stock buyback")):
+    if any(k in text for k in ("earnings", "quarterly results", "profit warning", "revenue", "guidance", "stock buyback", "eps", "beat estimates", "miss estimates", "operating margin", "cash flow", "capital expenditure", "capex", "investor day", "merger", "acquisition", "dividend cut", "layoffs")):
         return ("Résultats d'entreprises", "actions concernées, secteurs, indices/futures, ETF et fonds",
                 "Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.")
     if any(k in text for k in ("bitcoin", "crypto", "cryptocurrency", "digital asset", "crypto etf")):
@@ -511,6 +535,206 @@ def render_professional_html(plain: str, title: str, now_local: datetime, starte
         "</main></body></html>"
     )
 
+
+
+def market_conviction(rows: list[AssetRow]) -> dict[str, Any]:
+    """Transparent, uncalibrated cross-asset scoring heuristic; never label it statistically calibrated."""
+    by = {r.ticker: r for r in rows}
+    score = 0
+    evidence: list[str] = []
+    sp = by.get("^GSPC")
+    ndx = by.get("^IXIC")
+    dow = by.get("^DJI")
+    vix = by.get("^VIX")
+    if sp and sp.five_day_pct is not None:
+        if sp.five_day_pct >= 1.0:
+            score += 2; evidence.append(f"S&P 500 en hausse sur cinq séances ({sp.five_day_pct:+.2f} %)")
+        elif sp.five_day_pct <= -1.0:
+            score -= 2; evidence.append(f"S&P 500 en baisse sur cinq séances ({sp.five_day_pct:+.2f} %)")
+    if ndx and ndx.five_day_pct is not None:
+        if ndx.five_day_pct >= 1.0:
+            score += 1; evidence.append(f"Nasdaq en hausse sur cinq séances ({ndx.five_day_pct:+.2f} %)")
+        elif ndx.five_day_pct <= -1.0:
+            score -= 1; evidence.append(f"Nasdaq en baisse sur cinq séances ({ndx.five_day_pct:+.2f} %)")
+    if dow and dow.five_day_pct is not None:
+        if dow.five_day_pct >= 1.0: score += 1
+        elif dow.five_day_pct <= -1.0: score -= 1
+    if vix and vix.daily_pct is not None:
+        if vix.daily_pct >= 8:
+            score -= 2; evidence.append(f"VIX en hausse marquée sur la dernière séance ({vix.daily_pct:+.2f} %)")
+        elif vix.daily_pct <= -8:
+            score += 1; evidence.append(f"VIX en net recul sur la dernière séance ({vix.daily_pct:+.2f} %)")
+    if score >= 3:
+        probs = {"haussier": 75, "central": 15, "baissier": 10}
+        stance = "Biais haussier net"
+    elif score == 2:
+        probs = {"haussier": 65, "central": 20, "baissier": 15}
+        stance = "Biais haussier"
+    elif score == 1:
+        probs = {"haussier": 60, "central": 25, "baissier": 15}
+        stance = "Avantage haussier modéré"
+    elif score <= -3:
+        probs = {"haussier": 10, "central": 15, "baissier": 75}
+        stance = "Biais baissier net"
+    elif score == -2:
+        probs = {"haussier": 15, "central": 20, "baissier": 65}
+        stance = "Biais baissier"
+    elif score == -1:
+        probs = {"haussier": 15, "central": 25, "baissier": 60}
+        stance = "Avantage baissier modéré"
+    else:
+        probs = {"haussier": 20, "central": 60, "baissier": 20}
+        stance = "Signaux contradictoires : scénario central dominant"
+    return {"score": score, "probabilities": probs, "stance": stance, "evidence": evidence,
+            "method": "heuristique de momentum sur 5 séances et variation quotidienne du VIX; non calibrée, à évaluer contre les résultats futurs"}
+
+
+def append_funnel_report(
+    lines: list[str], report_type: str, rows: list[AssetRow],
+    news: list[dict[str, str]], previous: list[dict[str, Any]],
+    prior_morning: dict[str, Any] | None, prior_update: dict[str, Any] | None,
+    data_errors: list[str], news_errors: list[str],
+) -> None:
+    """Build the report from global regime to specific instruments and an auditable action plan."""
+    conviction = market_conviction(rows)
+    probs = conviction["probabilities"]
+    by = {r.ticker: r for r in rows}
+    lines += [
+        "NIVEAU 1 — LE MONDE : RÉGIME MACROÉCONOMIQUE ET FINANCIER",
+        f"Diagnostic de marché : {conviction['stance']}. Horizon indicatif : prochaines 1 à 5 séances; ce n'est pas une prévision long terme.",
+        f"Probabilités directionnelles expérimentales : hausse {probs['haussier']} % · scénario central / marché sans direction nette {probs['central']} % · baisse {probs['baissier']} %.",
+        "Ces probabilités sont issues d'une règle explicite de momentum et de volatilité, pas d'un modèle statistiquement calibré ni d'une probabilité implicite de marché. Elles seront confrontées aux résultats dans les rapports du soir; si les données croisées sont insuffisantes, la conviction doit être considérée comme fragile.",
+        "Les variables réellement observées dans cette exécution sont les prix et variations disponibles. Croissance, inflation, liquidité et géopolitique ne seront qualifiées de moteurs confirmés que lorsqu'une publication ou une source vérifiable les étaye.",
+    ]
+    lines += [f"- Élément quantitatif : {x}." for x in conviction["evidence"]]
+    if not conviction["evidence"]:
+        lines.append("- Aucune convergence robuste des indicateurs de marché retenus; la probabilité centrale domine faute de signal directionnel convergent.")
+    macro_news = [n for n in news if any(k in n["title"].casefold() for k in (
+        "inflation", "cpi", "pce", "gdp", "growth", "recession", "central bank", "federal reserve",
+        "fed ", "ecb", "interest rate", "employment", "payroll", "tariff", "sanction", "geopolit",
+        "oil", "crude", "treasury", "bond yield", "pmi", "retail sales"))]
+    lines += ["", "NIVEAU 2 — RÉGIONS ET ÉCONOMIES MAJEURES",
+              "Lecture régionale : les signaux ci-dessous sont limités aux publications et instruments effectivement récupérés. L'absence de titre ne signifie pas l'absence de risque."]
+    region_rules = [
+        ("États-Unis et Canada", ("us ", "u.s.", "united states", "federal reserve", "fed ", "treasury", "canada", "american", "nvidia", "apple", "microsoft", "amazon", "jpmorgan")),
+        ("Zone euro et Royaume-Uni", ("europe", "eurozone", "euro zone", "ecb", "european central bank", "britain", "british", "uk ", "united kingdom", "germany", "france")),
+        ("Chine et Asie-Pacifique", ("china", "chinese", "japan", "japanese", "asia", "asia-pacific", "hong kong", "beijing", "tokyo", "hang seng")),
+        ("Marchés émergents et autres régions", ("emerging market", "india", "brazil", "south africa", "indonesia", "mexico")),
+    ]
+    for label, keywords in region_rules:
+        matches = [n for n in news if any(k in n["title"].casefold() for k in keywords)]
+        lines.append(f"- {label} :")
+        if matches:
+            for item in matches[:3]:
+                lines.append(f"  - {item['title']} — {item['source']} ({item['published']}) — {item['url']}")
+        else:
+            lines.append("  - Pas de publication régionale suffisamment identifiable dans les titres collectés; ne pas en déduire une absence de risque.")
+    lines += ["", "NIVEAU 3 — GRANDES FORCES ET INTERACTIONS ENTRE LES MARCHÉS"]
+    lines += [f"- {item}" for item in scenario_context(rows)]
+    comparisons = [
+        ("Actions US vs taux longs US", "^GSPC", "^TNX"),
+        ("Technologie vs marché large", "^IXIC", "^GSPC"),
+        ("Or vs dollar", "GC=F", "DX-Y.NYB"),
+        ("Pétrole vs dollar", "CL=F", "DX-Y.NYB"),
+        ("Bitcoin vs technologie", "BTC-USD", "^IXIC"),
+    ]
+    for label, left, right in comparisons:
+        a, b = by.get(left), by.get(right)
+        if a and b and a.daily_pct is not None and b.daily_pct is not None:
+            relationship = "même sens" if a.daily_pct * b.daily_pct > 0 else ("sens opposés" if a.daily_pct * b.daily_pct < 0 else "mouvement mixte")
+            lines.append(f"- {label} : {a.name} {a.daily_pct:+.2f} %; {b.name} {b.daily_pct:+.2f} %; mouvements de {relationship}. Une seule séance ne suffit pas à prouver une relation causale.")
+        else:
+            lines.append(f"- {label} : comparaison indisponible faute de données synchronisées suffisantes.")
+    lines += ["", "NIVEAU 4 — CLASSES D'ACTIFS : OÙ SE CONCENTRE LE RISQUE ?",
+              "La classification ci-dessous repose sur les actifs reçus. Les fonds communs sont inclus lorsque leur cotation de valeur liquidative est disponible; une donnée absente est signalée, jamais inventée."]
+    classes: dict[str, list[AssetRow]] = {}
+    for row in rows:
+        classes.setdefault(row.asset_class, []).append(row)
+    for cls, members in sorted(classes.items()):
+        daily = [x for x in members if x.daily_pct is not None]
+        weekly = [x for x in members if x.five_day_pct is not None]
+        best = max(daily, key=lambda x: x.daily_pct) if daily else None
+        worst = min(daily, key=lambda x: x.daily_pct) if daily else None
+        avg = sum(x.daily_pct for x in daily) / len(daily) if daily else None
+        lines.append(f"- {cls} : {len(members)} instrument(s) reçu(s); variation quotidienne moyenne non pondérée {fmt(avg, '%')}.")
+        if best and worst:
+            lines.append(f"  - Leader : {best.name} ({fmt(best.daily_pct, '%')}); lanterne rouge : {worst.name} ({fmt(worst.daily_pct, '%')}).")
+        if weekly:
+            positive = sum(1 for x in weekly if (x.five_day_pct or 0) > 0)
+            lines.append(f"  - Sur cinq séances : {positive}/{len(weekly)} instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.")
+    lines += ["", "NIVEAU 5 — SECTEURS, SEGMENTS, THÉMATIQUES ET MICROÉCONOMIE",
+              "Ce niveau relie les résultats et décisions d'entreprise à leurs secteurs. Les titres de presse sont des pistes : chiffres publiés, consensus, guidance et réaction boursière doivent être vérifiés dans les documents originaux avant toute conclusion ferme."]
+    corporate_keywords = (
+        "earnings", "quarterly results", "profit warning", "revenue", "guidance", "eps", "beat estimates",
+        "miss estimates", "operating margin", "cash flow", "capital expenditure", "capex", "investor day",
+        "merger", "acquisition", "dividend cut", "layoffs", "sales", "forecast", "outlook", "orders",
+        "semiconductor", "bank earnings", "company results")
+    corporate_news = [n for n in news if any(k in n["title"].casefold() for k in corporate_keywords)]
+    if corporate_news:
+        for item in corporate_news[:18]:
+            theme, categories, impact = infer_macro_impact(item["title"])
+            lines.append(f"- Publication/événement d'entreprise ou sectoriel : {item['title']} — {item['source']} ({item['published']}) — Source : {item['url']}")
+            lines.append(f"  - Lecture à vérifier : {impact}")
+            lines.append(f"  - Transmission potentielle : {categories}.")
+    else:
+        lines.append("- Aucun titre clairement identifié comme publication d'entreprise dans les flux reçus. Cela ne signifie pas qu'aucune entreprise ne publie aujourd'hui : le calendrier des résultats n'est pas encore alimenté par une source spécialisée structurée.")
+    sector_groups = [
+        ("Technologie et semi-conducteurs", ("technology", "semiconductor", "chip", "nvidia", "apple", "microsoft", "artificial intelligence", "ai ")),
+        ("Banques et crédit", ("bank", "jpmorgan", "credit", "loan", "deposit", "net interest margin")),
+        ("Énergie et matières premières", ("oil", "energy", "gas", "opec", "exxon", "gold", "copper")),
+        ("Consommation et distribution", ("consumer", "retail", "walmart", "costco", "amazon", "sales")),
+        ("Santé et pharmacie", ("healthcare", "pharma", "drug", "lilly", "clinical")),
+        ("Industrie et infrastructures", ("industrial", "manufacturing", "orders", "caterpillar", "capex")),
+    ]
+    for sector, keywords in sector_groups:
+        matches = [n for n in corporate_news if any(k in n["title"].casefold() for k in keywords)]
+        if matches:
+            lines.append(f"- {sector} :")
+            for item in matches[:2]:
+                lines.append(f"  - {item['title']} — {item['url']}")
+    lines += ["", "NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE",
+              "Les instruments sont sélectionnés par importance du mouvement et disponibilité des données, non comme recommandation automatique d'achat ou de vente."]
+    if report_type == "update":
+        old = {r["ticker"]: r for r in (prior_morning or {}).get("assets", [])}
+        changes = []
+        for row in rows:
+            prev = old.get(row.ticker)
+            if prev and row.daily_pct is not None and prev.get("daily_pct") is not None:
+                diff = row.daily_pct - float(prev["daily_pct"])
+                if abs(diff) >= 0.5:
+                    changes.append((abs(diff), f"- {row.name} ({row.ticker}) : variation journalière disponible {float(prev['daily_pct']):+.2f} % au rapport du matin contre {row.daily_pct:+.2f} % maintenant; différence {diff:+.2f} points. Vérifier que les deux observations couvrent des séances comparables."))
+        lines.append("Évolutions depuis le matin :")
+        lines += [x[1] for x in sorted(changes, reverse=True)[:12]] if changes else ["- Aucun changement comparable supérieur à 0,5 point détecté ou rapport du matin indisponible."]
+    movers = sorted([r for r in rows if r.daily_pct is not None],
+                    key=lambda r: max(abs(r.daily_pct or 0), abs(r.five_day_pct or 0), abs(r.one_month_pct or 0)), reverse=True)
+    lines.append("Instruments dont le mouvement mérite un examen prioritaire :")
+    for r in movers[:15]:
+        lines.append(f"- {r.name} ({r.ticker}) — classe : {r.asset_class}; dernier prix {fmt(r.price)}; dernière séance {fmt(r.daily_pct, '%')}; 5 séances {fmt(r.five_day_pct, '%')}; 1 mois {fmt(r.one_month_pct, '%')}; RSI/moyennes mobiles non affichés. Source cours : https://finance.yahoo.com/quote/{r.ticker}/")
+    if not movers:
+        lines.append("- Aucun instrument n'a fourni de variation exploitable.")
+    lines += ["", "PANORAMA COMPLET DES INSTRUMENTS COLLECTÉS",
+              "Les cours sont ceux de la dernière observation quotidienne disponible; ils ne sont pas nécessairement des cours intrajournaliers. Pour les fonds communs, la valeur liquidative peut être publiée avec retard.",
+              "Actif | Classe | Dernier prix | Dernière séance disponible | 5 séances | 1 mois | Source"]
+    for r in sorted(rows, key=lambda x: (x.asset_class, x.name)):
+        lines.append(f"{r.name} ({r.ticker}) | {r.asset_class} | {fmt(r.price)} | {fmt(r.daily_pct, '%')} | {fmt(r.five_day_pct, '%')} | {fmt(r.one_month_pct, '%')} | https://finance.yahoo.com/quote/{r.ticker}/")
+    lines += ["", "NIVEAU 7 — DÉCISION, INVALIDATION ET AUDIT",
+              "Plan de surveillance :",
+              f"- Scénario dominant expérimental : {conviction['stance']} (hausse {probs['haussier']} %, central {probs['central']} %, baisse {probs['baissier']} %).",
+              "- Confirmation : vérifier la prochaine clôture des grands indices, la réaction du VIX et la cohérence avec les rendements obligataires; ne pas agir sur un seul titre de presse.",
+              "- Invalidation : si les indices et la volatilité évoluent à l'opposé des signaux ayant produit le score, réduire la conviction et recalculer les probabilités au prochain rapport.",
+              "- Publications d'entreprises : vérifier le communiqué officiel, les chiffres par rapport au consensus, les prévisions de direction et la réaction du titre après publication.",
+              "- Aucun niveau d'entrée, stop ou objectif de cours n'est inventé; ces niveaux exigent des données de prix et de risque adaptées à l'instrument et à l'horizon."]
+    if report_type == "audit":
+        lines += ["", "AUDIT DU SOIR — OBJECTIF : AMÉLIORER LE RAPPORT DU MATIN",
+                  f"- Instantanés précédents enregistrés : {len(previous)}.",
+                  "- La prévision heuristique d'aujourd'hui est conservée dans l'historique pour comparaison future; elle n'est pas encore calibrée sur un échantillon suffisant.",
+                  "- Questions de contrôle : le scénario était-il correct, les catalyseurs identifiés étaient-ils les bons, les probabilités étaient-elles trop extrêmes ou trop prudentes, et quelles données ont manqué ?"]
+    elif report_type == "morning":
+        lines += ["", "ENGAGEMENT POUR L'AUDIT DU SOIR",
+                  "- Les probabilités et les observations de cette édition doivent rester inchangées dans l'historique; le rapport du soir comparera ces hypothèses aux mouvements effectivement observés."]
+    append_self_audit(lines, {"forecasts": previous, "forecast_records": read_state().get("forecast_records", [])})
+
+
 def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     started = datetime.now(timezone.utc)
     now_local = started.astimezone(TZ)
@@ -534,89 +758,12 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         "",
         "RÉSUMÉ ET LIMITES",
         f"Données de prix reçues pour {len(rows)}/{len(ASSETS)} actifs suivis.",
-        "Le rapport est orienté vers les événements, les mouvements de marché, les scénarios et les actifs à surveiller. Les indicateurs techniques sont conservés et utilisés en interne pour l'analyse, mais ne sont pas affichés. Le moteur ne dispose pas encore d'une analyse fondamentale complète ni de probabilités directionnelles calibrées.",
+        "Le rapport est orienté vers les événements, les mouvements de marché, les scénarios et les actifs à surveiller. Les indicateurs techniques sont conservés et utilisés en interne pour l'analyse, mais ne sont pas affichés. L'analyse fondamentale est alimentée par des titres multi-sources, mais le consensus chiffré et les rapports originaux ne sont pas disponibles pour chaque société. Les probabilités directionnelles sont expérimentales, explicites et non calibrées; elles seront auditées au rapport du soir.",
         "Les données de marché peuvent être retardées, révisées ou indisponibles. Les variations portent sur la dernière séance reçue, pas nécessairement sur la séance en cours.",
         "",
     ]
 
-    if report_type == "morning":
-        lines += ["SCÉNARIO DE RÉFÉRENCE — INDICATEURS, PAS PRÉDICTION CERTAINE"]
-        lines += ["- " + s for s in scenario_context(rows)]
-        lines += [
-            "- Les scénarios haussier, central et baissier ne reçoivent pas encore de probabilités chiffrées : elles ne seront ajoutées qu'après une méthode explicitement testée et calibrée.",
-            "- Catalyseurs à surveiller : décisions et communications des banques centrales, inflation/emploi, résultats d'entreprises, rendements obligataires, dollar, pétrole et événements géopolitiques.",
-            "",
-        ]
-    elif report_type == "update":
-        lines += ["CHANGEMENTS DEPUIS LE RAPPORT INITIAL"]
-        old = {}
-        if prior_morning:
-            old = {r["ticker"]: r for r in prior_morning.get("assets", [])}
-        changes = []
-        for row in rows:
-            prev = old.get(row.ticker)
-            if prev:
-                old_d = prev.get("daily_pct")
-                if row.daily_pct is not None and old_d is not None and abs(row.daily_pct - old_d) >= 0.5:
-                    changes.append(f"- {row.name}: variation journalière calculée passée de {fmt(old_d, '%')} à {fmt(row.daily_pct, '%')}. Attention : la comparaison peut être redondante si la séance n'a pas changé.")
-        lines += changes[:25] or ["- Aucun changement quantitatif comparable détecté, ou rapport initial absent. La fenêtre de données de Yahoo Finance peut ne pas refléter l'intraday."]
-        lines += ["", "ACTUALITÉS RÉCENTES", "Les titres ci-dessous sont des pistes de vérification; leur présence ne prouve pas un effet de marché."]
-    elif report_type == "audit":
-        lines += ["AUDIT DES PRÉVISIONS"]
-        lines += [
-            f"- Instantanés historiques enregistrés : {len(previous)}.",
-            "- Ce prototype n'émet pas encore de prévisions directionnelles probabilisées; il ne peut donc pas calculer honnêtement de taux de réussite ou de calibration probabiliste.",
-            "- Les audits quantitatifs futurs compareront chaque prévision horodatée à un horizon défini, en séparant données disponibles à l'instant T et résultats ultérieurs.",
-            "- Pas de conclusion de performance possible à partir d'un échantillon court ou de simples indicateurs techniques.",
-            "",
-            "CONTEXTE DU MARCHÉ",
-        ]
-        lines += ["- " + s for s in scenario_context(rows)]
-
-    # Critique des prévisions passées : les résultats sont mesurés, pas auto-déclarés.
-    append_self_audit(lines, {"forecasts": previous, "forecast_records": read_state().get("forecast_records", [])})
-
-    # Les indicateurs techniques restent dans les données internes pour aider à
-    # hiérarchiser les scénarios; ils ne sont pas affichés dans le rapport envoyé.
-    lines += ["", "PANORAMA DES MARCHÉS — MOUVEMENTS OBSERVÉS",
-              "Les chiffres ci-dessous décrivent les mouvements de prix, pas des indicateurs techniques ni des ordres de trading.",
-              "Actif | Classe | Dernier prix | Dernière séance disponible | 5 séances | 1 mois | Source"]
-    # Include every successfully collected asset, not only a hand-picked subset.
-    # This prevents major indices, individual equities, and broad ETFs from
-    # disappearing from the reader-facing panorama when their moves are small.
-    selected = sorted(
-        rows,
-        key=lambda r: max(abs(r.daily_pct or 0), abs(r.five_day_pct or 0)),
-        reverse=True,
-    )
-    for r in selected:
-        lines.append(
-            f"{r.name} ({r.ticker}) | {r.asset_class} | {fmt(r.price)} | "
-            f"{fmt(r.daily_pct, '%')} | {fmt(r.five_day_pct, '%')} | {fmt(r.one_month_pct, '%')} | https://finance.yahoo.com/quote/{r.ticker}/"
-        )
-    watch = [r for r in rows if
-             (r.daily_pct is not None and abs(r.daily_pct) >= 1.5) or
-             (r.five_day_pct is not None and abs(r.five_day_pct) >= 4.0) or
-             (r.one_month_pct is not None and abs(r.one_month_pct) >= 8.0)]
-    watch.sort(key=lambda r: max(abs(r.daily_pct or 0), abs(r.five_day_pct or 0), abs(r.one_month_pct or 0)), reverse=True)
-    lines += ["", "ACTIFS À SURVEILLER",
-              "Sélection mécanique des mouvements les plus marqués, à confirmer par les fondamentaux, les actualités et le contexte; ce n'est pas une recommandation d'achat ou de vente."]
-    for r in watch[:10]:
-        lines.append(
-            f"- {r.name} ({r.ticker}) : dernière séance {fmt(r.daily_pct, '%')}; "
-            f"5 séances {fmt(r.five_day_pct, '%')}; 1 mois {fmt(r.one_month_pct, '%')}. "
-            f"Source : https://finance.yahoo.com/quote/{r.ticker}/"
-        )
-    if not watch:
-        lines.append("- Aucun mouvement ne dépasse les seuils de veille définis pour ce rapport.")
-    lines += ["", "ACTUALITÉS MACROÉCONOMIQUES ET IMPLICATIONS POSSIBLES",
-              "Les titres servent de pistes de vérification. Les implications ci-dessous sont des mécanismes conditionnels classés automatiquement; elles ne prétendent pas confirmer le chiffre publié ni la réaction du marché. Ouvrir chaque source avant toute conclusion."]
-    for item in news[:15]:
-        theme, categories, impact = infer_macro_impact(item["title"])
-        lines.append(f"- {item['title']} — Source/publication : {item['source']} — {item['published']} — Lien : {item['url']}")
-        lines.append(f"  Thème : {theme}. Catégories principalement à examiner : {categories}. Implications conditionnelles : {impact}")
-    if not news:
-        lines.append("- Aucun flux d'actualité n'a pu être récupéré pendant cette exécution. Les conclusions macroéconomiques doivent donc rester limitées.")
+    append_funnel_report(lines, report_type, rows, news, previous, prior_morning, prior_update, data_errors, news_errors)
     lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Titres : flux RSS Google News, liens vers les publications d'origine lorsqu'ils sont fournis.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}."]
     if data_errors:
         lines += ["", "DONNÉES MANQUANTES"] + [f"- {e}" for e in data_errors[:20]]
@@ -631,7 +778,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         "run_time_utc": started.isoformat(timespec="seconds"),
         "run_time_madagascar": now_local.isoformat(timespec="seconds"),
         "assets": [asdict(r) for r in rows],
-        "news": news[:15],
+        "news": news[:36],
         "data_error_count": len(data_errors),
         "news_error_count": len(news_errors),
     }
