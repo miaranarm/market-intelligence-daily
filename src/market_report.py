@@ -265,7 +265,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         "",
         "RÉSUMÉ ET LIMITES",
         f"Données de prix reçues pour {len(rows)}/{len(ASSETS)} actifs suivis.",
-        "Ce prototype fournit un état quantitatif descriptif. Il n'intègre pas encore un modèle fondamental complet ni une IA de synthèse; ne pas traiter ses indicateurs comme des recommandations d'achat ou de vente.",
+        "Le rapport est orienté vers les événements, les mouvements de marché, les scénarios et les actifs à surveiller. Les indicateurs techniques sont conservés et utilisés en interne pour l'analyse, mais ne sont pas affichés. Le moteur ne dispose pas encore d'une analyse fondamentale complète ni de probabilités directionnelles calibrées.",
         "Les données de marché peuvent être retardées, révisées ou indisponibles. Les variations portent sur la dernière séance reçue, pas nécessairement sur la séance en cours.",
         "",
     ]
@@ -304,13 +304,35 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         ]
         lines += ["- " + s for s in scenario_context(rows)]
 
-    lines += ["", "TABLEAU MULTI-ACTIFS", "Actif | Classe | Dernier prix | Jour % | 5 séances % | 1 mois % | RSI14 | Écart MM20 % | Écart MM50 % | Vol. annualisée % | Lecture"]
-    for r in rows:
+    # Les indicateurs techniques restent dans les données internes pour aider à
+    # hiérarchiser les scénarios; ils ne sont pas affichés dans le rapport envoyé.
+    lines += ["", "PANORAMA DES MARCHÉS — MOUVEMENTS OBSERVÉS",
+              "Les chiffres ci-dessous décrivent les mouvements de prix, pas des indicateurs techniques ni des ordres de trading.",
+              "Actif | Classe | Dernier prix | Dernière séance disponible | 5 séances | 1 mois"]
+    priority_classes = {"US equity index", "European equity index", "UK equity index",
+                        "Japanese equity index", "Hong Kong equity index", "Rates", "FX",
+                        "Commodity", "Crypto", "Bond ETF", "Credit ETF"}
+    selected = [r for r in rows if r.asset_class in priority_classes]
+    selected.sort(key=lambda r: max(abs(r.daily_pct or 0), abs(r.five_day_pct or 0)), reverse=True)
+    for r in selected[:18]:
         lines.append(
-            f"{r.name} ({r.ticker}) | {r.asset_class} | {fmt(r.price)} | {fmt(r.daily_pct, '%')} | "
-            f"{fmt(r.five_day_pct, '%')} | {fmt(r.one_month_pct, '%')} | {fmt(r.rsi14)} | "
-            f"{fmt(r.ma20_gap_pct, '%')} | {fmt(r.ma50_gap_pct, '%')} | {fmt(r.annualized_vol_pct, '%')} | {r.trend}; {r.note}"
+            f"{r.name} ({r.ticker}) | {r.asset_class} | {fmt(r.price)} | "
+            f"{fmt(r.daily_pct, '%')} | {fmt(r.five_day_pct, '%')} | {fmt(r.one_month_pct, '%')}"
         )
+    watch = [r for r in rows if
+             (r.daily_pct is not None and abs(r.daily_pct) >= 1.5) or
+             (r.five_day_pct is not None and abs(r.five_day_pct) >= 4.0) or
+             (r.one_month_pct is not None and abs(r.one_month_pct) >= 8.0)]
+    watch.sort(key=lambda r: max(abs(r.daily_pct or 0), abs(r.five_day_pct or 0), abs(r.one_month_pct or 0)), reverse=True)
+    lines += ["", "ACTIFS À SURVEILLER",
+              "Sélection mécanique des mouvements les plus marqués, à confirmer par les fondamentaux, les actualités et le contexte; ce n'est pas une recommandation d'achat ou de vente."]
+    for r in watch[:10]:
+        lines.append(
+            f"- {r.name} ({r.ticker}) : dernière séance {fmt(r.daily_pct, '%')}; "
+            f"5 séances {fmt(r.five_day_pct, '%')}; 1 mois {fmt(r.one_month_pct, '%')}."
+        )
+    if not watch:
+        lines.append("- Aucun mouvement ne dépasse les seuils de veille définis pour ce rapport.")
     lines += ["", "ACTUALITÉS À VÉRIFIER"]
     for item in news[:15]:
         lines.append(f"- {item['title']} — {item['source']} — {item['published']} — {item['url']}")
@@ -328,7 +350,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     html_body = (
         "<html><body style='font-family:Arial,sans-serif;line-height:1.45'>"
         f"<h2>{html.escape(title)}</h2><p>Heure Madagascar : {now_local:%Y-%m-%d %H:%M:%S %Z}</p>"
-        "<p>Rapport expérimental basé sur des données collectées; les probabilités directionnelles ne sont pas activées à ce stade.</p>"
+        "<p>Rapport orienté décision. Les indicateurs techniques servent à l'analyse interne et ne sont pas affichés. Les probabilités directionnelles calibrées ne sont pas encore activées.</p>"
         f"<pre style='white-space:pre-wrap;font-family:Arial,sans-serif'>{escaped}</pre>"
         "</body></html>"
     )
