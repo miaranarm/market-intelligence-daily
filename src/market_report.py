@@ -181,26 +181,36 @@ def analyse_asset(ticker: str, frame: pd.DataFrame) -> AssetRow:
     )
 
 def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
-    items: list[dict[str, str]] = []
+    feed_batches: list[list[dict[str, str]]] = []
     errors: list[str] = []
     seen: set[str] = set()
     headers = {"User-Agent": USER_AGENT}
     for feed_name, url in NEWS_FEEDS:
+        batch: list[dict[str, str]] = []
         try:
             response = requests.get(url, headers=headers, timeout=15)
             response.raise_for_status()
             root = ET.fromstring(response.content)
-            for item in root.findall(".//item"):
+            # Cap each feed so one prolific publisher cannot crowd out other sources.
+            for item in root.findall(".//item")[:6]:
                 title = (item.findtext("title") or "").strip()
                 link = (item.findtext("link") or "").strip()
                 published = (item.findtext("pubDate") or "").strip()
-                source = item.findtext("source") or feed_name
+                source = (item.findtext("source") or "").strip() or feed_name
                 if title and link and link not in seen:
                     seen.add(link)
-                    items.append({"title": title, "url": link, "published": published, "source": source})
+                    batch.append({"title": title, "url": link, "published": published, "source": source})
         except Exception as exc:
             errors.append(f"{feed_name}: {type(exc).__name__}: {str(exc)[:120]}")
-    return items[:18], errors
+        feed_batches.append(batch)
+
+    # Round-robin interleaving keeps official sources and independent publishers visible together.
+    items: list[dict[str, str]] = []
+    for item_index in range(6):
+        for batch in feed_batches:
+            if item_index < len(batch):
+                items.append(batch[item_index])
+    return items[:24], errors
 
 def classify_move(pct: float | None) -> str:
     if pct is None:
