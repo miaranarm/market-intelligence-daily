@@ -95,9 +95,15 @@ ASSETS: dict[str, dict[str, str]] = {
 NEWS_FEEDS = [
     # Official primary sources: macroeconomic releases, monetary policy and energy.
     ("Federal Reserve — communiqués officiels", "https://www.federalreserve.gov/feeds/press_all.xml"),
-    ("Bureau of Labor Statistics — emploi et chômage (flux officiel)", "https://www.bls.gov/feed/empsit.rss"),
-    ("Bureau of Labor Statistics — indice des prix à la consommation, CPI (flux officiel)", "https://www.bls.gov/feed/cpi.rss"),
-    ("Bureau of Labor Statistics — indice des prix à la production, PPI (flux officiel)", "https://www.bls.gov/feed/ppi.rss"),
+    # Verified official alternatives: BEA macro releases and Census economic indicators.
+    ("Bureau of Economic Analysis — publications macroéconomiques (RSS officiel)", "https://apps.bea.gov/rss/rss.xml"),
+    ("U.S. Census Bureau — indicateurs économiques (RSS officiel)", "https://www.census.gov/economic-indicators/indicator.xml"),
+    # BLS is retained as a primary publication target, without depending on its RSS endpoints.
+    # Google News is discovery only; readers should open and verify the original BLS release.
+    ("Google News — recherche ciblée BLS emploi (découverte, vérifier la publication officielle)", "https://news.google.com/rss/search?q=site%3Abls.gov%2Fnews.release%2Farchives+employment+unemployment+payroll+jobs&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — recherche ciblée BLS CPI (découverte, vérifier la publication officielle)", "https://news.google.com/rss/search?q=site%3Abls.gov%2Fnews.release%2Farchives+CPI+consumer+price+inflation&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — recherche ciblée BLS PPI (découverte, vérifier la publication officielle)", "https://news.google.com/rss/search?q=site%3Abls.gov%2Fnews.release%2Farchives+PPI+producer+price+index&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — demandes d’allocations chômage, source DOL à vérifier", "https://news.google.com/rss/search?q=site%3Adol.gov%2Fnewsroom%2Freleases%2Feta+unemployment+insurance+claims&hl=en-US&gl=US&ceid=US:en"),
     ("Banque centrale européenne — communiqués", "https://www.ecb.europa.eu/rss/press.html"),
     ("US Energy Information Administration — énergie", "https://www.eia.gov/rss/todayinenergy.xml"),
     ("Bank of England — actualités et stabilité financière", "https://www.bankofengland.co.uk/rss/news"),
@@ -314,39 +320,10 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
                     seen_titles.add(_news_dedupe_key(item["title"]))
                     batch.append(item)
         except Exception as exc:
-            # The BLS RSS endpoint may reject automated requests (HTTP 403). Use a
-            # clearly identified Google News search restricted to BLS releases as fallback.
-            if "Bureau of Labor Statistics" in feed_name:
-                # Keep discovery queries specific to each official release; a search result is
-                # a lead to the BLS page, not a substitute for independent verification.
-                if "emploi" in feed_name:
-                    terms = "employment unemployment payroll jobs"
-                    source_label = "Google News — recherche ciblée BLS emploi"
-                elif "CPI" in feed_name:
-                    terms = "CPI consumer price inflation"
-                    source_label = "Google News — recherche ciblée BLS CPI"
-                else:
-                    terms = "PPI producer price index"
-                    source_label = "Google News — recherche ciblée BLS PPI"
-                from urllib.parse import quote_plus
-                query = quote_plus(f"site:bls.gov/news.release/archives {terms}")
-                fallback_url = f"https://news.google.com/rss/search?q={query}&hl=en-US&gl=US&ceid=US:en"
-                direct_status = getattr(getattr(exc, "response", None), "status_code", None) or getattr(exc, "code", None)
-                direct_error = f"HTTP {direct_status}" if direct_status else type(exc).__name__
-                try:
-                    fallback_response = requests.get(fallback_url, headers=headers, timeout=15)
-                    fallback_response.raise_for_status()
-                    fallback_root = ET.fromstring(fallback_response.content)
-                    for item in _feed_entries(fallback_root, source_label)[:6]:
-                        if item["url"] not in seen and _news_dedupe_key(item["title"]) not in seen_titles and _is_recent_news_item(item["published"]):
-                            seen.add(item["url"])
-                            seen_titles.add(_news_dedupe_key(item["title"]))
-                            batch.append(item)
-                    errors.append(f"{feed_name}: flux direct indisponible ({direct_error}); repli Google News ciblé utilisé")
-                except Exception as fallback_exc:
-                    errors.append(f"{feed_name}: flux direct {direct_error}; repli également en échec: {type(fallback_exc).__name__}: {str(fallback_exc)[:100]}")
-            else:
-                errors.append(f"{feed_name}: {type(exc).__name__}: {str(exc)[:120]}")
+            # Each feed is independent. A failed source is recorded, but never blocks
+            # the report; official BEA/Census feeds and targeted BLS discovery queries
+            # provide alternative macro coverage without mislabeling search results as data.
+            errors.append(f"{feed_name}: {type(exc).__name__}: {str(exc)[:120]}")
         feed_batches.append(batch)
 
     # Round-robin interleaving keeps official sources and independent publishers visible together.
