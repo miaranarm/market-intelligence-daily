@@ -5,6 +5,7 @@ import html
 import json
 import math
 import os
+import re
 import smtplib
 import ssl
 import sys
@@ -372,6 +373,87 @@ def append_self_audit(lines: list[str], state: dict[str, Any]) -> None:
             lines.append("- Aucun échec directionnel dans l'échantillon arrivé à échéance; cela ne suffit pas à prouver la robustesse.")
     lines.append("- Les prévisions originales sont conservées pour empêcher toute réécriture rétrospective. Les changements de méthode devront être justifiés par des échantillons suffisants et des tests hors échantillon.")
 
+
+def linkify_text(value: str) -> str:
+    """Escape report text while turning source URLs into safe, clickable links."""
+    chunks = re.split(r"(https?://[^\s<>]+)", value)
+    rendered = []
+    for chunk in chunks:
+        if chunk.startswith(("https://", "http://")):
+            clean_url = chunk.rstrip(".,;)")
+            suffix = chunk[len(clean_url):]
+            escaped_url = html.escape(clean_url, quote=True)
+            rendered.append(f'<a href="{escaped_url}" target="_blank" rel="noopener noreferrer">{html.escape(clean_url)}</a>{html.escape(suffix)}')
+        else:
+            rendered.append(html.escape(chunk))
+    return "".join(rendered)
+
+
+def render_professional_html(plain: str, title: str, now_local: datetime, started: datetime) -> str:
+    """Turn the text report into a responsive, sectioned HTML briefing."""
+    lines = plain.splitlines()
+    content_lines = lines[4:] if len(lines) >= 4 else lines
+    blocks: list[str] = []
+    i = 0
+    while i < len(content_lines):
+        line = content_lines[i].strip()
+        if not line:
+            i += 1
+            continue
+        if line.startswith("Actif | Classe |"):
+            headers = [x.strip() for x in line.split("|")]
+            rows_html = []
+            i += 1
+            while i < len(content_lines) and " | " in content_lines[i]:
+                cells = [x.strip() for x in content_lines[i].split("|")]
+                rows_html.append("<tr>" + "".join(f"<td>{linkify_text(cell)}</td>" for cell in cells) + "</tr>")
+                i += 1
+            blocks.append("<div class='table-wrap'><table><thead><tr>" +
+                          "".join(f"<th>{html.escape(cell)}</th>" for cell in headers) +
+                          "</tr></thead><tbody>" + "".join(rows_html) + "</tbody></table></div>")
+            continue
+        if line == line.upper() and len(line) >= 5 and any(c.isalpha() for c in line):
+            blocks.append(f"<h2>{html.escape(line.title() if len(line) < 55 else line)}</h2>")
+            i += 1
+            continue
+        if line.startswith("- "):
+            items = []
+            while i < len(content_lines) and content_lines[i].strip().startswith("- "):
+                items.append("<li>" + linkify_text(content_lines[i].strip()[2:]) + "</li>")
+                i += 1
+            blocks.append("<ul>" + "".join(items) + "</ul>")
+            continue
+        blocks.append("<p>" + linkify_text(line) + "</p>")
+        i += 1
+
+    return (
+        "<!doctype html><html lang='fr'><head><meta charset='utf-8'>"
+        "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+        f"<title>{html.escape(title)} | Market Intelligence Daily</title>"
+        "<style>"
+        "*{box-sizing:border-box}body{margin:0;background:#edf1f7;color:#172238;font:15px/1.7 -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}"
+        ".wrap{max-width:1180px;margin:0 auto;padding:26px 16px 56px}.hero{background:linear-gradient(125deg,#101a2d,#1d3b62 72%,#28517a);"
+        "color:#fff;padding:clamp(24px,4vw,42px);border-radius:20px;box-shadow:0 16px 38px #10213b20}.eyebrow{font-size:11px;letter-spacing:.18em;"
+        "text-transform:uppercase;color:#b6d0f1;font-weight:800}.hero h1{font-size:clamp(27px,4vw,42px);line-height:1.12;margin:12px 0 18px;max-width:850px}"
+        ".meta{font-size:13px;color:#d3deed}.notice{margin:18px 0;padding:15px 18px;background:#fff8e8;border-left:4px solid #d9a441;border-radius:9px;color:#604b20}"
+        ".report{background:#fff;padding:clamp(18px,3vw,34px);border-radius:18px;box-shadow:0 6px 26px #1722380a}.report h2{font-size:17px;letter-spacing:.035em;"
+        "color:#19365b;margin:30px 0 12px;padding-bottom:9px;border-bottom:1px solid #e3e9f1}.report h2:first-child{margin-top:0}"
+        ".report p{margin:10px 0}.report ul{padding-left:22px;margin:8px 0 18px}.report li{padding:3px 0}.table-wrap{overflow-x:auto;margin:14px 0 22px;border:1px solid #e3e9f1;border-radius:10px}"
+        "table{border-collapse:collapse;width:100%;min-width:720px;font-size:13px}th{background:#f2f5fa;color:#344b68;text-align:left;font-weight:750}"
+        "th,td{padding:10px 12px;border-bottom:1px solid #e9edf3;vertical-align:top}tbody tr:nth-child(even){background:#fafbfd}tbody tr:last-child td{border-bottom:0}"
+        "a{color:#145ca8;text-decoration:none;overflow-wrap:anywhere}a:hover{text-decoration:underline}.footer{color:#68778d;font-size:12px;margin:18px 4px}"
+        "@media(max-width:600px){.wrap{padding:12px 9px 30px}.hero,.report{border-radius:13px}.report{padding:16px}.report h2{font-size:15px}}"
+        "</style></head><body><main class='wrap'>"
+        "<header class='hero'><div class='eyebrow'>Daily Market Intelligence · Briefing multi-actifs</div>"
+        f"<h1>{html.escape(title)}</h1><div class='meta'>Heure de Madagascar : {now_local:%d/%m/%Y à %H:%M:%S %Z}</div>"
+        f"<div class='meta'>Généré le {started:%d/%m/%Y à %H:%M:%S UTC}</div></header>"
+        "<div class='notice'><strong>Lecture critique :</strong> les données de marché peuvent être retardées, révisées ou indisponibles. "
+        "Les faits observés sont distingués des interprétations; les liens permettent de retrouver les sources citées.</div>"
+        "<article class='report'>" + "".join(blocks) + "</article>"
+        "<p class='footer'>Rapport expérimental d'information. Vérifier les données et les sources avant toute décision; ce document ne constitue pas un conseil en investissement.</p>"
+        "</main></body></html>"
+    )
+
 def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     started = datetime.now(timezone.utc)
     now_local = started.astimezone(TZ)
@@ -441,7 +523,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     # hiérarchiser les scénarios; ils ne sont pas affichés dans le rapport envoyé.
     lines += ["", "PANORAMA DES MARCHÉS — MOUVEMENTS OBSERVÉS",
               "Les chiffres ci-dessous décrivent les mouvements de prix, pas des indicateurs techniques ni des ordres de trading.",
-              "Actif | Classe | Dernier prix | Dernière séance disponible | 5 séances | 1 mois"]
+              "Actif | Classe | Dernier prix | Dernière séance disponible | 5 séances | 1 mois | Source"]
     # Include every successfully collected asset, not only a hand-picked subset.
     # This prevents major indices, individual equities, and broad ETFs from
     # disappearing from the reader-facing panorama when their moves are small.
@@ -453,7 +535,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     for r in selected:
         lines.append(
             f"{r.name} ({r.ticker}) | {r.asset_class} | {fmt(r.price)} | "
-            f"{fmt(r.daily_pct, '%')} | {fmt(r.five_day_pct, '%')} | {fmt(r.one_month_pct, '%')}"
+            f"{fmt(r.daily_pct, '%')} | {fmt(r.five_day_pct, '%')} | {fmt(r.one_month_pct, '%')} | https://finance.yahoo.com/quote/{r.ticker}/"
         )
     watch = [r for r in rows if
              (r.daily_pct is not None and abs(r.daily_pct) >= 1.5) or
@@ -482,31 +564,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     lines += ["", "Avertissement : contenu informatif et expérimental, pas un conseil d'investissement. Vérifier les données et les actualités avant toute décision."]
     plain = "\n".join(lines)
 
-    escaped_title = html.escape(title)
-    escaped_plain = html.escape(plain)
-    html_body = (
-        "<!doctype html><html lang='fr'><head><meta charset='utf-8'>"
-        "<meta name='viewport' content='width=device-width,initial-scale=1'>"
-        f"<title>{escaped_title} | Market Intelligence Daily</title>"
-        "<style>"
-        ":root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#eef2f7;color:#172033;"
-        "font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}"
-        ".wrap{max-width:1120px;margin:0 auto;padding:28px 18px 56px}.hero{background:linear-gradient(130deg,#101b33,#203b61);"
-        "color:#fff;padding:30px;border-radius:18px;box-shadow:0 12px 30px #14213d22}.eyebrow{font-size:12px;letter-spacing:.16em;"
-        "text-transform:uppercase;color:#a9c7ed;font-weight:700}.hero h1{font-size:clamp(25px,4vw,38px);line-height:1.15;margin:10px 0}"
-        ".meta{color:#d4dfef;font-size:13px}.notice{margin:18px 0;padding:14px 16px;background:#fff8e7;border-left:4px solid #d79b26;"
-        "border-radius:8px;color:#634a15}.report{background:#fff;margin-top:18px;padding:clamp(18px,3vw,34px);border-radius:16px;"
-        "box-shadow:0 4px 20px #14213d0c}.report pre{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace;"
-        "margin:0;color:#25334b}.footer{color:#66758b;font-size:12px;margin:18px 4px}a{color:#1559a6} </style></head><body>"
-        "<main class='wrap'><header class='hero'><div class='eyebrow'>Daily Market Intelligence · Briefing multi-actifs</div>"
-        f"<h1>{escaped_title}</h1><div class='meta'>Heure de Madagascar : {now_local:%d/%m/%Y à %H:%M:%S %Z}</div>"
-        f"<div class='meta'>Généré le {started:%d/%m/%Y à %H:%M:%S UTC}</div></header>"
-        "<div class='notice'><strong>Lecture critique :</strong> les cours peuvent être retardés ou indisponibles. Les constats, hypothèses et scénarios doivent être distingués. "
-        "Les indicateurs techniques sont utilisés en interne et ne constituent pas des signaux de trading.</div>"
-        f"<section class='report'><pre>{escaped_plain}</pre></section>"
-        "<p class='footer'>Sources et limites : les sources disponibles sont indiquées dans le rapport. Document expérimental, informatif, non assimilable à un conseil en investissement.</p>"
-        "</main></body></html>"
-    )
+    html_body = render_professional_html(plain, title, now_local, started)
     snapshot = {
         "report_type": report_type,
         "run_time_utc": started.isoformat(timespec="seconds"),
