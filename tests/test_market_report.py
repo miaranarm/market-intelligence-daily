@@ -31,7 +31,7 @@ class NewsSourceCoverageTests(unittest.TestCase):
         self.assertTrue(any("Bank of Japan" in name for name in feeds))
         # Do not depend on the BLS RSS endpoints that failed in the hosted runner.
         self.assertFalse(any("bls.gov/feed/" in url for url in feeds.values()))
-        self.assertTrue(any("BEA" in name and url == "https://apps.bea.gov/rss/rss.xml" for name, url in feeds.items()))
+        self.assertTrue(any("Bureau of Economic Analysis" in name and url == "https://apps.bea.gov/rss/rss.xml" for name, url in feeds.items()))
         self.assertTrue(any("Census Bureau" in name and url == "https://www.census.gov/economic-indicators/indicator.xml" for name, url in feeds.items()))
         self.assertTrue(any("BLS emploi" in name and "site%3Abls.gov" in url for name, url in feeds.items()))
         self.assertTrue(any("BLS CPI" in name and "site%3Abls.gov" in url for name, url in feeds.items()))
