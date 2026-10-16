@@ -165,6 +165,24 @@ def fetch_prices() -> tuple[dict[str, pd.DataFrame], list[str]]:
             errors.append(f"{ticker}: {type(exc).__name__}: {str(exc)[:160]}")
     return data, errors
 
+def _price_freshness_note(last_date: str | None, today: Any = None, stale_after_days: int = 7) -> str:
+    """Return a visible warning when the last market observation is stale or unexpectedly future-dated."""
+    if not last_date:
+        return "Date du dernier cours indisponible"
+    try:
+        from datetime import date
+        observed = date.fromisoformat(last_date)
+        reference = today or date.today()
+        age_days = (reference - observed).days
+    except (TypeError, ValueError):
+        return "Date du dernier cours illisible"
+    if age_days < -1:
+        return f"ATTENTION : date du cours dans le futur ({last_date})"
+    if age_days > stale_after_days:
+        return f"ATTENTION : dernier cours daté du {last_date} ({age_days} jours ; seuil {stale_after_days} jours)"
+    return ""
+
+
 def analyse_asset(ticker: str, frame: pd.DataFrame) -> AssetRow:
     closes = frame["Close"].dropna().astype(float)
     latest = float(closes.iloc[-1])
@@ -196,6 +214,9 @@ def analyse_asset(ticker: str, frame: pd.DataFrame) -> AssetRow:
         "RSI faible" if rsi_val is not None and rsi_val <= 30 else "Aucun extrême RSI détecté"
     )
     last_date = str(pd.Timestamp(closes.index[-1]).date()) if len(closes) else None
+    freshness_note = _price_freshness_note(last_date)
+    if freshness_note:
+        note = f"{note} ; {freshness_note}"
     meta = ASSETS[ticker]
     return AssetRow(
         ticker=ticker, name=meta["name"], asset_class=meta["class"],
