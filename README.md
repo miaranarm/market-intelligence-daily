@@ -8,10 +8,11 @@ Private repository for a multi-asset market-intelligence system with three plann
 - [x] Manual GitHub Actions workflow for testing Gmail SMTP delivery.
 - [ ] Gmail credentials added as GitHub Actions secrets.
 - [ ] Test email received successfully.
-- [ ] Market-data/news collection and report-generation engine implemented and validated.
-- [ ] Scheduled reports enabled only after the report engine is ready.
+- [x] First prototype of market-data/news collection and report generation committed.
+- [ ] Prototype run validated against live sources and email delivery.
+- [ ] Scheduled reports enabled only after the prototype is validated.
 
-**Important:** The scheduled market reports are not enabled yet. The email test workflow sends only a clearly labelled test message; it does not invent market analysis.
+**Important:** The scheduled market reports are not enabled yet. A first prototype now collects daily market prices from Yahoo Finance via yfinance and headlines from Google News RSS, calculates descriptive technical indicators, emails a report when manually launched, and saves snapshots for later audit. It does not yet provide a complete fundamental analysis or calibrated directional probabilities; those must not be inferred from the descriptive indicators.
 
 ## Configure Gmail securely
 
@@ -41,6 +42,10 @@ After adding the three secrets:
 5. Check the recipient inbox and Spam folder for **[Market Intelligence] Test de réception**.
 
 If it fails, the workflow log should identify missing secrets or an SMTP authentication/connectivity error. Do not paste credentials into logs or chat.
+
+## Current prototype scope
+
+The initial watchlist spans major equity indices, volatility, US Treasury yields, FX, commodities, crypto, ETFs and selected large-cap US stocks. The prototype computes daily/5-session/1-month changes, RSI(14), distance from 20/50-day moving averages and 30-session annualized realized volatility where data are sufficient. It also includes cross-asset context checks and recent headlines. Data are subject to provider availability, delays and quality limits; missing data and collection errors are listed in each report. The report-generation workflow is currently manual so it can be tested before scheduled emails are enabled.
 
 ## Planned report schedule
 
