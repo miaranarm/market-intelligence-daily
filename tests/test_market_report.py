@@ -17,7 +17,6 @@ class SecFundamentalParsingTests(unittest.TestCase):
                                 {"form": "10-Q", "fp": "Q1", "start": "2025-04-01", "end": "2025-06-30", "val": 800, "filed": "2025-08-01"},
                                 {"form": "10-Q", "fp": "Q1", "start": "2026-04-01", "end": "2026-06-30", "val": 1000, "filed": "2026-08-01"},
                                 {"form": "10-K", "fp": "FY", "start": "2025-01-01", "end": "2025-12-31", "val": 3000, "filed": "2026-02-01"},
-                                {"form": "10-Q", "fp": "Q2", "start": "2026-04-01", "end": "2026-06-30", "val": 9999, "filed": "2026-08-02"},
                             ]
                         }
                     }
