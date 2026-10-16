@@ -1,10 +1,11 @@
 import unittest
+from unittest.mock import patch
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
 
 
@@ -47,6 +48,31 @@ class FredMacroSeriesTests(unittest.TestCase):
         self.assertIn("fred.stlouisfed.org/graph/fredgraph.csv", FRED_CSV_URL)
         self.assertIn("DGS10", FRED_CSV_URL)
         self.assertIn("CPIAUCSL", FRED_CSV_URL)
+
+    def test_fetch_fred_keeps_successful_series_when_another_fails(self):
+        sample = {"id": "DGS10", "name": "Treasury", "date": "2026-10-15", "value": 4.1, "unit": "%"}
+        def fake_fetch(series_id):
+            if series_id == "UNRATE":
+                return None, "FRED UNRATE: Timeout"
+            return {**sample, "id": series_id}, None
+        with patch("src.market_report._fetch_one_fred_series", side_effect=fake_fetch):
+            rows, errors = fetch_fred_macro_series()
+        self.assertEqual(len(rows), len(FRED_SERIES) - 1)
+        self.assertEqual([row["id"] for row in rows], [key for key in FRED_SERIES if key != "UNRATE"])
+        self.assertEqual(errors, ["FRED UNRATE: Timeout"])
+
+    def test_single_series_fetch_uses_series_specific_endpoint_and_parses_row(self):
+        class FakeResponse:
+            text = "observation_date,DGS10\\n2026-10-15,4.1\\n"
+            def raise_for_status(self):
+                return None
+        with patch("src.market_report.requests.get", return_value=FakeResponse()) as get:
+            row, error = _fetch_one_fred_series("DGS10")
+        self.assertIsNone(error)
+        self.assertEqual(row["id"], "DGS10")
+        self.assertEqual(row["value"], 4.1)
+        self.assertIn("id=DGS10", get.call_args.args[0])
+        self.assertEqual(get.call_args.kwargs["timeout"], 12)
 
 class NewsSourceCoverageTests(unittest.TestCase):
     def test_multilateral_sources_have_targeted_discovery_queries(self):
