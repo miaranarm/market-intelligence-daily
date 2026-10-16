@@ -619,6 +619,10 @@ def evaluate_scenario_forecasts(snapshots: list[dict[str, Any]]) -> dict[str, An
             pending += 1
             continue
         target_date = future_dates[0]
+        # Wait until the market-date is behind Madagascar's current date; the same-day daily bar may still be incomplete.
+        if target_date >= datetime.now(TZ).date().isoformat():
+            pending += 1
+            continue
         base_price = float(base_asset["price"])
         target_price = series[target_date]["price"]
         if base_price <= 0:
@@ -764,9 +768,36 @@ def append_funnel_report(
     movers = sorted([r for r in rows if r.daily_pct is not None],
                     key=lambda r: max(abs(r.daily_pct or 0), abs(r.five_day_pct or 0), abs(r.one_month_pct or 0)), reverse=True)
     lines.append("Instruments dont le mouvement mérite un examen prioritaire :")
-    for r in movers[:15]:
-        lines.append(f"- {r.name} ({r.ticker}) — classe : {r.asset_class}; dernier prix {fmt(r.price)}; dernière séance {fmt(r.daily_pct, '%')}; 5 séances {fmt(r.five_day_pct, '%')}; 1 mois {fmt(r.one_month_pct, '%')}; RSI/moyennes mobiles non affichés. Source cours : https://finance.yahoo.com/quote/{r.ticker}/")
-    if not movers:
+    for r in movers[:20]:
+        lines.append(f"- {r.name} ({r.ticker}) — classe : {r.asset_class}; dernier prix {fmt(r.price)}; dernière séance {fmt(r.daily_pct, '%')}; 5 séances {fmt(r.five_day_pct, '%')}; 1 mois {fmt(r.one_month_pct, '%')}. Source cours : https://finance.yahoo.com/quote/{r.ticker}/")
+        if r.daily_pct is not None and r.five_day_pct is not None:
+            if r.daily_pct * r.five_day_pct > 0:
+                lines.append("  - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.")
+            elif r.daily_pct * r.five_day_pct < 0:
+                lines.append("  - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.")
+            else:
+                lines.append("  - Lecture multi-horizon : les horizons ne donnent pas de signal directionnel concordant; la conviction doit rester conditionnelle.")
+        if r.asset_class in ("US equity",):
+            lines.append("  - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.")
+        elif "index" in r.asset_class.lower():
+            lines.append("  - Grille d'indice : vérifier la largeur du marché, la concentration des contributions, la dispersion sectorielle et la cohérence avec les rendements obligataires et la volatilité; un indice pondéré peut masquer une participation étroite.")
+        elif "future" in r.asset_class.lower():
+            lines.append("  - Grille futures : comparer le contrat au comptant, l'échéance, le roulement et l'heure de cotation. Les futures peuvent intégrer des nouvelles hors séance, mais une variation quotidienne ne constitue pas à elle seule une anticipation fiable de l'ouverture.")
+        elif "bond" in r.asset_class.lower() or r.asset_class == "Rates":
+            lines.append("  - Grille obligataire : distinguer rendement et prix. Les rendements et les prix des obligations à taux fixe évoluent généralement en sens inverse; surveiller inflation, trajectoire des banques centrales, duration, qualité de crédit et calendrier d'émissions.")
+        elif r.asset_class in ("FX",):
+            lines.append("  - Grille devises : rechercher le différentiel de taux et de croissance entre les deux zones, les surprises de données et le régime de risque. Un mouvement du dollar affecte différemment les importateurs, exportateurs et matières premières.")
+        elif r.asset_class in ("Commodity",):
+            lines.append("  - Grille matières premières : séparer l'offre, la demande, les stocks, la saisonnalité, la structure des échéances et la prime géopolitique. Le mouvement du contrat ne révèle pas seul lequel de ces facteurs domine.")
+        elif r.asset_class == "Crypto":
+            lines.append("  - Grille crypto : considérer la négociation continue, la liquidité, les flux, les risques de plateforme et de réglementation; les corrélations avec les actions peuvent se renforcer ou se rompre rapidement.")
+        elif "fund" in r.asset_class.lower() or r.asset_class in ("ETF", "Bond ETF", "Credit ETF"):
+            lines.append("  - Grille ETF/fonds : analyser l'exposition réelle, les principales positions, la concentration, les frais et la date de valeur liquidative. Les fonds communs publient souvent leur valeur avec retard; les variations ne sont pas nécessairement intrajournalières.")
+        matching = [n for n in news if r.ticker.casefold() in n["title"].casefold() or r.name.casefold() in n["title"].casefold()]
+        if matching:
+            for item in matching[:2]:
+                lines.append(f"  - Actualité associée à vérifier : {item['title']} — {item['url']}")
+        lines.append("  - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.")    if not movers:
         lines.append("- Aucun instrument n'a fourni de variation exploitable.")
     lines += ["", "PANORAMA COMPLET DES INSTRUMENTS COLLECTÉS",
               "Les cours sont ceux de la dernière observation quotidienne disponible; ils ne sont pas nécessairement des cours intrajournaliers. Pour les fonds communs, la valeur liquidative peut être publiée avec retard.",
