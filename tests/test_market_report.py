@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, _quarterly_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import AssetRow, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
 
 
