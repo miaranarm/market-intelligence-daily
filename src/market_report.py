@@ -638,7 +638,7 @@ def append_macro_series(lines: list[str], series: list[dict[str, Any]]) -> None:
             value = f"{item['value']:.3f}{extra}"
         else:
             value = f"{item['value']:.3f} {item['unit']}"
-        lines.append(f"- {item['name']} ({item['id'])} : {value}; observation du {item['date']}; source : {item['source']}.")
+        lines.append(f"- {item['name']} ({item['id']}) : {value}; observation du {item['date']}; source : {item['source']}.")
 
 
 def infer_macro_impact(headline: str) -> tuple[str, str, str]:
