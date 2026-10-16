@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, evaluate_forecasts, infer_macro_impact, market_conviction, render_professional_html
+from src.market_report import AssetRow, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
 
 class MarketConvictionTests(unittest.TestCase):
@@ -47,6 +47,30 @@ class ForecastEvaluationTests(unittest.TestCase):
         self.assertEqual(result["by_horizon"]["1"]["accuracy_pct"], 100.0)
         self.assertEqual(result["by_horizon"]["5"]["accuracy_pct"], 100.0)
         self.assertEqual(result["pending"], 1)
+
+    def test_saved_morning_probabilities_are_scored_against_next_distinct_session(self):
+        snapshots = [
+            {
+                "report_type": "morning",
+                "scenario_forecast": {"probabilities": {"haussier": 75, "central": 15, "baissier": 10}},
+                "assets": [{"ticker": "^GSPC", "data_timestamp": "2026-10-01", "price": 100.0}],
+            },
+            {
+                "report_type": "update",
+                "assets": [{"ticker": "^GSPC", "data_timestamp": "2026-10-01", "price": 100.0}],
+            },
+            {
+                "report_type": "audit",
+                "assets": [{"ticker": "^GSPC", "data_timestamp": "2026-10-02", "price": 102.0}],
+            },
+        ]
+        result = evaluate_scenario_forecasts(snapshots)
+        self.assertEqual(len(result["matured"]), 1)
+        self.assertEqual(result["matured"][0]["actual"], "haussier")
+        self.assertTrue(result["matured"][0]["correct"])
+        self.assertEqual(result["pending"], 0)
+        self.assertIsNotNone(result["mean_brier_score"])
+
 
     def test_macro_classifier_is_conditional_and_names_relevant_assets(self):
         theme, categories, impact = infer_macro_impact("US inflation data surprises markets")
