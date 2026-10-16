@@ -1006,7 +1006,8 @@ def append_funnel_report(
                     period_age_note = f"; ATTENTION : période publiée il y a {period_age_days} jours (>120 jours)"
             except (TypeError, ValueError):
                 period_age_note = "; ancienneté de la période indisponible"
-            period_kind = "quatrième trimestre calculé à partir du total annuel moins Q1-Q3" if any(item.get(key) for key in ("revenue_derived", "operating_income_derived", "operating_cash_flow_derived", "capex_derived")) else "trimestre déclaré dans un 10-Q"\n            lines.append(f"- {name} ({ticker}), {period_kind}, période close le {period}{period_age_note} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}, période {item.get("eps_period") or "n.d."}); résultat opérationnel {operating_income}; marge opérationnelle {operating_margin}; flux opérationnel {operating_cash_flow}; investissements corporels {capex}; FCF approximatif {free_cash_flow}. Source SEC : {source}")
+            period_kind = "quatrième trimestre calculé à partir du total annuel moins Q1-Q3" if any(item.get(key) for key in ("revenue_derived", "operating_income_derived", "operating_cash_flow_derived", "capex_derived")) else "trimestre déclaré dans un 10-Q"
+            lines.append(f"- {name} ({ticker}), {period_kind}, période close le {period}{period_age_note} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}, période {item.get("eps_period") or "n.d."}); résultat opérationnel {operating_income}; marge opérationnelle {operating_margin}; flux opérationnel {operating_cash_flow}; investissements corporels {capex}; FCF approximatif {free_cash_flow}. Source SEC : {source}")
     else:
         lines.append("- Aucun chiffre trimestriel SEC exploitable lors de cette collecte; aucune valeur n'est estimée ni remplacée par un chiffre de presse.")
     lines += ["", "NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE",
