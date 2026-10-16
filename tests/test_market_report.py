@@ -197,7 +197,18 @@ class ForecastEvaluationTests(unittest.TestCase):
         ]
         result = evaluate_scenario_forecasts(snapshots)
         self.assertEqual(result["matured"], [])
+        self.assertEqual(result["forecast_count"], 1)
         self.assertEqual(result["pending"], 1)
+
+    def test_audit_distinguishes_absent_scenario_history_from_pending_forecasts(self):
+        result = evaluate_scenario_forecasts([
+            {"report_type": "update",
+             "scenario_forecast": {"probabilities": {"haussier": 65, "central": 20, "baissier": 15}},
+             "assets": [{"ticker": "^GSPC", "data_timestamp": "2026-10-15", "price": 100.0}]}
+        ])
+        self.assertEqual(result["forecast_count"], 0)
+        self.assertEqual(result["matured"], [])
+        self.assertEqual(result["pending"], 0)
 
 
     def test_macro_classifier_is_conditional_and_names_relevant_assets(self):
