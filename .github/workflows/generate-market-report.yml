@@ -104,6 +104,8 @@ jobs:
             echo "No report state changes to commit."
           else
             git commit -m "Record market report snapshot"
+            # Rebase onto the latest main in case documentation or settings changed during generation.
+            git pull --rebase origin main
             git push
           fi
 
