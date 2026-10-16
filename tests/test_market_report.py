@@ -33,7 +33,7 @@ class FredMacroSeriesTests(unittest.TestCase):
         )
         rows = {x["id"]: x for x in _parse_fred_csv(csv_text)}
         self.assertEqual(rows["CPIAUCSL"]["date"], "2026-09-01")
-        self.assertAlmostEqual(rows["CPIAUCSL"]["yoy_pct"], 3.125)
+        self.assertEqual(rows["CPIAUCSL"]["yoy_pct"], 3.12)
         self.assertEqual(rows["UNRATE"]["value"], 4.3)
         self.assertEqual(rows["DGS10"]["date"], "2026-10-01")
         self.assertEqual(set(rows), set(FRED_SERIES))
