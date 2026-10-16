@@ -302,7 +302,7 @@ def _quarterly_fact_points(companyfacts: dict[str, Any], tag_names: tuple[str, .
             continue
         if 330 <= days <= 400:
             prior.append((abs(days - 365), item.get("filed", ""), item))
-    prior_item = sorted(prior, key=lambda x: (x[0], x[1]))[-1][2] if prior else None
+    prior_item = sorted(prior, key=lambda x: (x[0], x[1]))[0][2] if prior else None
     return latest, prior_item, latest_tag
 
 def fetch_company_fundamentals() -> tuple[list[dict[str, Any]], list[str]]:
