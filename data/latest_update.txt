@@ -1,6 +1,6 @@
 Mise à jour — changements depuis le dernier rapport
-Heure Madagascar : 2026-10-16 18:14:20 EAT
-Généré UTC : 2026-10-16 15:14:20 UTC
+Heure Madagascar : 2026-10-16 18:16:37 EAT
+Généré UTC : 2026-10-16 15:16:37 UTC
 
 RÉSUMÉ ET LIMITES
 Données de prix reçues pour 57/57 actifs suivis.
@@ -12,8 +12,8 @@ Diagnostic de marché : Biais baissier. Horizon indicatif : prochaines 1 à 5 s�
 Probabilités directionnelles expérimentales : hausse 15 % · scénario central / marché sans direction nette 20 % · baisse 65 %.
 Ces probabilités sont issues d'une règle explicite de momentum et de volatilité, pas d'un modèle statistiquement calibré ni d'une probabilité implicite de marché. Elles seront confrontées aux résultats dans les rapports du soir; si les données croisées sont insuffisantes, la conviction doit être considérée comme fragile.
 Les variables réellement observées dans cette exécution sont les prix et variations disponibles. Croissance, inflation, liquidité et géopolitique ne seront qualifiées de moteurs confirmés que lorsqu'une publication ou une source vérifiable les étaye.
-- Élément quantitatif : S&P 500 en baisse sur cinq séances (-1.12 %).
-- Élément quantitatif : Nasdaq en baisse sur cinq séances (-3.43 %).
+- Élément quantitatif : S&P 500 en baisse sur cinq séances (-1.16 %).
+- Élément quantitatif : Nasdaq en baisse sur cinq séances (-3.46 %).
 
 NIVEAU 2 — RÉGIONS ET ÉCONOMIES MAJEURES
 Lecture régionale : les signaux ci-dessous sont limités aux publications et instruments effectivement récupérés. L'absence de titre ne signifie pas l'absence de risque.
@@ -32,53 +32,53 @@ Lecture régionale : les signaux ci-dessous sont limités aux publications et in
 
 NIVEAU 3 — GRANDES FORCES ET INTERACTIONS ENTRE LES MARCHÉS
 - Les grands indices US ont reculé sur cinq séances : momentum récent négatif, sans que cela suffise à établir une prévision directionnelle. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
-- Bitcoin : variation de la dernière séance disponible -0.61%; la crypto cote en continu, contrairement à la plupart des marchés traditionnels. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
-- Actions US vs taux longs US : S&P 500 -0.26 %; US 10-year Treasury yield +0.10 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
-- Technologie vs marché large : Nasdaq Composite -1.07 %; S&P 500 -0.26 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
-- Or vs dollar : Gold futures +0.82 %; US Dollar Index -0.32 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
-- Pétrole vs dollar : WTI crude oil futures -2.17 %; US Dollar Index -0.32 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
-- Bitcoin vs technologie : Bitcoin -0.61 %; Nasdaq Composite -1.07 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
+- Bitcoin : variation de la dernière séance disponible -0.64%; la crypto cote en continu, contrairement à la plupart des marchés traditionnels. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
+- Actions US vs taux longs US : S&P 500 -0.30 %; US 10-year Treasury yield +0.10 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
+- Technologie vs marché large : Nasdaq Composite -1.10 %; S&P 500 -0.30 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
+- Or vs dollar : Gold futures +0.86 %; US Dollar Index -0.35 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
+- Pétrole vs dollar : WTI crude oil futures -2.26 %; US Dollar Index -0.35 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
+- Bitcoin vs technologie : Bitcoin -0.64 %; Nasdaq Composite -1.10 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
 
 NIVEAU 4 — CLASSES D'ACTIFS : OÙ SE CONCENTRE LE RISQUE ?
 La classification ci-dessous repose sur les actifs reçus. Les fonds communs sont inclus lorsque leur cotation de valeur liquidative est disponible; une donnée absente est signalée, jamais inventée.
 - Balanced mutual fund : 2 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.35%.
   - Leader : Vanguard Wellington Fund (+0.40%); lanterne rouge : Fidelity Balanced Fund (+0.31%).
   - Sur cinq séances : 1/2 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- Bond ETF : 4 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.22%.
-  - Leader : US Treasury 20+ year ETF (+0.37%); lanterne rouge : Investment-grade corporate bond ETF (+0.17%).
+- Bond ETF : 4 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.17%.
+  - Leader : US Treasury 20+ year ETF (+0.30%); lanterne rouge : Investment-grade corporate bond ETF (+0.13%).
   - Sur cinq séances : 4/4 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- Bond futures : 2 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.07%.
-  - Leader : US Treasury bond futures (+0.15%); lanterne rouge : US Treasury 10-year note futures (+0.00%).
+- Bond futures : 2 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.17%.
+  - Leader : US Treasury bond futures (+0.27%); lanterne rouge : US Treasury 10-year note futures (+0.07%).
   - Sur cinq séances : 2/2 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 - Bond mutual fund : 1 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.55%.
   - Leader : Fidelity Total Bond Fund (+0.55%); lanterne rouge : Fidelity Total Bond Fund (+0.55%).
   - Sur cinq séances : 1/1 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- Commodity : 5 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.28%.
-  - Leader : Silver futures (+1.72%); lanterne rouge : Natural gas futures (-3.46%).
+- Commodity : 5 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.36%.
+  - Leader : Silver futures (+1.74%); lanterne rouge : Natural gas futures (-3.83%).
   - Sur cinq séances : 1/5 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- Credit ETF : 1 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.01%.
-  - Leader : High-yield corporate bond ETF (-0.01%); lanterne rouge : High-yield corporate bond ETF (-0.01%).
+- Credit ETF : 1 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.02%.
+  - Leader : High-yield corporate bond ETF (-0.02%); lanterne rouge : High-yield corporate bond ETF (-0.02%).
   - Sur cinq séances : 0/1 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- Crypto : 2 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.20%.
-  - Leader : Ethereum (+0.22%); lanterne rouge : Bitcoin (-0.61%).
+- Crypto : 2 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.26%.
+  - Leader : Ethereum (+0.12%); lanterne rouge : Bitcoin (-0.64%).
   - Sur cinq séances : 0/2 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- ETF : 6 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.38%.
-  - Leader : Developed markets ex-US equity ETF (+0.76%); lanterne rouge : Invesco Nasdaq 100 ETF (-1.37%).
+- ETF : 6 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.39%.
+  - Leader : Developed markets ex-US equity ETF (+0.72%); lanterne rouge : Invesco Nasdaq 100 ETF (-1.35%).
   - Sur cinq séances : 1/6 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- Equity index futures : 4 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.30%.
-  - Leader : Dow Jones E-mini futures (+0.42%); lanterne rouge : Nasdaq 100 E-mini futures (-1.11%).
+- Equity index futures : 4 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.42%.
+  - Leader : Dow Jones E-mini futures (+0.36%); lanterne rouge : Nasdaq 100 E-mini futures (-1.33%).
   - Sur cinq séances : 1/4 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- European equity index : 1 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.76%.
-  - Leader : Euro Stoxx 50 (+0.76%); lanterne rouge : Euro Stoxx 50 (+0.76%).
+- European equity index : 1 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.75%.
+  - Leader : Euro Stoxx 50 (+0.75%); lanterne rouge : Euro Stoxx 50 (+0.75%).
   - Sur cinq séances : 1/1 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- FX : 3 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.05%.
-  - Leader : EUR/USD (+0.55%); lanterne rouge : US Dollar Index (-0.32%).
+- FX : 3 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.04%.
+  - Leader : EUR/USD (+0.53%); lanterne rouge : US Dollar Index (-0.35%).
   - Sur cinq séances : 1/3 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 - Hong Kong equity index : 1 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.52%.
   - Leader : Hang Seng (+0.52%); lanterne rouge : Hang Seng (+0.52%).
   - Sur cinq séances : 0/1 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- Implied volatility : 1 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -3.65%.
-  - Leader : VIX volatility index (-3.65%); lanterne rouge : VIX volatility index (-3.65%).
+- Implied volatility : 1 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -3.40%.
+  - Leader : VIX volatility index (-3.40%); lanterne rouge : VIX volatility index (-3.40%).
   - Sur cinq séances : 1/1 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 - Japanese equity index : 1 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -4.90%.
   - Leader : Nikkei 225 (-4.90%); lanterne rouge : Nikkei 225 (-4.90%).
@@ -92,11 +92,11 @@ La classification ci-dessous repose sur les actifs reçus. Les fonds communs son
 - UK equity index : 1 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.35%.
   - Leader : FTSE 100 (+0.35%); lanterne rouge : FTSE 100 (+0.35%).
   - Sur cinq séances : 1/1 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- US equity : 15 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.09%.
-  - Leader : JPMorgan Chase (+2.58%); lanterne rouge : Broadcom (-2.31%).
+- US equity : 15 instrument(s) reçu(s); variation quotidienne moyenne non pondérée +0.08%.
+  - Leader : JPMorgan Chase (+2.43%); lanterne rouge : Broadcom (-2.30%).
   - Sur cinq séances : 7/15 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- US equity index : 3 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.30%.
-  - Leader : Dow Jones (+0.43%); lanterne rouge : Nasdaq Composite (-1.07%).
+- US equity index : 3 instrument(s) reçu(s); variation quotidienne moyenne non pondérée -0.34%.
+  - Leader : Dow Jones (+0.37%); lanterne rouge : Nasdaq Composite (-1.10%).
   - Sur cinq séances : 1/3 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 
 NIVEAU 5 — SECTEURS, SEGMENTS, THÉMATIQUES ET MICROÉCONOMIE
@@ -107,29 +107,34 @@ Ce niveau relie les résultats et décisions d'entreprise à leurs secteurs. Les
 - Publication/événement d'entreprise ou sectoriel : TSM Earnings Tomorrow: Can Strong AI Demand Boost Q3 Results? - TradingView — TradingView (Wed, 14 Oct 2026 18:00:00 GMT) — Source : https://news.google.com/rss/articles/CBMitAFBVV95cUxOVHIxaDRpNm5Hb1FzSkh2eXdTZUx2ZzhOQTdHMFd1bDhTY3F6eUsxckFrRWZFNk50WkFXYTJIRDJwUlREdkVnSjFnTGc5eEozM2Q4NWZRXzZfOFVjWXkza3VTdXBGX1VFRDFGY2djYk1GWWRvdjJ6bmZPeTBSNmhTX21FaVFSSmN4OHZWSkhCY2RxTGFQaXRQWE92MEl1RGxnUmtXbGwyM2lkOE1FVG16UEpPY0k?oc=5
   - Lecture à vérifier : Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.
   - Transmission potentielle : actions concernées, secteurs, indices/futures, ETF et fonds.
-- Publication/événement d'entreprise ou sectoriel : WaFd Bank (NASDAQ:WAFD) Reports Q3 CY2026 Earnings - TradingView — TradingView (Fri, 16 Oct 2026 12:56:26 GMT) — Source : https://news.google.com/rss/articles/CBMirgFBVV95cUxQSWkyLUowdzdWZ21HcTA5bDRJZ1ZtWXFpcUQ2TkZMWW5TMjE0MWVNaTE4aWdiclBwZnpwc18yN0s5eHFaQ2ZJOVJiV2owNkNsWmdkUEJDcjdxb1hmZ0NMRnJ1TnRSblBuVklsbUNHZlFwcWZERWF3aW1tVUZrOUoyaXViWkNmc1g3UWREczFpZTc4OTdabHkzUE1tTVBqVFFoT2h6UDZlaXlBOWJFYlE?oc=5
-  - Lecture à vérifier : Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.
-  - Transmission potentielle : actions concernées, secteurs, indices/futures, ETF et fonds.
 - Publication/événement d'entreprise ou sectoriel : Plug Power Q3 2026 Progress: Revenue Growth & Cash Improvement - Fuel Cells Works — Fuel Cells Works (Thu, 15 Oct 2026 12:41:00 GMT) — Source : https://news.google.com/rss/articles/CBMigAJBVV95cUxNc1A4Y01ZTzJINVQ2cVJobFY5bzh3VG5IT0J3TU81NTV6dHI0NHJOV0ZpSUtTcmhlSmoxZ2ZvTHVJeE82dHBPTFZqX2lNT3lDVnUteWVwWkdVSDk2S1d2TWVZQWJwaXhnX0VRbzdJYTgxcFRRY0Eyc1o5SzU0blNEd2ZDcFlXS0RqT0g3a0FIbnY0eUp6REV4eUp2WTRfZDBrcGJEVGlTRGVYa2pTTHg2OVc4YTlhUXJMcmV1YWlmdEZMTk5vb0JjdmU1UzJ1WnpQOWJQMFhNR2FCZDZyWFgxRHBGdVE2ZktSUFRxZHNiQ2pQdWxDU2lzMFM1Y0ZQbjZQ?oc=5
   - Lecture à vérifier : Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.
   - Transmission potentielle : actions concernées, secteurs, indices/futures, ETF et fonds.
-- Publication/événement d'entreprise ou sectoriel : A Look Back at Construction and Maintenance Services Stocks’ Q2 Earnings: Matrix Service (NASDAQ:MTRX) Vs The Rest Of The Pack - TradingView — TradingView (Fri, 16 Oct 2026 03:35:00 GMT) — Source : https://news.google.com/rss/articles/CBMikAJBVV95cUxNNTZiUS1SV3c2eVhOQ0x3WGtESU5yVjNLZkR5ZkJRRzl5N0JaRGdxMjMtTE1GaVFQcnk3YmZObHFrbHFVOTRQRGVVNEN5SmZHdVZNOTZVWXVBM3ZPT3M0TFllRVV3WjM0dUtjT2JLQmFyOHFkOS1vcUpPa0dsR0ljWWR0ZnlTVjQ1UmNwQlZPSmQyRkc1dW1tT2t2Zk01RFNYaWk1Q0xWWmNjdmRzRnNTRnNoWDREQzRnODlqelU2ODY2LTJDZ2RQZ1ZqczBLX3RPVEYxYlpSMjJSZE52UEE2dkN0U1hGYjJ5NkFpeE9DWTNWT1drQ3pWV0lVTDlRUXZVM1ZVbmJ1bldEZHgzcldnRQ?oc=5
+- Publication/événement d'entreprise ou sectoriel : Reflecting On Vertical Software Stocks’ Q2 Earnings: Doximity (NYSE:DOCS) - TradingView — TradingView (Thu, 08 Oct 2026 07:00:00 GMT) — Source : https://news.google.com/rss/articles/CBMiygFBVV95cUxNaXREcEw2YmNWUTZRVjN0WkhkU1k1emlRX3dIR3lWb09YSlJ0SzZEUGZVS0tEMmg4S1d2LXE3RGtrYVdEVmVyUGhOdk5qNGx6Zl9wcFhYVUxVSk10OUd5MV9NRDJnQUU1RjVoV0N2SWQ4V2ZhbzR1T2RuR3J5UUVwWkJ4eDdOcEF3bk00SE5WZkk4RGNFRnh4amFUS2YtMHVSekppUzJiZXIxY0Q1Q0phcTFidWJlMmdZLUtJdkFtREFSa3htV1BGSGZB?oc=5
   - Lecture à vérifier : Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.
   - Transmission potentielle : actions concernées, secteurs, indices/futures, ETF et fonds.
 - Publication/événement d'entreprise ou sectoriel : European majors set for Q3 earnings growth despite darkening view on consumer cyclicals - Yahoo Finance UK — Yahoo Finance UK (Fri, 16 Oct 2026 10:08:15 GMT) — Source : https://news.google.com/rss/articles/CBMihwFBVV95cUxPczhJQ09kVVl1aXBBVGpDMk5zcVJwbk9xUnctZVpZS2pZaWxHU2N6NS13SURVLWZFX0Zab1Y4QWgxNXNiX0tKb1FrYjJiZUFTQzdOLVFRZkxRSE9xWlRoN0plZXFVbW5SSFMzak5mbWlXYmlfcHJGQ0dzT1dwaE5vdnNBLXZaLTA?oc=5
   - Lecture à vérifier : Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.
   - Transmission potentielle : actions concernées, secteurs, indices/futures, ETF et fonds.
+- Publication/événement d'entreprise ou sectoriel : WaFd Bank (NASDAQ:WAFD) Reports Q3 CY2026 Earnings - TradingView — TradingView (Fri, 16 Oct 2026 12:56:26 GMT) — Source : https://news.google.com/rss/articles/CBMirgFBVV95cUxQSWkyLUowdzdWZ21HcTA5bDRJZ1ZtWXFpcUQ2TkZMWW5TMjE0MWVNaTE4aWdiclBwZnpwc18yN0s5eHFaQ2ZJOVJiV2owNkNsWmdkUEJDcjdxb1hmZ0NMRnJ1TnRSblBuVklsbUNHZlFwcWZERWF3aW1tVUZrOUoyaXViWkNmc1g3UWREczFpZTc4OTdabHkzUE1tTVBqVFFoT2h6UDZlaXlBOWJFYlE?oc=5
+  - Lecture à vérifier : Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.
+  - Transmission potentielle : actions concernées, secteurs, indices/futures, ETF et fonds.
 - Publication/événement d'entreprise ou sectoriel : Prestige Consumer Healthcare (PBH) Could Be 30% Undervalued After Raising Revenue Guidance - Simply Wall Street — Simply Wall Street (Thu, 08 Oct 2026 15:49:32 GMT) — Source : https://news.google.com/rss/articles/CBMi8AFBVV95cUxObmZTTkV6eG1laUZCRnlXRi16Q3ZSek9BbUdUOFhEZFJKdHZCcEM0ZUEwNXZOQUpFVXMzNEhuU1RkSTN2M3FtbUo3eHJMWk1WZ3FlNEkxWEIwMV9EV3FBaFd3Q1VDS2c0LXRoX1lSc0d3cXdFWG5VN0pFcHBYZzM4MHUyd0lBYUFoZ1RVRl9xWE5Tc0hjZkZST2M0QlFxd0Y1TzVfaXU2Q1gwSjUwejNGeUd5SW14TXh6UjZua0hUdmFtakQ2S25DV2tTYmhsOGkyTjZkU2ptQndRcDlsbDFUcVU2ZkNQaDVlYVZnZjJCSC3SAfYBQVVfeXFMTTdMZUJsT2tHNldvUWg2MVpQV01uNmNYckhkM2J6VFdhaW92RDdKSXpYczFiTjByM1VtcjVEOFFlbUZHUHhVQ2NjX0xTVExZeEdtaUdOcVBNaE9LMzhxSHVseElWMm5VdTRkcXRYZmlqa2p5ZVBzRk9EeFFqOUpRVE44QmptMTR2anhGTVBMNkhySkZlZ0pRbDRjZnV2aHU1LTB5UzhseUNsVTVXeU5zT1VjZjg0em5fb3VLTEpZTzlQMEtOTDVfRC14Ylo5ZTl0ZDVLNmRmUmNoeGtGMnF1a3FSeGxjXzBZTFFueWNfYTNIVUhZMFpR?oc=5
   - Lecture à vérifier : Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.
   - Transmission potentielle : actions concernées, secteurs, indices/futures, ETF et fonds.
-- Publication/événement d'entreprise ou sectoriel : Consumer Discretionary Stocks Q3 Earnings: Levi's (NYSE:LEVI) Firing on All Cylinders - TradingView — TradingView (Fri, 16 Oct 2026 03:32:00 GMT) — Source : https://news.google.com/rss/articles/CBMi2wFBVV95cUxORVlOR0VvRjZNV2QzNFo3SXA5WFg0X2s3SE9ySmpIellmWkRsRWs1c0NSaGJoLS1hX1NRMFFJaXZhQjNidlRxazVXeGltZDVUZ2pHZ3VXVlhpSGRMZVJFMmNnb1lKSUFmdTllcWlxTk53eGNIQTM5WWJ6NHZpZjFmaTY1UzFDZG1EOElfRXktczFuQXhteUdWcEVfTE1BdkFhbkVPdFl0d0JRX0RtQnV6cHRtQi1KclhZd2VXVU1vU2lqWUVnY2FEM3JUZllTQXZYT0U3Y1c2N3l2Y1U?oc=5
+- Publication/événement d'entreprise ou sectoriel : Northrim BanCorp Reports Third-Quarter 2026 Net Income of $14.4 Million and Advances PBCO Merger Progress - Quiver Quantitative — Quiver Quantitative (Thu, 15 Oct 2026 22:40:00 GMT) — Source : https://news.google.com/rss/articles/CBMi1wFBVV95cUxOSkFoT3NfRkFYaVBZREliZ05OTEhOM1lFVEJTUFBtMjNnTk00ODc4NTdibEY4TXgwUUxMOUJlTUhaNnZ5aHZLeDd5Z1dtdkpmWENPUTJUNVBpMzk1Z3MySjM3T0l2TEROa1dzd0hPTE95T0lBRS1pZTN2RTV4SFlVQWxtRWVsMzZzdWx4V0ZPYnBteDYtdmlqZ2l5R0g0UElNT3JNZEY5bE84ODJiNmRTcWVQSHVIemROcmIyMGw2QXByRlFpR3pySVU2OVd5bWpqNkR3VGFEYw?oc=5
   - Lecture à vérifier : Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.
   - Transmission potentielle : actions concernées, secteurs, indices/futures, ETF et fonds.
+- Publication/événement d'entreprise ou sectoriel : T1 Energy (NYSE:TE) Stock Forecast & Analyst Predictions - Simply Wall Street — Simply Wall Street (Mon, 12 Oct 2026 07:00:00 GMT) — Source : https://news.google.com/rss/articles/CBMie0FVX3lxTE5aNTdFT2szc25qUVVaaDRILTB0cHBWei0yZXllRERTTFB6NThZbWZ1SDVxZlNuUmdHX0pjSldUemRvMWFCN3N2OU4wOGlLTm9faTYxTzhmSkl0SmVxdEJfYURxSjlpNGtSYzhJRnlmR1BfRkVVTDlyUHhFaw?oc=5
+  - Lecture à vérifier : Le titre seul ne permet pas de déduire un impact fiable. Ouvrir la source originale, vérifier les faits, la date, les chiffres et le consensus éventuel, puis observer la réaction des actifs concernés. Aucune direction n'est attribuée automatiquement.
+  - Transmission potentielle : catégories à confirmer selon le sujet.
 - Technologie et semi-conducteurs :
   - Q2 Earnings Roundup: PAR Technology (NYSE:PAR) And The Rest Of The Specialized Technology Segment - TradingView — https://news.google.com/rss/articles/CBMi6wFBVV95cUxQZE5HN0RCSzNuc2p1OUIzSER3YTlnMTFwNVJsNjFPc2t5MVJMWHpCMFZVNnBrRnNBWFpRRDctT2ZVak5MZUJzMmJUSERtZG55bXZQZWx5R1pSN0pwRTVWQ0VNRlRDdXlJb2NseTNSNldSdTI5ZV9JM2p3RHlPMUVMeER6aU5EaW9NME5TWmZaM2hYWXV2Q0dVRVhPRkw4Q2RoZWNVRWM2Qld4eHRCeDFjd2gtWkl1Z05VNk5NRnhGN0RIWG5ob0dQYkJidnIwbTZaQUlnVUhGa1dfZE16cmlqeGx2aGVESFluVjM0?oc=5
   - TSM Earnings Tomorrow: Can Strong AI Demand Boost Q3 Results? - TradingView — https://news.google.com/rss/articles/CBMitAFBVV95cUxOVHIxaDRpNm5Hb1FzSkh2eXdTZUx2ZzhOQTdHMFd1bDhTY3F6eUsxckFrRWZFNk50WkFXYTJIRDJwUlREdkVnSjFnTGc5eEozM2Q4NWZRXzZfOFVjWXkza3VTdXBGX1VFRDFGY2djYk1GWWRvdjJ6bmZPeTBSNmhTX21FaVFSSmN4OHZWSkhCY2RxTGFQaXRQWE92MEl1RGxnUmtXbGwyM2lkOE1FVG16UEpPY0k?oc=5
 - Banques et crédit :
   - WaFd Bank (NASDAQ:WAFD) Reports Q3 CY2026 Earnings - TradingView — https://news.google.com/rss/articles/CBMirgFBVV95cUxQSWkyLUowdzdWZ21HcTA5bDRJZ1ZtWXFpcUQ2TkZMWW5TMjE0MWVNaTE4aWdiclBwZnpwc18yN0s5eHFaQ2ZJOVJiV2owNkNsWmdkUEJDcjdxb1hmZ0NMRnJ1TnRSblBuVklsbUNHZlFwcWZERWF3aW1tVUZrOUoyaXViWkNmc1g3UWREczFpZTc4OTdabHkzUE1tTVBqVFFoT2h6UDZlaXlBOWJFYlE?oc=5
+- Énergie et matières premières :
+  - T1 Energy (NYSE:TE) Stock Forecast & Analyst Predictions - Simply Wall Street — https://news.google.com/rss/articles/CBMie0FVX3lxTE5aNTdFT2szc25qUVVaaDRILTB0cHBWei0yZXllRERTTFB6NThZbWZ1SDVxZlNuUmdHX0pjSldUemRvMWFCN3N2OU4wOGlLTm9faTYxTzhmSkl0SmVxdEJfYURxSjlpNGtSYzhJRnlmR1BfRkVVTDlyUHhFaw?oc=5
 - Consommation et distribution :
   - European majors set for Q3 earnings growth despite darkening view on consumer cyclicals - Yahoo Finance UK — https://news.google.com/rss/articles/CBMihwFBVV95cUxPczhJQ09kVVl1aXBBVGpDMk5zcVJwbk9xUnctZVpZS2pZaWxHU2N6NS13SURVLWZFX0Zab1Y4QWgxNXNiX0tKb1FrYjJiZUFTQzdOLVFRZkxRSE9xWlRoN0plZXFVbW5SSFMzak5mbWlXYmlfcHJGQ0dzT1dwaE5vdnNBLXZaLTA?oc=5
   - Prestige Consumer Healthcare (PBH) Could Be 30% Undervalued After Raising Revenue Guidance - Simply Wall Street — https://news.google.com/rss/articles/CBMi8AFBVV95cUxObmZTTkV6eG1laUZCRnlXRi16Q3ZSek9BbUdUOFhEZFJKdHZCcEM0ZUEwNXZOQUpFVXMzNEhuU1RkSTN2M3FtbUo3eHJMWk1WZ3FlNEkxWEIwMV9EV3FBaFd3Q1VDS2c0LXRoX1lSc0d3cXdFWG5VN0pFcHBYZzM4MHUyd0lBYUFoZ1RVRl9xWE5Tc0hjZkZST2M0QlFxd0Y1TzVfaXU2Q1gwSjUwejNGeUd5SW14TXh6UjZua0hUdmFtakQ2S25DV2tTYmhsOGkyTjZkU2ptQndRcDlsbDFUcVU2ZkNQaDVlYVZnZjJCSC3SAfYBQVVfeXFMTTdMZUJsT2tHNldvUWg2MVpQV01uNmNYckhkM2J6VFdhaW92RDdKSXpYczFiTjByM1VtcjVEOFFlbUZHUHhVQ2NjX0xTVExZeEdtaUdOcVBNaE9LMzhxSHVseElWMm5VdTRkcXRYZmlqa2p5ZVBzRk9EeFFqOUpRVE44QmptMTR2anhGTVBMNkhySkZlZ0pRbDRjZnV2aHU1LTB5UzhseUNsVTVXeU5zT1VjZjg0em5fb3VLTEpZTzlQMEtOTDVfRC14Ylo5ZTl0ZDVLNmRmUmNoeGtGMnF1a3FSeGxjXzBZTFFueWNfYTNIVUhZMFpR?oc=5
@@ -159,44 +164,43 @@ NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE
 Les instruments sont sélectionnés par importance du mouvement et disponibilité des données, non comme recommandation automatique d'achat ou de vente.
 Évolutions depuis le matin :
 - Nikkei 225 (^N225) : variation journalière disponible +1.39 % au rapport du matin contre -4.90 % maintenant; différence -6.29 points. Vérifier que les deux observations couvrent des séances comparables.
-- Microsoft (MSFT) : variation journalière disponible +1.08 % au rapport du matin contre -1.34 % maintenant; différence -2.42 points. Vérifier que les deux observations couvrent des séances comparables.
-- Natural gas futures (NG=F) : variation journalière disponible -1.30 % au rapport du matin contre -3.46 % maintenant; différence -2.16 points. Vérifier que les deux observations couvrent des séances comparables.
+- Natural gas futures (NG=F) : variation journalière disponible -1.30 % au rapport du matin contre -3.83 % maintenant; différence -2.53 points. Vérifier que les deux observations couvrent des séances comparables.
+- Microsoft (MSFT) : variation journalière disponible +1.08 % au rapport du matin contre -1.39 % maintenant; différence -2.47 points. Vérifier que les deux observations couvrent des séances comparables.
 - US 10-year Treasury yield (^TNX) : variation journalière disponible -1.95 % au rapport du matin contre +0.10 % maintenant; différence +2.05 points. Vérifier que les deux observations couvrent des séances comparables.
-- Gold ETF (GLD) : variation journalière disponible +1.79 % au rapport du matin contre +0.16 % maintenant; différence -1.63 points. Vérifier que les deux observations couvrent des séances comparables.
+- Gold ETF (GLD) : variation journalière disponible +1.79 % au rapport du matin contre +0.11 % maintenant; différence -1.68 points. Vérifier que les deux observations couvrent des séances comparables.
 - Nvidia (NVDA) : variation journalière disponible -1.84 % au rapport du matin contre -0.24 % maintenant; différence +1.60 points. Vérifier que les deux observations couvrent des séances comparables.
-- Apple (AAPL) : variation journalière disponible -0.28 % au rapport du matin contre +1.12 % maintenant; différence +1.40 points. Vérifier que les deux observations couvrent des séances comparables.
-- Bitcoin (BTC-USD) : variation journalière disponible +0.70 % au rapport du matin contre -0.61 % maintenant; différence -1.31 points. Vérifier que les deux observations couvrent des séances comparables.
-- Invesco Nasdaq 100 ETF (QQQ) : variation journalière disponible -0.13 % au rapport du matin contre -1.37 % maintenant; différence -1.24 points. Vérifier que les deux observations couvrent des séances comparables.
-- VIX volatility index (^VIX) : variation journalière disponible -2.43 % au rapport du matin contre -3.65 % maintenant; différence -1.22 points. Vérifier que les deux observations couvrent des séances comparables.
-- Nasdaq Composite (^IXIC) : variation journalière disponible +0.08 % au rapport du matin contre -1.07 % maintenant; différence -1.15 points. Vérifier que les deux observations couvrent des séances comparables.
-- Ethereum (ETH-USD) : variation journalière disponible +1.36 % au rapport du matin contre +0.22 % maintenant; différence -1.14 points. Vérifier que les deux observations couvrent des séances comparables.
+- Apple (AAPL) : variation journalière disponible -0.28 % au rapport du matin contre +1.11 % maintenant; différence +1.39 points. Vérifier que les deux observations couvrent des séances comparables.
+- Bitcoin (BTC-USD) : variation journalière disponible +0.70 % au rapport du matin contre -0.64 % maintenant; différence -1.34 points. Vérifier que les deux observations couvrent des séances comparables.
+- Ethereum (ETH-USD) : variation journalière disponible +1.36 % au rapport du matin contre +0.12 % maintenant; différence -1.24 points. Vérifier que les deux observations couvrent des séances comparables.
+- Invesco Nasdaq 100 ETF (QQQ) : variation journalière disponible -0.13 % au rapport du matin contre -1.35 % maintenant; différence -1.22 points. Vérifier que les deux observations couvrent des séances comparables.
+- Nasdaq Composite (^IXIC) : variation journalière disponible +0.08 % au rapport du matin contre -1.10 % maintenant; différence -1.18 points. Vérifier que les deux observations couvrent des séances comparables.
+- Euro Stoxx 50 (^STOXX50E) : variation journalière disponible -0.36 % au rapport du matin contre +0.75 % maintenant; différence +1.11 points. Vérifier que les deux observations couvrent des séances comparables.
 Instruments dont le mouvement mérite un examen prioritaire :
-- Silver futures (SI=F) — classe : Commodity; dernier prix +57.81; dernière séance +1.72%; 5 séances -4.71%; 1 mois -11.69%. Source cours : https://finance.yahoo.com/quote/SI=F/
+- Silver futures (SI=F) — classe : Commodity; dernier prix +57.83; dernière séance +1.74%; 5 séances -4.69%; 1 mois -11.68%. Source cours : https://finance.yahoo.com/quote/SI=F/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
   - Grille matières premières : séparer l'offre, la demande, les stocks, la saisonnalité, la structure des échéances et la prime géopolitique. Le mouvement du contrat ne révèle pas seul lequel de ces facteurs domine.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Walmart (WMT) — classe : US equity; dernier prix +119.00; dernière séance +0.96%; 5 séances +6.87%; 1 mois +11.44%. Source cours : https://finance.yahoo.com/quote/WMT/
+- Walmart (WMT) — classe : US equity; dernier prix +119.02; dernière séance +0.98%; 5 séances +6.89%; 1 mois +11.45%. Source cours : https://finance.yahoo.com/quote/WMT/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Costco (COST) — classe : US equity; dernier prix +989.00; dernière séance +1.12%; 5 séances +4.44%; 1 mois +10.64%. Source cours : https://finance.yahoo.com/quote/COST/
+- Costco (COST) — classe : US equity; dernier prix +989.03; dernière séance +1.13%; 5 séances +4.45%; 1 mois +10.64%. Source cours : https://finance.yahoo.com/quote/COST/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Eli Lilly (LLY) — classe : US equity; dernier prix +1274.04; dernière séance +1.79%; 5 séances +8.04%; 1 mois +10.55%. Source cours : https://finance.yahoo.com/quote/LLY/
+- Eli Lilly (LLY) — classe : US equity; dernier prix +1272.54; dernière séance +1.67%; 5 séances +7.91%; 1 mois +10.42%. Source cours : https://finance.yahoo.com/quote/LLY/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Bank of America (BAC) — classe : US equity; dernier prix +52.47; dernière séance +1.49%; 5 séances -3.41%; 1 mois -9.81%. Source cours : https://finance.yahoo.com/quote/BAC/
+- Bank of America (BAC) — classe : US equity; dernier prix +52.43; dernière séance +1.41%; 5 séances -3.48%; 1 mois -9.88%. Source cours : https://finance.yahoo.com/quote/BAC/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
   - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
-  - Actualité associée à vérifier : A Look Back at Construction and Maintenance Services Stocks’ Q2 Earnings: Matrix Service (NASDAQ:MTRX) Vs The Rest Of The Pack - TradingView — https://news.google.com/rss/articles/CBMikAJBVV95cUxNNTZiUS1SV3c2eVhOQ0x3WGtESU5yVjNLZkR5ZkJRRzl5N0JaRGdxMjMtTE1GaVFQcnk3YmZObHFrbHFVOTRQRGVVNEN5SmZHdVZNOTZVWXVBM3ZPT3M0TFllRVV3WjM0dUtjT2JLQmFyOHFkOS1vcUpPa0dsR0ljWWR0ZnlTVjQ1UmNwQlZPSmQyRkc1dW1tT2t2Zk01RFNYaWk1Q0xWWmNjdmRzRnNTRnNoWDREQzRnODlqelU2ODY2LTJDZ2RQZ1ZqczBLX3RPVEYxYlpSMjJSZE52UEE2dkN0U1hGYjJ5NkFpeE9DWTNWT1drQ3pWV0lVTDlRUXZVM1ZVbmJ1bldEZHgzcldnRQ?oc=5
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Ethereum (ETH-USD) — classe : Crypto; dernier prix +2445.90; dernière séance +0.22%; 5 séances -3.50%; 1 mois -9.09%. Source cours : https://finance.yahoo.com/quote/ETH-USD/
+- Ethereum (ETH-USD) — classe : Crypto; dernier prix +2443.50; dernière séance +0.12%; 5 séances -3.60%; 1 mois -9.18%. Source cours : https://finance.yahoo.com/quote/ETH-USD/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
   - Grille crypto : considérer la négociation continue, la liquidité, les flux, les risques de plateforme et de réglementation; les corrélations avec les actions peuvent se renforcer ou se rompre rapidement.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Caterpillar (CAT) — classe : US equity; dernier prix +734.26; dernière séance -0.19%; 5 séances -8.27%; 1 mois -8.05%. Source cours : https://finance.yahoo.com/quote/CAT/
+- Caterpillar (CAT) — classe : US equity; dernier prix +734.87; dernière séance -0.10%; 5 séances -8.20%; 1 mois -7.98%. Source cours : https://finance.yahoo.com/quote/CAT/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
@@ -204,52 +208,52 @@ Instruments dont le mouvement mérite un examen prioritaire :
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Grille d'indice : vérifier la largeur du marché, la concentration des contributions, la dispersion sectorielle et la cohérence avec les rendements obligataires et la volatilité; un indice pondéré peut masquer une participation étroite.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Exxon Mobil (XOM) — classe : US equity; dernier prix +176.03; dernière séance +0.77%; 5 séances +4.20%; 1 mois +7.82%. Source cours : https://finance.yahoo.com/quote/XOM/
+- Exxon Mobil (XOM) — classe : US equity; dernier prix +176.11; dernière séance +0.82%; 5 séances +4.24%; 1 mois +7.86%. Source cours : https://finance.yahoo.com/quote/XOM/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Natural gas futures (NG=F) — classe : Commodity; dernier prix +3.12; dernière séance -3.46%; 5 séances -2.98%; 1 mois +7.69%. Source cours : https://finance.yahoo.com/quote/NG=F/
+- Natural gas futures (NG=F) — classe : Commodity; dernier prix +3.11; dernière séance -3.83%; 5 séances -3.35%; 1 mois +7.27%. Source cours : https://finance.yahoo.com/quote/NG=F/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Grille matières premières : séparer l'offre, la demande, les stocks, la saisonnalité, la structure des échéances et la prime géopolitique. Le mouvement du contrat ne révèle pas seul lequel de ces facteurs domine.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Broadcom (AVGO) — classe : US equity; dernier prix +336.37; dernière séance -2.31%; 5 séances -6.96%; 1 mois -2.97%. Source cours : https://finance.yahoo.com/quote/AVGO/
-  - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
-  - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
-  - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Microsoft (MSFT) — classe : US equity; dernier prix +532.23; dernière séance -1.34%; 5 séances -0.53%; 1 mois +6.93%. Source cours : https://finance.yahoo.com/quote/MSFT/
-  - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
-  - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
-  - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- VIX volatility index (^VIX) — classe : Implied volatility; dernier prix +15.86; dernière séance -3.65%; 5 séances +6.87%; 1 mois +2.72%. Source cours : https://finance.yahoo.com/quote/^VIX/
+- VIX volatility index (^VIX) — classe : Implied volatility; dernier prix +15.90; dernière séance -3.40%; 5 séances +7.14%; 1 mois +2.98%. Source cours : https://finance.yahoo.com/quote/^VIX/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- WTI crude oil futures (CL=F) — classe : Commodity; dernier prix +95.84; dernière séance -2.17%; 5 séances +4.34%; 1 mois -5.96%. Source cours : https://finance.yahoo.com/quote/CL=F/
+- Broadcom (AVGO) — classe : US equity; dernier prix +336.41; dernière séance -2.30%; 5 séances -6.95%; 1 mois -2.96%. Source cours : https://finance.yahoo.com/quote/AVGO/
+  - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
+  - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
+  - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
+- Microsoft (MSFT) — classe : US equity; dernier prix +531.92; dernière séance -1.39%; 5 séances -0.59%; 1 mois +6.86%. Source cours : https://finance.yahoo.com/quote/MSFT/
+  - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
+  - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
+  - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
+- WTI crude oil futures (CL=F) — classe : Commodity; dernier prix +95.76; dernière séance -2.26%; 5 séances +4.26%; 1 mois -6.03%. Source cours : https://finance.yahoo.com/quote/CL=F/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
   - Grille matières premières : séparer l'offre, la demande, les stocks, la saisonnalité, la structure des échéances et la prime géopolitique. Le mouvement du contrat ne révèle pas seul lequel de ces facteurs domine.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Tesla (TSLA) — classe : US equity; dernier prix +360.03; dernière séance -0.67%; 5 séances -5.92%; 1 mois -1.69%. Source cours : https://finance.yahoo.com/quote/TSLA/
+- Tesla (TSLA) — classe : US equity; dernier prix +360.17; dernière séance -0.63%; 5 séances -5.89%; 1 mois -1.65%. Source cours : https://finance.yahoo.com/quote/TSLA/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Meta Platforms (META) — classe : US equity; dernier prix +721.42; dernière séance -2.08%; 5 séances +0.38%; 1 mois +5.82%. Source cours : https://finance.yahoo.com/quote/META/
+- Meta Platforms (META) — classe : US equity; dernier prix +720.43; dernière séance -2.21%; 5 séances +0.24%; 1 mois +5.67%. Source cours : https://finance.yahoo.com/quote/META/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
   - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Nvidia (NVDA) — classe : US equity; dernier prix +216.71; dernière séance -0.24%; 5 séances -5.48%; 1 mois -1.20%. Source cours : https://finance.yahoo.com/quote/NVDA/
+- Nvidia (NVDA) — classe : US equity; dernier prix +216.70; dernière séance -0.24%; 5 séances -5.49%; 1 mois -1.20%. Source cours : https://finance.yahoo.com/quote/NVDA/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Emerging markets equity ETF (EEM) — classe : ETF; dernier prix +63.27; dernière séance -1.08%; 5 séances -5.28%; 1 mois -5.44%. Source cours : https://finance.yahoo.com/quote/EEM/
+- Emerging markets equity ETF (EEM) — classe : ETF; dernier prix +63.28; dernière séance -1.06%; 5 séances -5.27%; 1 mois -5.43%. Source cours : https://finance.yahoo.com/quote/EEM/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Grille ETF/fonds : analyser l'exposition réelle, les principales positions, la concentration, les frais et la date de valeur liquidative. Les fonds communs publient souvent leur valeur avec retard; les variations ne sont pas nécessairement intrajournalières.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Gold futures (GC=F) — classe : Commodity; dernier prix +4204.10; dernière séance +0.82%; 5 séances -0.29%; 1 mois -4.45%. Source cours : https://finance.yahoo.com/quote/GC=F/
-  - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
-  - Grille matières premières : séparer l'offre, la demande, les stocks, la saisonnalité, la structure des échéances et la prime géopolitique. Le mouvement du contrat ne révèle pas seul lequel de ces facteurs domine.
-  - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
-- Invesco Nasdaq 100 ETF (QQQ) — classe : ETF; dernier prix +718.02; dernière séance -1.37%; 5 séances -4.43%; 1 mois +0.26%. Source cours : https://finance.yahoo.com/quote/QQQ/
+- Invesco Nasdaq 100 ETF (QQQ) — classe : ETF; dernier prix +718.16; dernière séance -1.35%; 5 séances -4.41%; 1 mois +0.28%. Source cours : https://finance.yahoo.com/quote/QQQ/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Grille ETF/fonds : analyser l'exposition réelle, les principales positions, la concentration, les frais et la date de valeur liquidative. Les fonds communs publient souvent leur valeur avec retard; les variations ne sont pas nécessairement intrajournalières.
+  - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
+- Gold futures (GC=F) — classe : Commodity; dernier prix +4206.00; dernière séance +0.86%; 5 séances -0.24%; 1 mois -4.40%. Source cours : https://finance.yahoo.com/quote/GC=F/
+  - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
+  - Grille matières premières : séparer l'offre, la demande, les stocks, la saisonnalité, la structure des échéances et la prime géopolitique. Le mouvement du contrat ne révèle pas seul lequel de ces facteurs domine.
   - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.
 
 PANORAMA COMPLET DES INSTRUMENTS COLLECTÉS
@@ -257,61 +261,61 @@ Les cours sont ceux de la dernière observation quotidienne disponible; ils ne s
 Actif | Classe | Dernier prix | Dernière séance disponible | 5 séances | 1 mois | Source
 Fidelity Balanced Fund (FBALX) | Balanced mutual fund | +32.53 | +0.31% | -0.06% | +1.62% | https://finance.yahoo.com/quote/FBALX/
 Vanguard Wellington Fund (VWELX) | Balanced mutual fund | +47.27 | +0.40% | +0.32% | +2.19% | https://finance.yahoo.com/quote/VWELX/
-Investment-grade corporate bond ETF (LQD) | Bond ETF | +103.67 | +0.17% | +1.24% | -0.99% | https://finance.yahoo.com/quote/LQD/
-US Treasury 20+ year ETF (TLT) | Bond ETF | +80.26 | +0.37% | +2.93% | -1.46% | https://finance.yahoo.com/quote/TLT/
-Vanguard Total Bond Market ETF (BND) | Bond ETF | +70.93 | +0.17% | +1.01% | -0.41% | https://finance.yahoo.com/quote/BND/
-iShares 7–10 Year Treasury ETF (IEF) | Bond ETF | +90.52 | +0.18% | +1.25% | -0.46% | https://finance.yahoo.com/quote/IEF/
-US Treasury 10-year note futures (ZN=F) | Bond futures | +105.53 | +0.00% | +0.90% | -0.82% | https://finance.yahoo.com/quote/ZN=F/
-US Treasury bond futures (ZB=F) | Bond futures | +105.59 | +0.15% | +2.39% | -2.31% | https://finance.yahoo.com/quote/ZB=F/
+Investment-grade corporate bond ETF (LQD) | Bond ETF | +103.64 | +0.13% | +1.20% | -1.02% | https://finance.yahoo.com/quote/LQD/
+US Treasury 20+ year ETF (TLT) | Bond ETF | +80.21 | +0.30% | +2.86% | -1.52% | https://finance.yahoo.com/quote/TLT/
+Vanguard Total Bond Market ETF (BND) | Bond ETF | +70.90 | +0.13% | +0.97% | -0.44% | https://finance.yahoo.com/quote/BND/
+iShares 7–10 Year Treasury ETF (IEF) | Bond ETF | +90.47 | +0.13% | +1.19% | -0.52% | https://finance.yahoo.com/quote/IEF/
+US Treasury 10-year note futures (ZN=F) | Bond futures | +105.61 | +0.07% | +0.97% | -0.75% | https://finance.yahoo.com/quote/ZN=F/
+US Treasury bond futures (ZB=F) | Bond futures | +105.72 | +0.27% | +2.52% | -2.20% | https://finance.yahoo.com/quote/ZB=F/
 Fidelity Total Bond Fund (FTBFX) | Bond mutual fund | +9.19 | +0.55% | +0.66% | -0.38% | https://finance.yahoo.com/quote/FTBFX/
-Copper futures (HG=F) | Commodity | +6.62 | +1.69% | -0.32% | +0.53% | https://finance.yahoo.com/quote/HG=F/
-Gold futures (GC=F) | Commodity | +4204.10 | +0.82% | -0.29% | -4.45% | https://finance.yahoo.com/quote/GC=F/
-Natural gas futures (NG=F) | Commodity | +3.12 | -3.46% | -2.98% | +7.69% | https://finance.yahoo.com/quote/NG=F/
-Silver futures (SI=F) | Commodity | +57.81 | +1.72% | -4.71% | -11.69% | https://finance.yahoo.com/quote/SI=F/
-WTI crude oil futures (CL=F) | Commodity | +95.84 | -2.17% | +4.34% | -5.96% | https://finance.yahoo.com/quote/CL=F/
-High-yield corporate bond ETF (HYG) | Credit ETF | +77.12 | -0.01% | -0.14% | -1.60% | https://finance.yahoo.com/quote/HYG/
-Bitcoin (BTC-USD) | Crypto | +81639.02 | -0.61% | -2.44% | -2.85% | https://finance.yahoo.com/quote/BTC-USD/
-Ethereum (ETH-USD) | Crypto | +2445.90 | +0.22% | -3.50% | -9.09% | https://finance.yahoo.com/quote/ETH-USD/
-Developed markets ex-US equity ETF (EFA) | ETF | +104.45 | +0.76% | +1.02% | -1.49% | https://finance.yahoo.com/quote/EFA/
-Emerging markets equity ETF (EEM) | ETF | +63.27 | -1.08% | -5.28% | -5.44% | https://finance.yahoo.com/quote/EEM/
-Gold ETF (GLD) | ETF | +383.32 | +0.16% | -0.33% | -3.77% | https://finance.yahoo.com/quote/GLD/
-Invesco Nasdaq 100 ETF (QQQ) | ETF | +718.02 | -1.37% | -4.43% | +0.26% | https://finance.yahoo.com/quote/QQQ/
-Russell 2000 small-cap equity ETF (IWM) | ETF | +273.77 | -0.48% | -1.85% | -4.09% | https://finance.yahoo.com/quote/IWM/
-SPDR S&P 500 ETF (SPY) | ETF | +769.87 | -0.25% | -1.12% | +1.20% | https://finance.yahoo.com/quote/SPY/
-Dow Jones E-mini futures (YM=F) | Equity index futures | +52648.00 | +0.42% | +1.39% | +1.62% | https://finance.yahoo.com/quote/YM=F/
-Nasdaq 100 E-mini futures (NQ=F) | Equity index futures | +29809.00 | -1.11% | -4.18% | +1.23% | https://finance.yahoo.com/quote/NQ=F/
-Russell 2000 E-mini futures (RTY=F) | Equity index futures | +2771.20 | -0.38% | -1.80% | -3.64% | https://finance.yahoo.com/quote/RTY=F/
-S&P 500 E-mini futures (ES=F) | Equity index futures | +7781.25 | -0.13% | -1.00% | +1.85% | https://finance.yahoo.com/quote/ES=F/
-Euro Stoxx 50 (^STOXX50E) | European equity index | +6215.20 | +0.76% | +0.68% | -1.70% | https://finance.yahoo.com/quote/^STOXX50E/
-EUR/USD (EURUSD=X) | FX | +1.13 | +0.55% | +0.38% | -1.86% | https://finance.yahoo.com/quote/EURUSD=X/
-US Dollar Index (DX-Y.NYB) | FX | +101.67 | -0.32% | -0.53% | +1.45% | https://finance.yahoo.com/quote/DX-Y.NYB/
-USD/JPY (USDJPY=X) | FX | +157.84 | -0.08% | -0.14% | +1.17% | https://finance.yahoo.com/quote/USDJPY=X/
+Copper futures (HG=F) | Commodity | +6.62 | +1.70% | -0.30% | +0.55% | https://finance.yahoo.com/quote/HG=F/
+Gold futures (GC=F) | Commodity | +4206.00 | +0.86% | -0.24% | -4.40% | https://finance.yahoo.com/quote/GC=F/
+Natural gas futures (NG=F) | Commodity | +3.11 | -3.83% | -3.35% | +7.27% | https://finance.yahoo.com/quote/NG=F/
+Silver futures (SI=F) | Commodity | +57.83 | +1.74% | -4.69% | -11.68% | https://finance.yahoo.com/quote/SI=F/
+WTI crude oil futures (CL=F) | Commodity | +95.76 | -2.26% | +4.26% | -6.03% | https://finance.yahoo.com/quote/CL=F/
+High-yield corporate bond ETF (HYG) | Credit ETF | +77.11 | -0.02% | -0.15% | -1.60% | https://finance.yahoo.com/quote/HYG/
+Bitcoin (BTC-USD) | Crypto | +81614.42 | -0.64% | -2.47% | -2.88% | https://finance.yahoo.com/quote/BTC-USD/
+Ethereum (ETH-USD) | Crypto | +2443.50 | +0.12% | -3.60% | -9.18% | https://finance.yahoo.com/quote/ETH-USD/
+Developed markets ex-US equity ETF (EFA) | ETF | +104.42 | +0.72% | +0.98% | -1.53% | https://finance.yahoo.com/quote/EFA/
+Emerging markets equity ETF (EEM) | ETF | +63.28 | -1.06% | -5.27% | -5.43% | https://finance.yahoo.com/quote/EEM/
+Gold ETF (GLD) | ETF | +383.13 | +0.11% | -0.38% | -3.82% | https://finance.yahoo.com/quote/GLD/
+Invesco Nasdaq 100 ETF (QQQ) | ETF | +718.16 | -1.35% | -4.41% | +0.28% | https://finance.yahoo.com/quote/QQQ/
+Russell 2000 small-cap equity ETF (IWM) | ETF | +273.74 | -0.49% | -1.86% | -4.10% | https://finance.yahoo.com/quote/IWM/
+SPDR S&P 500 ETF (SPY) | ETF | +769.56 | -0.29% | -1.16% | +1.16% | https://finance.yahoo.com/quote/SPY/
+Dow Jones E-mini futures (YM=F) | Equity index futures | +52618.00 | +0.36% | +1.33% | +1.57% | https://finance.yahoo.com/quote/YM=F/
+Nasdaq 100 E-mini futures (NQ=F) | Equity index futures | +29741.75 | -1.33% | -4.39% | +1.00% | https://finance.yahoo.com/quote/NQ=F/
+Russell 2000 E-mini futures (RTY=F) | Equity index futures | +2768.90 | -0.46% | -1.89% | -3.72% | https://finance.yahoo.com/quote/RTY=F/
+S&P 500 E-mini futures (ES=F) | Equity index futures | +7772.25 | -0.24% | -1.11% | +1.73% | https://finance.yahoo.com/quote/ES=F/
+Euro Stoxx 50 (^STOXX50E) | European equity index | +6214.47 | +0.75% | +0.67% | -1.71% | https://finance.yahoo.com/quote/^STOXX50E/
+EUR/USD (EURUSD=X) | FX | +1.13 | +0.53% | +0.37% | -1.87% | https://finance.yahoo.com/quote/EURUSD=X/
+US Dollar Index (DX-Y.NYB) | FX | +101.64 | -0.35% | -0.56% | +1.42% | https://finance.yahoo.com/quote/DX-Y.NYB/
+USD/JPY (USDJPY=X) | FX | +157.88 | -0.05% | -0.12% | +1.19% | https://finance.yahoo.com/quote/USDJPY=X/
 Hang Seng (^HSI) | Hong Kong equity index | +24186.83 | +0.52% | -0.10% | -2.13% | https://finance.yahoo.com/quote/^HSI/
-VIX volatility index (^VIX) | Implied volatility | +15.86 | -3.65% | +6.87% | +2.72% | https://finance.yahoo.com/quote/^VIX/
+VIX volatility index (^VIX) | Implied volatility | +15.90 | -3.40% | +7.14% | +2.98% | https://finance.yahoo.com/quote/^VIX/
 Nikkei 225 (^N225) | Japanese equity index | +64425.95 | -4.90% | -8.01% | -1.29% | https://finance.yahoo.com/quote/^N225/
 Fidelity 500 Index Fund (FXAIX) | Mutual fund | +269.15 | +0.33% | -0.25% | +2.62% | https://finance.yahoo.com/quote/FXAIX/
 Vanguard 500 Index Fund Admiral Shares (VFIAX) | Mutual fund | +714.89 | +0.33% | -0.25% | +2.61% | https://finance.yahoo.com/quote/VFIAX/
 Vanguard Total Stock Market Index Fund Admiral Shares (VTSAX) | Mutual fund | +184.23 | +0.46% | -0.29% | +2.21% | https://finance.yahoo.com/quote/VTSAX/
 US 10-year Treasury yield (^TNX) | Rates | +5.09 | +0.10% | -2.86% | +2.97% | https://finance.yahoo.com/quote/^TNX/
-FTSE 100 (^FTSE) | UK equity index | +10877.96 | +0.35% | +3.09% | +0.57% | https://finance.yahoo.com/quote/^FTSE/
-Alphabet (GOOGL) | US equity | +344.39 | -1.38% | -2.07% | -0.85% | https://finance.yahoo.com/quote/GOOGL/
-Amazon (AMZN) | US equity | +254.15 | -0.24% | -3.16% | +1.18% | https://finance.yahoo.com/quote/AMZN/
-Apple (AAPL) | US equity | +345.83 | +1.12% | +2.73% | +2.62% | https://finance.yahoo.com/quote/AAPL/
-Bank of America (BAC) | US equity | +52.47 | +1.49% | -3.41% | -9.81% | https://finance.yahoo.com/quote/BAC/
-Broadcom (AVGO) | US equity | +336.37 | -2.31% | -6.96% | -2.97% | https://finance.yahoo.com/quote/AVGO/
-Caterpillar (CAT) | US equity | +734.26 | -0.19% | -8.27% | -8.05% | https://finance.yahoo.com/quote/CAT/
-Costco (COST) | US equity | +989.00 | +1.12% | +4.44% | +10.64% | https://finance.yahoo.com/quote/COST/
-Eli Lilly (LLY) | US equity | +1274.04 | +1.79% | +8.04% | +10.55% | https://finance.yahoo.com/quote/LLY/
-Exxon Mobil (XOM) | US equity | +176.03 | +0.77% | +4.20% | +7.82% | https://finance.yahoo.com/quote/XOM/
-JPMorgan Chase (JPM) | US equity | +344.20 | +2.58% | +3.37% | -0.97% | https://finance.yahoo.com/quote/JPM/
-Meta Platforms (META) | US equity | +721.42 | -2.08% | +0.38% | +5.82% | https://finance.yahoo.com/quote/META/
-Microsoft (MSFT) | US equity | +532.23 | -1.34% | -0.53% | +6.93% | https://finance.yahoo.com/quote/MSFT/
-Nvidia (NVDA) | US equity | +216.71 | -0.24% | -5.48% | -1.20% | https://finance.yahoo.com/quote/NVDA/
-Tesla (TSLA) | US equity | +360.03 | -0.67% | -5.92% | -1.69% | https://finance.yahoo.com/quote/TSLA/
-Walmart (WMT) | US equity | +119.00 | +0.96% | +6.87% | +11.44% | https://finance.yahoo.com/quote/WMT/
-Dow Jones (^DJI) | US equity index | +52403.54 | +0.43% | +1.45% | +1.21% | https://finance.yahoo.com/quote/^DJI/
-Nasdaq Composite (^IXIC) | US equity index | +26428.36 | -1.07% | -3.43% | +0.04% | https://finance.yahoo.com/quote/^IXIC/
-S&P 500 (^GSPC) | US equity index | +7724.27 | -0.26% | -1.12% | +1.13% | https://finance.yahoo.com/quote/^GSPC/
+FTSE 100 (^FTSE) | UK equity index | +10878.72 | +0.35% | +3.10% | +0.58% | https://finance.yahoo.com/quote/^FTSE/
+Alphabet (GOOGL) | US equity | +344.56 | -1.33% | -2.02% | -0.80% | https://finance.yahoo.com/quote/GOOGL/
+Amazon (AMZN) | US equity | +254.22 | -0.21% | -3.13% | +1.21% | https://finance.yahoo.com/quote/AMZN/
+Apple (AAPL) | US equity | +345.80 | +1.11% | +2.72% | +2.61% | https://finance.yahoo.com/quote/AAPL/
+Bank of America (BAC) | US equity | +52.43 | +1.41% | -3.48% | -9.88% | https://finance.yahoo.com/quote/BAC/
+Broadcom (AVGO) | US equity | +336.41 | -2.30% | -6.95% | -2.96% | https://finance.yahoo.com/quote/AVGO/
+Caterpillar (CAT) | US equity | +734.87 | -0.10% | -8.20% | -7.98% | https://finance.yahoo.com/quote/CAT/
+Costco (COST) | US equity | +989.03 | +1.13% | +4.45% | +10.64% | https://finance.yahoo.com/quote/COST/
+Eli Lilly (LLY) | US equity | +1272.54 | +1.67% | +7.91% | +10.42% | https://finance.yahoo.com/quote/LLY/
+Exxon Mobil (XOM) | US equity | +176.11 | +0.82% | +4.24% | +7.86% | https://finance.yahoo.com/quote/XOM/
+JPMorgan Chase (JPM) | US equity | +343.67 | +2.43% | +3.21% | -1.12% | https://finance.yahoo.com/quote/JPM/
+Meta Platforms (META) | US equity | +720.43 | -2.21% | +0.24% | +5.67% | https://finance.yahoo.com/quote/META/
+Microsoft (MSFT) | US equity | +531.92 | -1.39% | -0.59% | +6.86% | https://finance.yahoo.com/quote/MSFT/
+Nvidia (NVDA) | US equity | +216.70 | -0.24% | -5.49% | -1.20% | https://finance.yahoo.com/quote/NVDA/
+Tesla (TSLA) | US equity | +360.17 | -0.63% | -5.89% | -1.65% | https://finance.yahoo.com/quote/TSLA/
+Walmart (WMT) | US equity | +119.02 | +0.98% | +6.89% | +11.45% | https://finance.yahoo.com/quote/WMT/
+Dow Jones (^DJI) | US equity index | +52368.89 | +0.37% | +1.38% | +1.14% | https://finance.yahoo.com/quote/^DJI/
+Nasdaq Composite (^IXIC) | US equity index | +26418.19 | -1.10% | -3.46% | -0.00% | https://finance.yahoo.com/quote/^IXIC/
+S&P 500 (^GSPC) | US equity index | +7721.11 | -0.30% | -1.16% | +1.09% | https://finance.yahoo.com/quote/^GSPC/
 
 NIVEAU 7 — DÉCISION, INVALIDATION ET AUDIT
 Plan de surveillance :
@@ -332,13 +336,13 @@ AUDIT CRITIQUE DES ANALYSES PRÉCÉDENTES
 - Les prévisions originales sont conservées pour empêcher toute réécriture rétrospective. Les changements de méthode devront être justifiés par des échantillons suffisants et des tests hors échantillon.
 
 AUDIT DES PROBABILITÉS DIRECTIONNELLES
-- Aucune prévision matinale arrivée à échéance avec une observation quotidienne distincte. Le score de calibration n'est pas encore disponible.
-- Prévisions matinales en attente : 0. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.
+- Aucune prévision matinale avec probabilités n'est présente dans l'historique exploitable. L'audit démarrera après une édition du matin enregistrée avec la version actuelle.
+- Prévisions matinales enregistrées : 0; en attente : 0. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.
 
 QUALITÉ ET SOURCES
 - Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).
 - Actualités : flux officiels Fed, BLS, BCE, EIA, Banque d'Angleterre et Banque du Japon; Google News sert aussi de veille et de solution de repli, pas de preuve indépendante. Vérifier l'éditeur et le lien de chaque article.
-- Heure de collecte : 2026-10-16T15:14:20+00:00.
+- Heure de collecte : 2026-10-16T15:16:37+00:00.
 - Erreurs prix : 0; erreurs flux actualités : 1; erreurs données fondamentales SEC : 0.
 
 ERREURS DE FLUX
