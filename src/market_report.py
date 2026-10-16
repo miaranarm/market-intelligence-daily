@@ -308,8 +308,90 @@ def _quarterly_fact_points(companyfacts: dict[str, Any], tag_names: tuple[str, .
     prior_item = sorted(prior, key=lambda x: (x[0], x[1]))[0][2] if prior else None
     return latest, prior_item, latest_tag
 
+
+def _quarterly_or_q4_fact_points(
+    companyfacts: dict[str, Any], tag_names: tuple[str, ...], unit_names: tuple[str, ...]
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None, str | None]:
+    """Prefer the latest discrete quarter; derive Q4 only when FY and all three matching quarters exist."""
+    from datetime import date, timedelta
+
+    latest, prior, tag = _quarterly_fact_points(companyfacts, tag_names, unit_names)
+    facts = companyfacts.get("facts", {}).get("us-gaap", {})
+
+    def discrete_quarters(node: dict[str, Any], unit: str, annual: dict[str, Any]) -> dict[str, dict[str, Any]]:
+        selected: dict[str, dict[str, Any]] = {}
+        for item in node.get("units", {}).get(unit, []):
+            if item.get("form") != "10-Q" or item.get("fp") not in ("Q1", "Q2", "Q3"):
+                continue
+            if not item.get("start") or not item.get("end") or item.get("val") is None:
+                continue
+            try:
+                start, end = date.fromisoformat(item["start"]), date.fromisoformat(item["end"])
+                duration = (end - start).days
+                fy_start, fy_end = date.fromisoformat(annual["start"]), date.fromisoformat(annual["end"])
+            except (TypeError, ValueError):
+                continue
+            if 70 <= duration <= 110 and fy_start <= start <= end <= fy_end:
+                fp = item["fp"]
+                current = selected.get(fp)
+                if current is None or item.get("filed", "") > current.get("filed", ""):
+                    selected[fp] = item
+        return selected
+
+    def derive(annual: dict[str, Any], node: dict[str, Any], unit: str) -> dict[str, Any] | None:
+        quarters = discrete_quarters(node, unit, annual)
+        if set(quarters) != {"Q1", "Q2", "Q3"}:
+            return None
+        ends = [date.fromisoformat(quarters[q]["end"]) for q in ("Q1", "Q2", "Q3")]
+        if ends != sorted(ends) or len(set(ends)) != 3:
+            return None
+        if annual.get("filed") and any(q.get("filed", "") > annual["filed"] for q in quarters.values()):
+            return None
+        value = float(annual["val"]) - sum(float(quarters[q]["val"]) for q in ("Q1", "Q2", "Q3"))
+        return {
+            "start": (ends[-1] + timedelta(days=1)).isoformat(),
+            "end": annual["end"], "val": value, "form": "10-K",
+            "fp": "Q4 (calculé)", "filed": annual.get("filed", ""),
+            "derived": True,
+        }
+
+    for tag_name in (tag_names if tag is None else (tag,)):
+        node = facts.get(tag_name, {})
+        for unit in unit_names:
+            annuals = []
+            for item in node.get("units", {}).get(unit, []):
+                if item.get("form") != "10-K" or item.get("fp") != "FY":
+                    continue
+                if not item.get("start") or not item.get("end") or item.get("val") is None:
+                    continue
+                try:
+                    duration = (date.fromisoformat(item["end"]) - date.fromisoformat(item["start"])).days
+                except (TypeError, ValueError):
+                    continue
+                if 330 <= duration <= 400:
+                    annuals.append(item)
+            annuals.sort(key=lambda x: (x.get("end", ""), x.get("filed", "")))
+            q4_candidates = []
+            for annual in annuals:
+                q4 = derive(annual, node, unit)
+                if q4 is not None:
+                    q4_candidates.append((annual, q4))
+            if not q4_candidates:
+                continue
+            annual, q4 = q4_candidates[-1]
+            if latest and latest.get("end", "") >= q4["end"]:
+                return latest, prior, tag
+            prior_q4 = None
+            for previous_annual, previous_q4 in reversed(q4_candidates[:-1]):
+                days = (date.fromisoformat(q4["end"]) - date.fromisoformat(previous_q4["end"])).days
+                if 330 <= days <= 400:
+                    prior_q4 = previous_q4
+                    break
+            return q4, prior_q4, tag_name
+    return latest, prior, tag
+
 def fetch_company_fundamentals() -> tuple[list[dict[str, Any]], list[str]]:
-    """Fetch reported interim-quarter fundamentals from SEC XBRL Company Facts; never substitute estimates."""
+    """Fetch SEC-reported quarterly fundamentals; derive Q4 only from annual totals minus Q1-Q3."""
     results: list[dict[str, Any]] = []
     errors: list[str] = []
     headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
@@ -319,19 +401,19 @@ def fetch_company_fundamentals() -> tuple[list[dict[str, Any]], list[str]]:
             response = requests.get(url, headers=headers, timeout=15)
             response.raise_for_status()
             payload = response.json()
-            revenue, prior_revenue, revenue_tag = _quarterly_fact_points(
+            revenue, prior_revenue, revenue_tag = _quarterly_or_q4_fact_points(
                 payload, REVENUE_TAGS, ("USD",)
             )
             eps, prior_eps, eps_tag = _quarterly_fact_points(
                 payload, ("EarningsPerShareDiluted",), ("USD/shares",)
             )
-            operating_income, _, operating_income_tag = _quarterly_fact_points(
+            operating_income, _, operating_income_tag = _quarterly_or_q4_fact_points(
                 payload, OPERATING_INCOME_TAGS, ("USD",)
             )
-            operating_cash_flow, _, cash_flow_tag = _quarterly_fact_points(
+            operating_cash_flow, _, cash_flow_tag = _quarterly_or_q4_fact_points(
                 payload, OPERATING_CASH_FLOW_TAGS, ("USD",)
             )
-            capex, _, capex_tag = _quarterly_fact_points(
+            capex, _, capex_tag = _quarterly_or_q4_fact_points(
                 payload, CAPEX_TAGS, ("USD",)
             )
             if not revenue and not eps and not operating_income and not operating_cash_flow:
@@ -363,16 +445,16 @@ def fetch_company_fundamentals() -> tuple[list[dict[str, Any]], list[str]]:
                 "ticker": ticker, "name": company["name"], "period": latest_end,
                 "revenue": revenue_value,
                 "revenue_yoy_pct": round(revenue_growth, 2) if revenue_growth is not None else None,
-                "revenue_tag": revenue_tag, "eps": float(eps["val"]) if eps else None,
+                "revenue_tag": revenue_tag, "revenue_derived": bool(revenue and revenue.get("derived")), "eps": float(eps["val"]) if eps else None,
                 "eps_yoy_pct": round(eps_growth, 2) if eps_growth is not None else None,
                 "eps_tag": eps_tag,
                 "operating_income": operating_income_value,
-                "operating_income_tag": operating_income_tag,
+                "operating_income_tag": operating_income_tag, "operating_income_derived": bool(operating_income and operating_income.get("derived")),
                 "operating_margin_pct": operating_margin_pct,
                 "operating_cash_flow": cash_flow_value,
-                "operating_cash_flow_tag": cash_flow_tag,
+                "operating_cash_flow_tag": cash_flow_tag, "operating_cash_flow_derived": bool(operating_cash_flow and operating_cash_flow.get("derived")),
                 "capex": capex_value,
-                "capex_tag": capex_tag,
+                "capex_tag": capex_tag, "capex_derived": bool(capex and capex.get("derived")),
                 "free_cash_flow": free_cash_flow_value,
                 "source": f"https://data.sec.gov/api/xbrl/companyfacts/CIK{company['cik']}.json",
             })
@@ -924,7 +1006,7 @@ def append_funnel_report(
                     period_age_note = f"; ATTENTION : période publiée il y a {period_age_days} jours (>120 jours)"
             except (TypeError, ValueError):
                 period_age_note = "; ancienneté de la période indisponible"
-            lines.append(f"- {name} ({ticker}), trimestre clos le {period}{period_age_note} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}); résultat opérationnel {operating_income}; marge opérationnelle {operating_margin}; flux opérationnel {operating_cash_flow}; investissements corporels {capex}; FCF approximatif {free_cash_flow}. Source SEC : {source}")
+            period_kind = "quatrième trimestre calculé à partir du total annuel moins Q1-Q3" if any(item.get(key) for key in ("revenue_derived", "operating_income_derived", "operating_cash_flow_derived", "capex_derived")) else "trimestre déclaré dans un 10-Q"\n            lines.append(f"- {name} ({ticker}), {period_kind}, période close le {period}{period_age_note} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}); résultat opérationnel {operating_income}; marge opérationnelle {operating_margin}; flux opérationnel {operating_cash_flow}; investissements corporels {capex}; FCF approximatif {free_cash_flow}. Source SEC : {source}")
     else:
         lines.append("- Aucun chiffre trimestriel SEC exploitable lors de cette collecte; aucune valeur n'est estimée ni remplacée par un chiffre de presse.")
     lines += ["", "NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE",
