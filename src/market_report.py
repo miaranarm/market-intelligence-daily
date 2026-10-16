@@ -289,7 +289,7 @@ def _feed_entries(root: ET.Element, default_source: str) -> list[dict[str, str]]
 def _news_dedupe_key(title: str) -> str:
     """Normalize headline text so the same story from separate search feeds is not repeated."""
     normalized = html.unescape(title).casefold()
-    normalized = re.sub(r"[^\\w]+", " ", normalized, flags=re.UNICODE)
+    normalized = re.sub(r"[^\w]+", " ", normalized, flags=re.UNICODE)
     return " ".join(normalized.split())
 
 
@@ -321,8 +321,9 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
                     fallback_response.raise_for_status()
                     fallback_root = ET.fromstring(fallback_response.content)
                     for item in _feed_entries(fallback_root, "Google News — recherche ciblée BLS")[:6]:
-                        if item["url"] not in seen and _is_recent_news_item(item["published"]):
+                        if item["url"] not in seen and _news_dedupe_key(item["title"]) not in seen_titles and _is_recent_news_item(item["published"]):
                             seen.add(item["url"])
+                            seen_titles.add(_news_dedupe_key(item["title"]))
                             batch.append(item)
                     errors.append(f"{feed_name}: flux direct indisponible ({type(exc).__name__}); repli Google News ciblé BLS utilisé")
                 except Exception as fallback_exc:
