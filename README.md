@@ -11,11 +11,15 @@ Public repository for a multi-asset market-intelligence system with three planne
 - [x] Manual GitHub Actions workflow for testing Gmail SMTP delivery.
 - [ ] Gmail credentials verified as GitHub Actions secrets.
 - [ ] Test email received successfully.
-- [x] First prototype of market-data/news collection and report generation committed.
+- [x] Market-data/news collection and report generation committed.
+- [x] Funnel architecture added: world regime → regions → cross-asset interactions → asset classes → sectors/company events → instruments → action and audit.
+- [x] Expanded company-results coverage across US, Europe, Asia and major sectors, plus a broader equity watchlist and representative mutual funds.
+- [x] Explicit directional scenario probabilities added using a transparent cross-asset heuristic; probabilities are explicitly marked experimental and not statistically calibrated.
+- [x] Morning/update/evening reports use the same funnel hierarchy; the evening report includes the self-audit ledger.
 - [ ] Prototype run validated against live sources and email delivery.
 - [x] Scheduled workflow configured for 05:30, 13:30 and 21:00 Madagascar time (UTC+3); end-to-end delivery still unverified.
 
-**Important:** The scheduled workflow is configured, but the first scheduled report, public Pages URL, and email delivery have not yet been verified end to end. The prototype collects market prices and headlines, keeps technical/quantitative indicators out of the reader-facing report, emails a single link after the report page is committed, and saves snapshots for later audit. Because this repository is public, the tracked snapshots under `data/` are also public. Technical indicators (such as RSI and moving averages) must not appear in the reader-facing report. The system does not yet provide a complete fundamental analysis or calibrated directional probabilities.
+**Important:** The scheduled workflow is configured, but the first scheduled report, public Pages URL, and email delivery have not yet been verified end to end. The prototype collects market prices and headlines, keeps technical/quantitative indicators out of the reader-facing report, emails a single link after the report page is committed, and saves snapshots for later audit. Because this repository is public, the tracked snapshots under `data/` are also public. Technical indicators (such as RSI and moving averages) must not appear in the reader-facing report. The system does not yet provide a complete company-by-company fundamental model or statistically calibrated directional probabilities. Its current probability estimates are an explicitly labeled heuristic that must be audited against future outcomes.
 
 ## Configure Gmail securely
 
@@ -70,11 +74,12 @@ Implemented in the current prototype:
 - Automated GitHub Actions checks for Python syntax and unit tests on pushes to the main branch and pull requests.
 
 Still required before this can be called a professional-grade macro briefing:
-- Generate explanatory macroeconomic analysis that connects each verified event to the nine asset categories; the current news module primarily collects headlines and does not yet provide a complete, source-by-source macro narrative.
+- Expand from headline-led microeconomic monitoring to structured company fundamentals: actual revenue/EPS/margins/cash flow versus a verified analyst consensus, official earnings-calendar coverage, original filings, and company-by-company source validation. Headline search is not a substitute for reading filings or transcripts.
 - Validate each official RSS feed's availability and the provenance of article links during live runs.
 - Test the complete market-data collection, report publication, GitHub Pages URL and SMTP email delivery end to end.
 - Expand coverage and validate data freshness, especially for intraday quotes, bonds, funds and non-US markets.
-- Evaluate forecast performance over a sufficiently large out-of-sample sample, with relevant benchmarks and costs before changing analytical rules automatically.
+- Validate the directional-probability heuristic over a sufficiently large out-of-sample sample, including calibration, Brier/log scores, relevant benchmarks and costs before changing analytical rules automatically.
+- Expand the report with deeper verified primary-source analysis so the reading time approaches the requested 30 minutes when the news flow warrants it; do not pad quiet days with repetitive prose.
 
 The self-audit baseline is experimental, not a validated trading strategy. Directional accuracy alone does not demonstrate profitability. No probabilities will be presented as calibrated until calibration has been measured, and no trading execution is planned.
 
