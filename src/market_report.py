@@ -237,6 +237,118 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
     return items[:36], errors
 
 
+
+# CIKs are SEC-assigned company identifiers. Only issuers with stable, well-known filings are included.
+SEC_COMPANIES: dict[str, dict[str, str]] = {
+    "AAPL": {"name": "Apple", "cik": "0000320193"},
+    "MSFT": {"name": "Microsoft", "cik": "0000789019"},
+    "NVDA": {"name": "Nvidia", "cik": "0001045810"},
+    "AMZN": {"name": "Amazon", "cik": "0001018724"},
+    "GOOGL": {"name": "Alphabet", "cik": "0001652044"},
+    "META": {"name": "Meta Platforms", "cik": "0001326801"},
+    "TSLA": {"name": "Tesla", "cik": "0001318605"},
+    "AVGO": {"name": "Broadcom", "cik": "0001730168"},
+    "JPM": {"name": "JPMorgan Chase", "cik": "0000019617"},
+    "BAC": {"name": "Bank of America", "cik": "0000070858"},
+    "XOM": {"name": "Exxon Mobil", "cik": "0000034088"},
+    "LLY": {"name": "Eli Lilly", "cik": "0000059478"},
+    "WMT": {"name": "Walmart", "cik": "0000104169"},
+    "COST": {"name": "Costco", "cik": "0000909832"},
+    "CAT": {"name": "Caterpillar", "cik": "0000018230"},
+}
+
+REVENUE_TAGS = (
+    "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "Revenues",
+    "SalesRevenueNet",
+    "SalesRevenueGoodsNet",
+    "SalesRevenueServicesNet",
+    "OperatingRevenues",
+)
+
+def _quarterly_fact_points(companyfacts: dict[str, Any], tag_names: tuple[str, ...], unit_names: tuple[str, ...]) -> tuple[dict[str, Any] | None, dict[str, Any] | None, str | None]:
+    """Return latest reported 10-Q quarterly fact and comparable year-earlier fact, without mixing annual totals."""
+    facts = companyfacts.get("facts", {}).get("us-gaap", {})
+    candidates: list[tuple[str, dict[str, Any]]] = []
+    for tag in tag_names:
+        node = facts.get(tag, {})
+        for unit in unit_names:
+            for item in node.get("units", {}).get(unit, []):
+                if item.get("form") != "10-Q" or item.get("fp") not in ("Q1", "Q2", "Q3"):
+                    continue
+                if not item.get("start") or not item.get("end") or item.get("val") is None:
+                    continue
+                try:
+                    from datetime import date
+                    duration = (date.fromisoformat(item["end"]) - date.fromisoformat(item["start"])).days
+                except (TypeError, ValueError):
+                    continue
+                if 70 <= duration <= 110:
+                    candidates.append((tag, item))
+        if candidates:
+            break
+    if not candidates:
+        return None, None, None
+    # Prefer the most recently filed version of the latest quarter end.
+    candidates.sort(key=lambda pair: (pair[1].get("end", ""), pair[1].get("filed", "")))
+    latest_tag, latest = candidates[-1]
+    from datetime import date
+    latest_end = date.fromisoformat(latest["end"])
+    prior = []
+    for tag, item in candidates:
+        try:
+            days = (latest_end - date.fromisoformat(item["end"])).days
+        except (TypeError, ValueError):
+            continue
+        if 330 <= days <= 400:
+            prior.append((abs(days - 365), item.get("filed", ""), item))
+    prior_item = sorted(prior, key=lambda x: (x[0], x[1]))[-1][2] if prior else None
+    return latest, prior_item, latest_tag
+
+def fetch_company_fundamentals() -> tuple[list[dict[str, Any]], list[str]]:
+    """Fetch a limited, transparent sample of reported quarterly revenue and diluted EPS from SEC XBRL Company Facts."""
+    results: list[dict[str, Any]] = []
+    errors: list[str] = []
+    headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
+    for ticker, company in SEC_COMPANIES.items():
+        url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{company['cik']}.json"
+        try:
+            response = requests.get(url, headers=headers, timeout=15)
+            response.raise_for_status()
+            payload = response.json()
+            revenue, prior_revenue, revenue_tag = _quarterly_fact_points(
+                payload, REVENUE_TAGS, ("USD",)
+            )
+            eps, prior_eps, eps_tag = _quarterly_fact_points(
+                payload, ("EarningsPerShareDiluted",), ("USD/shares",)
+            )
+            if not revenue and not eps:
+                errors.append(f"{ticker}: aucun chiffre trimestriel 10-Q exploitable dans les tags XBRL retenus")
+                continue
+            revenue_growth = None
+            if revenue and prior_revenue and float(prior_revenue["val"]) != 0:
+                revenue_growth = (float(revenue["val"]) / float(prior_revenue["val"]) - 1) * 100
+            eps_growth = None
+            if eps and prior_eps and float(prior_eps["val"]) != 0:
+                eps_growth = (float(eps["val"]) / float(prior_eps["val"]) - 1) * 100
+            latest_end = max(
+                [x["end"] for x in (revenue, eps) if x and x.get("end")],
+                default="date inconnue"
+            )
+            results.append({
+                "ticker": ticker, "name": company["name"], "period": latest_end,
+                "revenue": float(revenue["val"]) if revenue else None,
+                "revenue_yoy_pct": round(revenue_growth, 2) if revenue_growth is not None else None,
+                "revenue_tag": revenue_tag, "eps": float(eps["val"]) if eps else None,
+                "eps_yoy_pct": round(eps_growth, 2) if eps_growth is not None else None,
+                "eps_tag": eps_tag,
+                "source": f"https://data.sec.gov/api/xbrl/companyfacts/CIK{company['cik']}.json",
+            })
+            time.sleep(0.12)
+        except Exception as exc:
+            errors.append(f"{ticker}: {type(exc).__name__}: {str(exc)[:120]}")
+    return results, errors
+
 def infer_macro_impact(headline: str) -> tuple[str, str, str]:
     """Conservative headline taxonomy; this proposes transmission channels, not verified event facts."""
     text = headline.casefold()
@@ -656,6 +768,7 @@ def append_funnel_report(
     news: list[dict[str, str]], previous: list[dict[str, Any]],
     prior_morning: dict[str, Any] | None, prior_update: dict[str, Any] | None,
     data_errors: list[str], news_errors: list[str],
+    company_fundamentals: list[dict[str, Any]],
 ) -> None:
     """Build the report from global regime to specific instruments and an auditable action plan."""
     conviction = market_conviction(rows)
@@ -754,6 +867,18 @@ def append_funnel_report(
             lines.append(f"- {sector} :")
             for item in matches[:2]:
                 lines.append(f"  - {item['title']} — {item['url']}")
+    lines += ["", "FONDAMENTAUX PUBLIÉS — ÉCHANTILLON SEC EDGAR",
+              "Chiffres issus des données XBRL officielles de la SEC pour les derniers trimestres 10-Q disponibles. La comparaison annuelle n'est affichée que si un trimestre comparable existe; il ne s'agit pas d'une comparaison au consensus analystes. Les définitions comptables peuvent varier selon l'émetteur.",
+              "Montants de chiffre d'affaires en milliards USD; BPA dilué en USD/action."]
+    if company_fundamentals:
+        for item in company_fundamentals:
+            revenue = "n.d." if item["revenue"] is None else f"{item['revenue'] / 1_000_000_000:.2f} Md$"
+            revenue_yoy = "comparaison annuelle indisponible" if item["revenue_yoy_pct"] is None else f"{item['revenue_yoy_pct']:+.1f} % sur un an"
+            eps = "n.d." if item["eps"] is None else f"{item['eps']:.2f} $"
+            eps_yoy = "comparaison annuelle indisponible" if item["eps_yoy_pct"] is None else f"{item['eps_yoy_pct']:+.1f} % sur un an"
+            lines.append(f"- {item['name']} ({item['ticker'}), trimestre clos le {item['period']} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}). Source SEC : {item['source']}")
+    else:
+        lines.append("- Aucun chiffre trimestriel SEC exploitable lors de cette collecte; aucune valeur n'est estimée ni remplacée par un chiffre de presse.")
     lines += ["", "NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE",
               "Les instruments sont sélectionnés par importance du mouvement et disponibilité des données, non comme recommandation automatique d'achat ou de vente."]
     if report_type == "update":
@@ -841,6 +966,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     data, data_errors = fetch_prices()
     rows = [analyse_asset(ticker, frame) for ticker, frame in data.items()]
     news, news_errors = fetch_news()
+    company_fundamentals, fundamentals_errors = fetch_company_fundamentals()
     rows.sort(key=lambda r: (r.asset_class, r.name))
     previous = read_state().get("forecasts", [])
     prior_morning = next((x for x in reversed(previous) if x.get("report_type") == "morning"), None)
@@ -863,12 +989,14 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         "",
     ]
 
-    append_funnel_report(lines, report_type, rows, news, previous, prior_morning, prior_update, data_errors, news_errors)
-    lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Titres : flux RSS Google News, liens vers les publications d'origine lorsqu'ils sont fournis.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}."]
+    append_funnel_report(lines, report_type, rows, news, previous, prior_morning, prior_update, data_errors, news_errors, company_fundamentals)
+    lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Titres : flux RSS Google News, liens vers les publications d'origine lorsqu'ils sont fournis.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}; erreurs données fondamentales SEC : {len(fundamentals_errors)}."]
     if data_errors:
         lines += ["", "DONNÉES MANQUANTES"] + [f"- {e}" for e in data_errors[:20]]
     if news_errors:
         lines += ["", "ERREURS DE FLUX"] + [f"- {e}" for e in news_errors]
+    if fundamentals_errors:
+        lines += ["", "ERREURS DONNÉES FONDAMENTALES SEC"] + [f"- {e}" for e in fundamentals_errors[:15]]
     lines += ["", "Avertissement : contenu informatif et expérimental, pas un conseil d'investissement. Vérifier les données et les actualités avant toute décision."]
     plain = "\n".join(lines)
 
