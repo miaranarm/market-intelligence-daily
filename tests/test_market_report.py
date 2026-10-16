@@ -2,8 +2,52 @@ import unittest
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import AssetRow, _quarterly_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
+
+
+class SecFundamentalParsingTests(unittest.TestCase):
+    def test_quarterly_parser_selects_latest_quarter_and_year_comparable(self):
+        payload = {
+            "facts": {
+                "us-gaap": {
+                    "Revenues": {
+                        "units": {
+                            "USD": [
+                                {"form": "10-Q", "fp": "Q1", "start": "2025-04-01", "end": "2025-06-30", "val": 800, "filed": "2025-08-01"},
+                                {"form": "10-Q", "fp": "Q1", "start": "2026-04-01", "end": "2026-06-30", "val": 1000, "filed": "2026-08-01"},
+                                {"form": "10-K", "fp": "FY", "start": "2025-01-01", "end": "2025-12-31", "val": 3000, "filed": "2026-02-01"},
+                                {"form": "10-Q", "fp": "Q2", "start": "2026-04-01", "end": "2026-06-30", "val": 9999, "filed": "2026-08-02"},
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+        latest, prior, tag = _quarterly_fact_points(payload, ("Revenues",), ("USD",))
+        self.assertEqual(tag, "Revenues")
+        self.assertEqual(latest["val"], 1000)
+        self.assertEqual(prior["val"], 800)
+        self.assertEqual(latest["end"], "2026-06-30")
+
+    def test_quarterly_parser_returns_none_when_only_annual_fact_exists(self):
+        payload = {
+            "facts": {
+                "us-gaap": {
+                    "Revenues": {
+                        "units": {
+                            "USD": [
+                                {"form": "10-K", "fp": "FY", "start": "2025-01-01", "end": "2025-12-31", "val": 3000}
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+        latest, prior, tag = _quarterly_fact_points(payload, ("Revenues",), ("USD",))
+        self.assertIsNone(latest)
+        self.assertIsNone(prior)
+        self.assertIsNone(tag)
 
 class MarketConvictionTests(unittest.TestCase):
     @staticmethod
