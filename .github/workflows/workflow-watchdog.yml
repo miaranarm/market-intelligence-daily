@@ -6,6 +6,7 @@ on:
     workflows:
       - Generate market report
       - Validate market report
+      - pages build and deployment
     types: [completed]
 
 permissions:
@@ -34,7 +35,7 @@ jobs:
               '',
               'Le watchdog signale l’échec, mais ne relance pas automatiquement le rapport afin d’éviter une boucle infinie ou des e-mails répétés.',
               'Après correction, relancez le workflow concerné depuis Actions ou utilisez la commande de contrôle prévue pour le rapport.'
-            ].join('\\n');
+            ].join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
