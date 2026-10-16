@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, NEWS_FEEDS, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
 
 
@@ -21,6 +21,32 @@ class PriceFreshnessTests(unittest.TestCase):
     def test_missing_quote_date_is_flagged(self):
         self.assertIn("indisponible", _price_freshness_note(None))
 
+
+
+class FredMacroSeriesTests(unittest.TestCase):
+    def test_fred_csv_parser_uses_latest_non_missing_observation(self):
+        csv_text = (
+            "observation_date,CPIAUCSL,UNRATE,PAYEMS,FEDFUNDS,DGS10,DGS2,T10YIE\n"
+            "2025-09-01,320.0,4.1,158000,4.33,4.0,3.8,2.2\n"
+            "2026-09-01,330.0,4.3,159000,4.25,4.1,3.7,2.3\n"
+            "2026-10-01,.,.,.,.,4.2,3.8,.\n"
+        )
+        rows = {x["id"]: x for x in _parse_fred_csv(csv_text)}
+        self.assertEqual(rows["CPIAUCSL"]["date"], "2026-09-01")
+        self.assertEqual(rows["CPIAUCSL"]["yoy_pct"], 3.12)
+        self.assertEqual(rows["UNRATE"]["value"], 4.3)
+        self.assertEqual(rows["DGS10"]["date"], "2026-10-01")
+        self.assertEqual(set(rows), set(FRED_SERIES))
+
+    def test_fred_csv_missing_date_column_fails_clearly(self):
+        with self.assertRaisesRegex(ValueError, "date"):
+            _parse_fred_csv("CPIAUCSL\n330.0\n")
+
+    def test_fred_series_are_official_series_pages_and_csv_endpoint(self):
+        from src.market_report import FRED_CSV_URL
+        self.assertIn("fred.stlouisfed.org/graph/fredgraph.csv", FRED_CSV_URL)
+        self.assertIn("DGS10", FRED_CSV_URL)
+        self.assertIn("CPIAUCSL", FRED_CSV_URL)
 
 class NewsSourceCoverageTests(unittest.TestCase):
     def test_multilateral_sources_have_targeted_discovery_queries(self):
