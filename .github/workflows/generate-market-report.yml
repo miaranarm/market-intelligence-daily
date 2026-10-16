@@ -17,9 +17,14 @@ on:
           - morning
           - update
           - audit
+  # ChatGPT can trigger a run by posting a command on the control issue.
+  # Only comments authored by the repository owner with an exact command are accepted.
+  issue_comment:
+    types: [created]
 
 permissions:
   contents: write
+  issues: read
 
 concurrency:
   group: market-report
@@ -27,6 +32,7 @@ concurrency:
 
 jobs:
   report:
+    if: ${{ github.event_name != 'issue_comment' || (github.event.comment.user.login == 'miaranarm' && !github.event.issue.pull_request && contains(fromJSON('["/run-market-report morning","/run-market-report update","/run-market-report audit"]'), github.event.comment.body)) }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -50,12 +56,42 @@ jobs:
           python -m py_compile src/market_report.py
           python -m unittest discover -s tests -v
 
+      - name: Determine report type
+        id: report_type
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          DISPATCH_INPUT: ${{ inputs.report_type }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "issue_comment" ]]; then
+            case "$COMMENT_BODY" in
+              "/run-market-report morning") type="morning" ;;
+              "/run-market-report update") type="update" ;;
+              "/run-market-report audit") type="audit" ;;
+              *) echo "Unsupported command"; exit 1 ;;
+            esac
+          elif [[ "$EVENT_NAME" == "schedule" ]]; then
+            case "$SCHEDULE" in
+              "30 2 * * *") type="morning" ;;
+              "30 10 * * *") type="update" ;;
+              "0 18 * * *") type="audit" ;;
+              *) echo "Unsupported schedule"; exit 1 ;;
+            esac
+          else
+            type="${DISPATCH_INPUT:-morning}"
+          fi
+          echo "value=$type" >> "$GITHUB_OUTPUT"
+          echo "Report type selected: $type"
+
       - name: Generate report files
         env:
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
           SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
           REPORT_RECIPIENT: ${{ secrets.REPORT_RECIPIENT }}
-          REPORT_TYPE: ${{ github.event_name == 'schedule' && (github.event.schedule == '30 2 * * *' && 'morning' || github.event.schedule == '30 10 * * *' && 'update' || 'audit') || inputs.report_type || 'morning' }}
+          REPORT_TYPE: ${{ steps.report_type.outputs.value }}
         run: python src/market_report.py --report-type "$REPORT_TYPE" --no-email
 
       - name: Commit report history
@@ -76,5 +112,5 @@ jobs:
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
           SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
           REPORT_RECIPIENT: ${{ secrets.REPORT_RECIPIENT }}
-          REPORT_TYPE: ${{ github.event_name == 'schedule' && (github.event.schedule == '30 2 * * *' && 'morning' || github.event.schedule == '30 10 * * *' && 'update' || 'audit') || inputs.report_type || 'morning' }}
+          REPORT_TYPE: ${{ steps.report_type.outputs.value }}
         run: python src/market_report.py --report-type "$REPORT_TYPE" --send-link-only
