@@ -1,9 +1,29 @@
 import unittest
 from datetime import datetime, timezone
+
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import AssetRow, _is_recent_news_item, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
+
+
+class NewsFreshnessTests(unittest.TestCase):
+    def test_recent_headlines_are_kept(self):
+        now = datetime(2026, 10, 16, 12, 0, tzinfo=timezone.utc)
+        self.assertTrue(_is_recent_news_item("Fri, 16 Oct 2026 10:00:00 GMT", now=now))
+
+    def test_old_headlines_are_rejected(self):
+        now = datetime(2026, 10, 16, 12, 0, tzinfo=timezone.utc)
+        self.assertFalse(_is_recent_news_item("Thu, 23 Jul 2026 07:00:00 GMT", now=now))
+
+    def test_undated_or_unparseable_headlines_are_preserved(self):
+        now = datetime(2026, 10, 16, 12, 0, tzinfo=timezone.utc)
+        self.assertTrue(_is_recent_news_item("", now=now))
+        self.assertTrue(_is_recent_news_item("date unavailable", now=now))
+
+    def test_implausibly_future_dated_headlines_are_rejected(self):
+        now = datetime(2026, 10, 16, 12, 0, tzinfo=timezone.utc)
+        self.assertFalse(_is_recent_news_item("Sun, 25 Oct 2026 12:00:00 GMT", now=now))
 
 
 class SecFundamentalParsingTests(unittest.TestCase):
