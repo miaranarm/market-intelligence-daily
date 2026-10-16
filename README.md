@@ -6,20 +6,21 @@ Public repository for a multi-asset market-intelligence system with three planne
 
 - [x] Public repository verified.
 - [x] Report HTML generation and single-link email delivery workflow added.
-- [ ] GitHub Pages publication confirmed from branch `main`, folder `/docs`.
-- [ ] First public report page validated.
+- [x] GitHub Pages publication verified from branch `main`, folder `/docs`.
+- [x] Public report page opened and validated by the repository owner.
 - [x] Manual GitHub Actions workflow for testing Gmail SMTP delivery.
-- [ ] Gmail credentials verified as GitHub Actions secrets.
-- [ ] Test email received successfully.
+- [x] Gmail SMTP credentials are configured as GitHub Actions secrets (the test send succeeded).
+- [x] Test email received successfully by the recipient.
 - [x] Market-data/news collection and report generation committed.
+- [x] Official SEC EDGAR XBRL Company Facts integration added for a selected set of US companies, reporting latest usable quarterly revenue and diluted EPS plus year-over-year comparisons when available.
 - [x] Funnel architecture added: world regime → regions → cross-asset interactions → asset classes → sectors/company events → instruments → action and audit.
 - [x] Expanded company-results coverage across US, Europe, Asia and major sectors, plus a broader equity watchlist and representative mutual funds.
 - [x] Explicit directional scenario probabilities added using a transparent cross-asset heuristic; probabilities are explicitly marked experimental and not statistically calibrated.
 - [x] Morning/update/evening reports use the same funnel hierarchy; the evening report includes the self-audit ledger.
-- [ ] Prototype run validated against live sources and email delivery.
+- [x] Manual live report run completed and the recipient confirmed receipt of the test email.
 - [x] Scheduled workflow configured for 05:30, 13:30 and 21:00 Madagascar time (UTC+3); end-to-end delivery still unverified.
 
-**Important:** The scheduled workflow is configured, but the first scheduled report, public Pages URL, and email delivery have not yet been verified end to end. The prototype collects market prices and headlines, keeps technical/quantitative indicators out of the reader-facing report, emails a single link after the report page is committed, and saves snapshots for later audit. Because this repository is public, the tracked snapshots under `data/` are also public. Technical indicators (such as RSI and moving averages) must not appear in the reader-facing report. The system does not yet provide a complete company-by-company fundamental model or statistically calibrated directional probabilities. Its current probability estimates are an explicitly labeled heuristic that must be audited against future outcomes.
+**Current validation:** The public Pages URL has been opened successfully, a manual report workflow has completed, and the recipient confirmed receipt of the test email. The full scheduled delivery cycle should continue to be monitored. The prototype collects market prices and headlines, adds a limited SEC XBRL fundamentals sample for selected US issuers, keeps technical/quantitative indicators out of the reader-facing report, emails a single link after the report page is committed, and saves snapshots for later audit. Because this repository is public, the tracked snapshots under `data/` are also public. Technical indicators (such as RSI and moving averages) must not appear in the reader-facing report. The system does not yet provide a complete company-by-company fundamental model or statistically calibrated directional probabilities. Its current probability estimates are an explicitly labeled heuristic that must be audited against future outcomes.
 
 ## Configure Gmail securely
 
@@ -76,7 +77,7 @@ Implemented in the current prototype:
 - Automated GitHub Actions checks for Python syntax and unit tests on pushes to the main branch and pull requests.
 
 Still required before this can be called a professional-grade macro briefing:
-- Expand from headline-led microeconomic monitoring to structured company fundamentals: actual revenue/EPS/margins/cash flow versus a verified analyst consensus, official earnings-calendar coverage, original filings, and company-by-company source validation. Headline search is not a substitute for reading filings or transcripts.
+- Expand the initial SEC revenue/EPS sample to structured company fundamentals: margins, cash flow, balance sheets, valuation, verified analyst consensus, official earnings-calendar coverage, original filings, and company-by-company source validation. The SEC figures are reported actuals, not consensus surprises. Headline search is not a substitute for reading filings or transcripts.
 - Validate each official RSS feed's availability and the provenance of article links during live runs.
 - Test the complete market-data collection, report publication, GitHub Pages URL and SMTP email delivery end to end.
 - Expand coverage and validate data freshness, especially for intraday quotes, bonds, funds and non-US markets.
