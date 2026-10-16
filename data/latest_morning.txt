@@ -1,0 +1,71 @@
+Rapport initial — marchés multi-actifs
+Heure Madagascar : 2026-10-16 10:06:13 EAT
+Généré UTC : 2026-10-16 07:06:13 UTC
+
+RÉSUMÉ ET LIMITES
+Données de prix reçues pour 28/28 actifs suivis.
+Ce prototype fournit un état quantitatif descriptif. Il n'intègre pas encore un modèle fondamental complet ni une IA de synthèse; ne pas traiter ses indicateurs comme des recommandations d'achat ou de vente.
+Les données de marché peuvent être retardées, révisées ou indisponibles. Les variations portent sur la dernière séance reçue, pas nécessairement sur la séance en cours.
+
+SCÉNARIO DE RÉFÉRENCE — INDICATEURS, PAS PRÉDICTION CERTAINE
+- Les grands indices US ont reculé sur cinq séances : momentum récent négatif, sans que cela suffise à établir une prévision directionnelle.
+- Bitcoin : variation de la dernière séance disponible +0.70%; la crypto cote en continu, contrairement à la plupart des marchés traditionnels.
+- Les scénarios haussier, central et baissier ne reçoivent pas encore de probabilités chiffrées : elles ne seront ajoutées qu'après une méthode explicitement testée et calibrée.
+- Catalyseurs à surveiller : décisions et communications des banques centrales, inflation/emploi, résultats d'entreprises, rendements obligataires, dollar, pétrole et événements géopolitiques.
+
+
+TABLEAU MULTI-ACTIFS
+Actif | Classe | Dernier prix | Jour % | 5 séances % | 1 mois % | RSI14 | Écart MM20 % | Écart MM50 % | Vol. annualisée % | Lecture
+US Treasury 20+ year ETF (TLT) | Bond ETF | +79.97 | +1.37% | +2.70% | -0.73% | +57.36 | +1.64% | -0.55% | +10.73% | Mixte / tendance à confirmer; Aucun extrême RSI détecté
+Copper futures (HG=F) | Commodity | +6.62 | +1.59% | -0.41% | +0.43% | +51.65 | +0.05% | +0.52% | +23.83% | Hausse / au-dessus des MM20 et MM50; Aucun extrême RSI détecté
+Gold futures (GC=F) | Commodity | +4198.40 | +0.68% | -0.42% | -4.58% | +45.30 | -0.39% | -4.03% | +16.93% | Baisse / sous les MM20 et MM50; Aucun extrême RSI détecté
+Natural gas futures (NG=F) | Commodity | +3.19 | -1.30% | -0.81% | +10.10% | +56.91 | +2.69% | +8.44% | +45.09% | Hausse / au-dessus des MM20 et MM50; Aucun extrême RSI détecté
+Silver futures (SI=F) | Commodity | +57.90 | +1.86% | -4.57% | -11.57% | +39.66 | -4.92% | -9.43% | +35.52% | Baisse / sous les MM20 et MM50; Aucun extrême RSI détecté
+WTI crude oil futures (CL=F) | Commodity | +95.85 | -2.16% | +4.35% | -5.95% | +56.21 | +3.44% | +5.48% | +41.68% | Hausse / au-dessus des MM20 et MM50; Aucun extrême RSI détecté
+High-yield corporate bond ETF (HYG) | Credit ETF | +77.13 | +0.42% | -0.01% | -1.21% | +40.27 | -0.26% | -1.33% | +3.98% | Baisse / sous les MM20 et MM50; Aucun extrême RSI détecté
+Bitcoin (BTC-USD) | Crypto | +82137.15 | +0.70% | -0.93% | -2.66% | +48.68 | -1.87% | +1.12% | +31.84% | Mixte / tendance à confirmer; Aucun extrême RSI détecté
+Ethereum (ETH-USD) | Crypto | +2451.02 | +1.36% | -2.12% | -8.79% | +41.03 | -5.74% | -4.05% | +36.62% | Baisse / sous les MM20 et MM50; Aucun extrême RSI détecté
+Gold ETF (GLD) | ETF | +382.71 | +1.79% | +1.08% | -2.31% | +46.09 | -0.67% | -3.68% | +21.09% | Baisse / sous les MM20 et MM50; Aucun extrême RSI détecté
+Invesco Nasdaq 100 ETF (QQQ) | ETF | +728.00 | -0.13% | -2.62% | +3.41% | +44.24 | -2.03% | +0.22% | +15.44% | Mixte / tendance à confirmer; Aucun extrême RSI détecté
+SPDR S&P 500 ETF (SPY) | ETF | +771.79 | +0.28% | -0.28% | +2.61% | +52.27 | +0.09% | +0.56% | +10.10% | Hausse / au-dessus des MM20 et MM50; Aucun extrême RSI détecté
+Euro Stoxx 50 (^STOXX50E) | European equity index | +6168.26 | -0.36% | +0.68% | -1.57% | +41.77 | -1.13% | -2.82% | +12.65% | Baisse / sous les MM20 et MM50; Aucun extrême RSI détecté
+EUR/USD (EURUSD=X) | FX | +1.12 | +0.41% | +0.25% | -2.00% | +37.18 | -0.51% | -2.06% | +4.27% | Baisse / sous les MM20 et MM50; Aucun extrême RSI détecté
+US Dollar Index (DX-Y.NYB) | FX | +101.86 | -0.13% | -0.34% | +1.64% | +56.61 | +0.15% | +1.51% | +4.76% | Hausse / au-dessus des MM20 et MM50; Aucun extrême RSI détecté
+USD/JPY (USDJPY=X) | FX | +157.96 | +0.00% | -0.07% | +1.25% | +52.09 | +0.04% | +0.16% | +7.17% | Hausse / au-dessus des MM20 et MM50; Aucun extrême RSI détecté
+Hang Seng (^HSI) | Hong Kong equity index | +24135.30 | +0.30% | -0.31% | -2.34% | +41.94 | -1.15% | -3.40% | +15.10% | Baisse / sous les MM20 et MM50; Aucun extrême RSI détecté
+VIX volatility index (^VIX) | Implied volatility | +16.46 | -2.43% | +6.81% | -7.06% | +54.93 | +6.39% | +6.20% | +86.78% | Hausse / au-dessus des MM20 et MM50; Aucun extrême RSI détecté
+Nikkei 225 (^N225) | Japanese equity index | +65324.29 | +1.39% | -5.38% | +2.05% | +43.70 | -2.34% | -1.46% | +26.65% | Baisse / sous les MM20 et MM50; Aucun extrême RSI détecté
+US 10-year Treasury yield (^TNX) | Rates | +5.09 | -1.95% | -2.71% | +1.66% | +47.47 | -1.91% | +3.11% | +15.68% | Mixte / tendance à confirmer; Aucun extrême RSI détecté
+FTSE 100 (^FTSE) | UK equity index | +10840.40 | +1.08% | +3.82% | +1.42% | +62.38 | +2.09% | +1.16% | +11.33% | Hausse / au-dessus des MM20 et MM50; Aucun extrême RSI détecté
+Amazon (AMZN) | US equity | +254.76 | +0.27% | +0.28% | +3.58% | +50.10 | +0.53% | -1.07% | +23.46% | Mixte / tendance à confirmer; Aucun extrême RSI détecté
+Apple (AAPL) | US equity | +342.00 | -0.28% | +0.46% | +2.88% | +60.60 | +1.47% | +5.21% | +19.95% | Hausse / au-dessus des MM20 et MM50; Aucun extrême RSI détecté
+Microsoft (MSFT) | US equity | +539.44 | +1.08% | +3.22% | +10.02% | +65.08 | +4.05% | +6.87% | +22.59% | Hausse / au-dessus des MM20 et MM50; Aucun extrême RSI détecté
+Nvidia (NVDA) | US equity | +217.23 | -1.84% | -5.75% | +1.56% | +40.21 | -4.97% | -2.61% | +26.18% | Baisse / sous les MM20 et MM50; Aucun extrême RSI détecté
+Dow Jones (^DJI) | US equity index | +52177.69 | +1.08% | +1.85% | +1.39% | +55.19 | +1.29% | -0.61% | +10.87% | Mixte / tendance à confirmer; Aucun extrême RSI détecté
+Nasdaq Composite (^IXIC) | US equity index | +26713.03 | +0.08% | -1.77% | +2.83% | +46.25 | -1.32% | +0.29% | +14.43% | Mixte / tendance à confirmer; Aucun extrême RSI détecté
+S&P 500 (^GSPC) | US equity index | +7744.06 | +0.33% | -0.27% | +2.55% | +51.95 | +0.07% | +0.48% | +10.17% | Hausse / au-dessus des MM20 et MM50; Aucun extrême RSI détecté
+
+ACTUALITÉS À VÉRIFIER
+- IMF cites AI slowdown, spiking yields as looming global market risks - Reuters — Reuters — Tue, 13 Oct 2026 03:19:00 GMT — https://news.google.com/rss/articles/CBMiuAFBVV95cUxQcDlSTHJNVmVDQkFXaW1Wa1R4TjZCVUh6dW9FZF9fN2lNcGNUVEFhMUs1V3ZBdjVjUG5UT29Bc1U3aldpZDlWbF9yTUhuS2RzSnYzY2lxNlJTb3dVMzROam9wYVZfcjQ3MUlVRWFZYlcxVUQzcDlGS195NWd3UDgxXzRzWm5VdG5EaDZnbnFkQjVWeHU2ZUM3RFVpSFpuWEV0Wmd1bnlVRFhwclJzR1EtaDROQkJZQ2dW?oc=5
+- Market Know-How 4Q 2026: Yield Ahead - Goldman Sachs Asset Management — Goldman Sachs Asset Management — Tue, 06 Oct 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMic0FVX3lxTE56QlRSLUFNR0lra0dabzgxMTJwWkZRZzh4YnpLUFVncm0xSkZWN0pkaUpjdGY1MGtrVnJpR2gxQVkzNFhCMHJTcXItZk5KQUhBRkdZS0x5VzNMTXp3OEptRWxrWjBTTUdNZk83NVh3VlZRSU0?oc=5
+- Without a resilient economy, central banks have limited choices - Financial Times — Financial Times — Mon, 28 Sep 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMihAFBVV95cUxNcGlNM3dzZGJSTGE3NEpxV0xycXVXb0NaSUVZVlJiclJrNVlzU2JyN2xmQm1ZNjVlcmZ1U0g4VFhvQzBxbjVBdExPU3JYT0NmQURKUHlYZlNyRGdJeTRuenZRWkpiRDBKQ3lpaVlsR1puQjdYcTItRm1yRjREOUlmZ2d0VmM?oc=5
+- RSM’s global central banking outlook - The Real Economy Blog — The Real Economy Blog — Thu, 09 Jul 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMidEFVX3lxTFAxWW9NNlFCanZiWHQzS1JNbklTME14XzIyS2JTMTF2Vmx5U0szRFZTTVc0YmMtT1JWSHRyQ1NiTXJpQ0VDeWdJZ1ZicmIxMzlta0Z6c2g2UEJzLXp6REtsMnRSRnczN2RlMWV6MXAyaHVBdzVH?oc=5
+- A stronger dollar and rising yields: How the Fed’s rate hike could hit global markets - CNBC — CNBC — Thu, 17 Sep 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMiigFBVV95cUxNcGJ6Q21DNEtiYWstRzJmajd5aURLNjNyR1RJYTFmUmZPZElZcDdFOXZwVHgtMVkybDBLaTFMVnQ3WWZXUVhBeDVwQ3ZkTjdiZEZMU0dPVlRqYkNwQVZjN3RLeE56TDc3dUZEcmFfdzNmb3p4YjRhOXVHZGZKX25QVFUzODBtNnlocnfSAY8BQVVfeXFMTW9iUTVqVi0zVnB2Ym9URW96RFpQNlZnZXNaZWRoNG9LdFRSZlFaeTM5U2kyTnpSZF9VMVdXLW1Ecm8xY0xmYXYyakFOcVJCTklvVlhqTHdoME0tMHFMRndvMDc1NEZ0RzhpMk5HWUo5bnVCU2luMFhpTTNzLXY4eUNNTmxieWVwRzhhYnFLWFU?oc=5
+- The Safe Assets Under Central Bankers’ Pillows - Boston University — Boston University — Thu, 10 Sep 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMihwFBVV95cUxPSFU2cjJYN3pfUXBnYTBLYjRBQzdHUDI1VWM0OV9yci0ybmdrdjVHNThjUHZIUEZoOEJhRFAxaENVWXItVmxPQkFXU1RSdVNUeUF2djJWYVNIMWdpYjV2QVlSODVQRE1vQnZvWlJKME9mV3ZEVWd3dWk4UE1Od2NKbngtUVNtQkE?oc=5
+- Rethinking Central Banking: Policy Mix in an Era of Geo-Economic Fragmentation - Modern Diplomacy — Modern Diplomacy — Fri, 18 Sep 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMitwFBVV95cUxQZ1VTc1JuVVJpZGhTSEZwOWJNZ2F5WmZfbVFHREg2akZEQ1BRNzFsQkd5bVJUaHMybHRMRzR1LTFhMXdobW1JRlI4ZEtyTUJBMWNtY3VIZVoxVU5KTFlxZlFyUjR4VTNYcnNBNmp5dlhaMHAtZkR0dlJkY3kzNEEwaWVSZWJLM0VVMkVyZU5ib3o4bkFwRkhQcUhZYnVITkpYUEpzS1FqSTlNQkIwYnktRDdMdTRianc?oc=5
+- The Bond Markets Are Pushing Up Rates. Will Central Banks Follow? - The New York Times — The New York Times — Fri, 04 Sep 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMihwFBVV95cUxQVVl1MHdpSGJrVmVLd1pJbkIyMmU4Uk5FcDlqZnF2d1lmMGpVbDBuLU5ROGZCeDM2d3hoXzg2cDZuVEk5N25qQnloeVVxYUpkNEhwYkViYTZCUS1FZW00dDhlNXRJQXlrcXFvdENWZElrZ290bzJQdmp4T1lkZktNMTZVLThNUlk?oc=5
+- Major central banks on tightening path amid energy price shock - Reuters — Reuters — Fri, 18 Sep 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMilgFBVV95cUxQcEdtMHJJc3lOTzl3bW1rVS05MDRSTm56b3I4S2RYc1RNLXhfcHVGYlBPVmJnSGpoUzhHaldqaG5SVVBkMDZYbVRCVW1nemJBMTREYUwzbW1HMkI4cWZFelhBYUlyazdUNlE4LUdnbXk1X2JleDRuN0xycTZRNUFqbEE2VGlnaTh2NEItQ1NZN0loUmQtMnc?oc=5
+- Central banks can’t afford to keep missing their inflation targets - Atlantic Council — Atlantic Council — Fri, 19 Jun 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMiugFBVV95cUxOLWhrYjdfaFE1aU1hd3RyUEtUYTd0YWxwRWo2VDBBV1BiR1lwN1pKcmlhTU1RNlFXVUlyQUhzemN5eUtxMU0tRFpOZFRfVE1DdERQZ0poSWwzSUY0bmlxdXk4MHljVDB5T3MxMHZMYURTdkJmUGMwTlRYcmxzYnlucVRoLWNLZ3VvcWs5NE1XSlBVN3lUYmYwN3IxV0hGcXBvRFczWGhfanhwTVdNb3lCWExWMVRPOFVkRFE?oc=5
+- Central Bank Bond Purchases and the Price of Safety - Federal Reserve Bank of San Francisco — Federal Reserve Bank of San Francisco — Mon, 22 Jun 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMiyAFBVV95cUxOeEdSZDdJa29DZHRyNlN0VlM5N2xXN1lWOGxkcGRKZmhsYjJxbXdBZExCZ1dGaGhPT29RTDV1d3dLaUZuaW5xT0ZFMVh3U2VkZDNlbWI5Y195UzRLM2h4eXdoWUhVVVIxbnZFVVQ2VVY3dmFhVllPMGRGem9EWEU3clVIWlhYcEhPMUMtMmVGZ2JleGJpRUM0ajN5bmg3REl3bHZjV1VLUjJVazM0ODBfRGtLWk9qOTJXSER1cy1OWnowaEptNm80Ug?oc=5
+- Monetary tightening and ‘hawkish holds’ set to unfold across emerging markets - ODI: Think change — ODI: Think change — Thu, 11 Jun 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMipwFBVV95cUxOSmlhUVJkTkVlZHdfaXd3US0tSUpPNldmeFRtTERPWDJ3cHNJc1JySkktVjk3em0wRmtZTTJ0OFhTbVVvbm9SSTNrbi02TGR4cGc5djc2dEhEa0Q2RnFNclF3dkhiQjBueVhUeEM5Q3NGdUx1NmZ0TUlYWHhNZ2E2Q2JOSjctOEdmTkZyWEd5bFhXMk51TkNDdmVKaWd6VlhyeGRpS2R4cw?oc=5
+- Global Economic Outlook: September 2026 - S&P Global — S&P Global — Wed, 16 Sep 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMiuAFBVV95cUxPUjN2d2VfTXhhc013VkxxQkt6Y1JtczZlODI0MzFvU29aQnJvMzlLaVpDaVJGclZtTEZtVHlsVzVyYUhjaGIxZVhMVVpDVVFIbVZfWDRZWEgyS1V4WktPM1JHZU5MMGlzYVVHaGhSZ2dPWm1jQkREOEtldkt1Z0VrNnNLbzJBZ1FXbFYwTVFNUVNsUXVaODlTTU10Yy1ONkhqZUNKTlZlS0lyRk5jTE9nMGpaWE1UYnlO?oc=5
+- Q3 2026 market update - Sun Life — Sun Life — Fri, 02 Oct 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMib0FVX3lxTE13NmNUdTlyVVV5YUVXWC1TdkMtVTJZOFI0b1dUOFJBMnBhYllUMW1VcUpmTWdPVFBURERrakV3dWRHaXUzTWhfWlJTUWt4RVAwMXk0U1lXMUNRYTd5WVRBMTZKaDdXQnFxVDJ0LVc2TQ?oc=5
+- Global markets keep shrugging off shocks. Here's what could break that streak, according to HSBC - CNBC — CNBC — Tue, 08 Sep 2026 07:00:00 GMT — https://news.google.com/rss/articles/CBMiqgFBVV95cUxQZ1Q2MGg4ZGRieml1MC0zdjhvWVRlTXJ2S18tMzhuSmNHNGx3N01vdXY3b3FBLTVXZUgtZk5IX0tqenEzLVVEOEIzNG5hREw1TUF6bHJ1QlRfdjNkTHVmNkVPUUVnSkVzbmRXcTh1LVZoY29GRjc1VGFZODZ5ZF8tcFJGRG5WZy1Xb2dFTXo3ZnQwYjZDbHdWYlFBMEJ2d21zSTctOFl5U002QdIBrwFBVV95cUxPbHVmWW9kRlh3NXE4QjYwYlk2S3F5Y0dMZi13NEhmX09yX2VxSHFhV0N5bWZkbURMWlpxOWhkNmFqRFlNTHUxbF9ja0NUVTZqam1qR005b0d3U01nVWRWdVBtS0FBSUtuVEMyQ0p1YWlTWDgyVzdGcXVEYzdQeU83Z3NMc3dfT1doRDJWUnIwYXlfeEJtYUtYbHhTYjFWbHB2eWZZRXY5VmZtYkdyQ1Rr?oc=5
+
+QUALITÉ ET SOURCES
+- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).
+- Titres : flux RSS Google News, liens vers les publications d'origine lorsqu'ils sont fournis.
+- Heure de collecte : 2026-10-16T07:06:13+00:00.
+- Erreurs prix : 0; erreurs flux actualités : 0.
+
+Avertissement : contenu informatif et expérimental, pas un conseil d'investissement. Vérifier les données et les actualités avant toute décision.
