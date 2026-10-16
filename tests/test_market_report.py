@@ -2,7 +2,31 @@ import unittest
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
-from src.market_report import evaluate_forecasts, infer_macro_impact, render_professional_html
+from src.market_report import AssetRow, evaluate_forecasts, infer_macro_impact, market_conviction, render_professional_html
+
+
+class MarketConvictionTests(unittest.TestCase):
+    @staticmethod
+    def row(ticker, five_day, daily=0.0):
+        return AssetRow(
+            ticker=ticker, name=ticker, asset_class="test", price=100.0,
+            daily_pct=daily, five_day_pct=five_day, one_month_pct=five_day,
+            rsi14=None, ma20_gap_pct=None, ma50_gap_pct=None,
+            annualized_vol_pct=None, trend="test", data_timestamp="2026-10-16", note=""
+        )
+
+    def test_bullish_and_bearish_scenarios_are_decisive_and_sum_to_100(self):
+        bullish = market_conviction([
+            self.row("^GSPC", 2.0), self.row("^IXIC", 2.0), self.row("^DJI", 2.0), self.row("^VIX", 0.0, -9.0)
+        ])
+        bearish = market_conviction([
+            self.row("^GSPC", -2.0), self.row("^IXIC", -2.0), self.row("^DJI", -2.0), self.row("^VIX", 0.0, 10.0)
+        ])
+        self.assertGreaterEqual(bullish["probabilities"]["haussier"], 75)
+        self.assertGreaterEqual(bearish["probabilities"]["baissier"], 75)
+        self.assertEqual(sum(bullish["probabilities"].values()), 100)
+        self.assertEqual(sum(bearish["probabilities"].values()), 100)
+        self.assertIn("non calibrée", bullish["method"])
 
 
 class ForecastEvaluationTests(unittest.TestCase):
