@@ -29,9 +29,14 @@ class NewsSourceCoverageTests(unittest.TestCase):
         self.assertTrue(any("site%3Aworldbank.org" in url and "Google News" in name for name, url in feeds.items()))
         self.assertTrue(any("Federal Reserve" in name for name in feeds))
         self.assertTrue(any("Bank of Japan" in name for name in feeds))
-        self.assertTrue(any("Bureau of Labor Statistics" in name and url.endswith("/empsit.rss") for name, url in feeds.items()))
-        self.assertTrue(any("Bureau of Labor Statistics" in name and url.endswith("/cpi.rss") for name, url in feeds.items()))
-        self.assertTrue(any("Bureau of Labor Statistics" in name and url.endswith("/ppi.rss") for name, url in feeds.items()))
+        # Do not depend on the BLS RSS endpoints that failed in the hosted runner.
+        self.assertFalse(any("bls.gov/feed/" in url for url in feeds.values()))
+        self.assertTrue(any("BEA" in name and url == "https://apps.bea.gov/rss/rss.xml" for name, url in feeds.items()))
+        self.assertTrue(any("Census Bureau" in name and url == "https://www.census.gov/economic-indicators/indicator.xml" for name, url in feeds.items()))
+        self.assertTrue(any("BLS emploi" in name and "site%3Abls.gov" in url for name, url in feeds.items()))
+        self.assertTrue(any("BLS CPI" in name and "site%3Abls.gov" in url for name, url in feeds.items()))
+        self.assertTrue(any("BLS PPI" in name and "site%3Abls.gov" in url for name, url in feeds.items()))
+        self.assertTrue(any("allocations chômage" in name and "site%3Adol.gov" in url for name, url in feeds.items()))
 
 
 class NewsDeduplicationTests(unittest.TestCase):
