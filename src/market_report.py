@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import io
+from concurrent.futures import ThreadPoolExecutor
 import html
 import json
 import math
@@ -611,17 +612,44 @@ def _parse_fred_csv(csv_text: str) -> list[dict[str, Any]]:
     return result
 
 
+def _fetch_one_fred_series(series_id: str) -> tuple[dict[str, Any] | None, str | None]:
+    """Fetch one series independently, retrying once so one slow series cannot hide the others."""
+    url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
+    last_error: Exception | None = None
+    for attempt in range(2):
+        try:
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=12)
+            response.raise_for_status()
+            rows = _parse_fred_csv(response.text)
+            item = next((row for row in rows if row["id"] == series_id), None)
+            if item is None:
+                return None, f"FRED {series_id}: aucune observation exploitable dans le CSV reçu"
+            return item, None
+        except Exception as exc:
+            last_error = exc
+            if attempt == 0:
+                time.sleep(0.4)
+    assert last_error is not None
+    return None, f"FRED {series_id}: {type(last_error).__name__}: {str(last_error)[:140]}"
+
+
 def fetch_fred_macro_series() -> tuple[list[dict[str, Any]], list[str]]:
-    """Fetch structured public macro series from FRED's CSV endpoint; no API key required."""
-    try:
-        response = requests.get(FRED_CSV_URL, headers={"User-Agent": USER_AGENT}, timeout=20)
-        response.raise_for_status()
-        rows = _parse_fred_csv(response.text)
-        if not rows:
-            return [], ["FRED: le CSV a été reçu mais aucune observation exploitable n'a été trouvée"]
-        return rows, []
-    except Exception as exc:
-        return [], [f"FRED: {type(exc).__name__}: {str(exc)[:160]}"]
+    """Fetch FRED series independently and concurrently; partial results survive individual failures."""
+    rows_by_id: dict[str, dict[str, Any]] = {}
+    errors: list[str] = []
+    # Limit concurrency to avoid overloading the public endpoint; preserve configured output order.
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        futures = {series_id: pool.submit(_fetch_one_fred_series, series_id) for series_id in FRED_SERIES}
+        for series_id in FRED_SERIES:
+            try:
+                item, error = futures[series_id].result()
+                if item is not None:
+                    rows_by_id[series_id] = item
+                if error:
+                    errors.append(error)
+            except Exception as exc:
+                errors.append(f"FRED {series_id}: {type(exc).__name__}: {str(exc)[:140]}")
+    return [rows_by_id[series_id] for series_id in FRED_SERIES if series_id in rows_by_id], errors
 
 
 def append_macro_series(lines: list[str], series: list[dict[str, Any]]) -> None:
