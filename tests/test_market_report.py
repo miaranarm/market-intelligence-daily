@@ -185,6 +185,20 @@ class ForecastEvaluationTests(unittest.TestCase):
         self.assertEqual(result["pending"], 0)
         self.assertIsNotNone(result["mean_brier_score"])
 
+    def test_morning_scenario_remains_pending_until_a_completed_distinct_session_exists(self):
+        today = datetime.now(ZoneInfo("Indian/Antananarivo")).date().isoformat()
+        yesterday = (datetime.now(ZoneInfo("Indian/Antananarivo")).date() - __import__("datetime").timedelta(days=1)).isoformat()
+        forecast = {"probabilities": {"haussier": 65, "central": 20, "baissier": 15}}
+        snapshots = [
+            {"report_type": "morning", "scenario_forecast": forecast,
+             "assets": [{"ticker": "^GSPC", "data_timestamp": yesterday, "price": 100.0}]},
+            {"report_type": "update",
+             "assets": [{"ticker": "^GSPC", "data_timestamp": today, "price": 101.0}]},
+        ]
+        result = evaluate_scenario_forecasts(snapshots)
+        self.assertEqual(result["matured"], [])
+        self.assertEqual(result["pending"], 1)
+
 
     def test_macro_classifier_is_conditional_and_names_relevant_assets(self):
         theme, categories, impact = infer_macro_impact("US inflation data surprises markets")
