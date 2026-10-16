@@ -331,7 +331,7 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
                 from urllib.parse import quote_plus
                 query = quote_plus(f"site:bls.gov/news.release/archives {terms}")
                 fallback_url = f"https://news.google.com/rss/search?q={query}&hl=en-US&gl=US&ceid=US:en"
-                direct_status = getattr(getattr(exc, "response", None), "status_code", None)
+                direct_status = getattr(getattr(exc, "response", None), "status_code", None) or getattr(exc, "code", None)
                 direct_error = f"HTTP {direct_status}" if direct_status else type(exc).__name__
                 try:
                     fallback_response = requests.get(fallback_url, headers=headers, timeout=15)
