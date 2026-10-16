@@ -19,6 +19,17 @@ class AssetUniverseTests(unittest.TestCase):
         self.assertTrue(expected.issubset(ASSETS))
         self.assertTrue(all(ASSETS[ticker]["class"] == "FX" for ticker in expected))
 
+    def test_global_indices_and_diversifying_instruments_are_in_watchlist(self):
+        expected = {
+            "^GDAXI", "^FCHI", "^AXJO", "^KS11", "^NSEI", "^GSPTSE",
+            "ZC=F", "ZW=F", "ZS=F", "KC=F", "SOL-USD", "XRP-USD",
+            "VEA", "VWO", "XLK", "XLE", "AGG",
+        }
+        self.assertTrue(expected.issubset(ASSETS))
+        self.assertEqual(ASSETS["^GDAXI"]["class"], "German equity index")
+        self.assertEqual(ASSETS["ZW=F"]["class"], "Agricultural commodity")
+        self.assertEqual(ASSETS["AGG"]["class"], "Bond ETF")
+
 
 class PriceFreshnessTests(unittest.TestCase):
     def test_recent_quote_has_no_warning(self):
