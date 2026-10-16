@@ -317,19 +317,34 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
             # The BLS RSS endpoint may reject automated requests (HTTP 403). Use a
             # clearly identified Google News search restricted to BLS releases as fallback.
             if "Bureau of Labor Statistics" in feed_name:
-                fallback_url = "https://news.google.com/rss/search?q=site%3Abls.gov%2Fnews.release+OR+site%3Abls.gov%2Fnews.release%2Farchives+CPI+employment+inflation&hl=en-US&gl=US&ceid=US:en"
+                # Keep discovery queries specific to each official release; a search result is
+                # a lead to the BLS page, not a substitute for independent verification.
+                if "emploi" in feed_name:
+                    terms = "employment unemployment payroll jobs"
+                    source_label = "Google News — recherche ciblée BLS emploi"
+                elif "CPI" in feed_name:
+                    terms = "CPI consumer price inflation"
+                    source_label = "Google News — recherche ciblée BLS CPI"
+                else:
+                    terms = "PPI producer price index"
+                    source_label = "Google News — recherche ciblée BLS PPI"
+                from urllib.parse import quote_plus
+                query = quote_plus(f"site:bls.gov/news.release/archives {terms}")
+                fallback_url = f"https://news.google.com/rss/search?q={query}&hl=en-US&gl=US&ceid=US:en"
+                direct_status = getattr(getattr(exc, "response", None), "status_code", None)
+                direct_error = f"HTTP {direct_status}" if direct_status else type(exc).__name__
                 try:
                     fallback_response = requests.get(fallback_url, headers=headers, timeout=15)
                     fallback_response.raise_for_status()
                     fallback_root = ET.fromstring(fallback_response.content)
-                    for item in _feed_entries(fallback_root, "Google News — recherche ciblée BLS")[:6]:
+                    for item in _feed_entries(fallback_root, source_label)[:6]:
                         if item["url"] not in seen and _news_dedupe_key(item["title"]) not in seen_titles and _is_recent_news_item(item["published"]):
                             seen.add(item["url"])
                             seen_titles.add(_news_dedupe_key(item["title"]))
                             batch.append(item)
-                    errors.append(f"{feed_name}: flux direct indisponible ({type(exc).__name__}); repli Google News ciblé BLS utilisé")
+                    errors.append(f"{feed_name}: flux direct indisponible ({direct_error}); repli Google News ciblé utilisé")
                 except Exception as fallback_exc:
-                    errors.append(f"{feed_name}: flux direct {type(exc).__name__}; repli également en échec: {type(fallback_exc).__name__}: {str(fallback_exc)[:100]}")
+                    errors.append(f"{feed_name}: flux direct {direct_error}; repli également en échec: {type(fallback_exc).__name__}: {str(fallback_exc)[:100]}")
             else:
                 errors.append(f"{feed_name}: {type(exc).__name__}: {str(exc)[:120]}")
         feed_batches.append(batch)
