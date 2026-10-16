@@ -1,6 +1,11 @@
 name: Generate market report
 
 on:
+  # Madagascar (UTC+3): 05:30, 13:30, 21:00
+  schedule:
+    - cron: "30 2 * * *"
+    - cron: "30 10 * * *"
+    - cron: "0 18 * * *"
   workflow_dispatch:
     inputs:
       report_type:
@@ -50,7 +55,7 @@ jobs:
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
           SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
           REPORT_RECIPIENT: ${{ secrets.REPORT_RECIPIENT }}
-          REPORT_TYPE: ${{ inputs.report_type }}
+          REPORT_TYPE: ${{ github.event_name == 'schedule' && (github.event.schedule == '30 2 * * *' && 'morning' || github.event.schedule == '30 10 * * *' && 'update' || 'audit') || inputs.report_type || 'morning' }}
         run: python src/market_report.py --report-type "$REPORT_TYPE" --no-email
 
       - name: Commit report history
