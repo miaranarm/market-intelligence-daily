@@ -3,8 +3,22 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, _is_recent_news_item, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import AssetRow, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
+
+
+class PriceFreshnessTests(unittest.TestCase):
+    def test_recent_quote_has_no_warning(self):
+        self.assertEqual(_price_freshness_note("2026-10-16", today=__import__("datetime").date(2026, 10, 16)), "")
+
+    def test_old_quote_is_flagged(self):
+        self.assertIn("ATTENTION", _price_freshness_note("2026-10-01", today=__import__("datetime").date(2026, 10, 16)))
+
+    def test_future_quote_is_flagged(self):
+        self.assertIn("futur", _price_freshness_note("2026-10-20", today=__import__("datetime").date(2026, 10, 16)))
+
+    def test_missing_quote_date_is_flagged(self):
+        self.assertIn("indisponible", _price_freshness_note(None))
 
 
 class NewsFreshnessTests(unittest.TestCase):
