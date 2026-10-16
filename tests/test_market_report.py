@@ -1,9 +1,10 @@
 import unittest
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, NEWS_FEEDS, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import AssetRow, NEWS_FEEDS, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
 
 
@@ -28,6 +29,32 @@ class NewsSourceCoverageTests(unittest.TestCase):
         self.assertIn("https://www.worldbank.org/en/news/all?display=RSS", feeds.values())
         self.assertTrue(any("Fonds monétaire international" in name for name in feeds))
         self.assertTrue(any("Banque mondiale" in name for name in feeds))
+
+
+class FeedFormatCompatibilityTests(unittest.TestCase):
+    def test_rss_items_are_normalized(self):
+        root = ET.fromstring(
+            "<rss><channel><item><title>Policy update</title>"
+            "<link>https://example.org/rss</link><pubDate>Fri, 16 Oct 2026 10:00:00 GMT</pubDate>"
+            "<source>Publisher</source></item></channel></rss>"
+        )
+        items = _feed_entries(root, "Fallback")
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["url"], "https://example.org/rss")
+        self.assertEqual(items[0]["source"], "Publisher")
+
+    def test_atom_entries_with_namespaces_are_normalized(self):
+        root = ET.fromstring(
+            '<feed xmlns="http://www.w3.org/2005/Atom"><entry><title>Macro release</title>'
+            '<link href="https://example.org/atom" rel="alternate"/>'
+            '<updated>2026-10-16T10:00:00Z</updated><source><title>Official publisher</title></source>'
+            '</entry></feed>'
+        )
+        items = _feed_entries(root, "Fallback")
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["url"], "https://example.org/atom")
+        self.assertEqual(items[0]["published"], "2026-10-16T10:00:00Z")
+        self.assertEqual(items[0]["source"], "Official publisher")
 
 
 class NewsFreshnessTests(unittest.TestCase):
