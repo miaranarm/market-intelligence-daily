@@ -212,6 +212,43 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
                 items.append(batch[item_index])
     return items[:24], errors
 
+
+def infer_macro_impact(headline: str) -> tuple[str, str, str]:
+    """Conservative headline taxonomy; this proposes transmission channels, not verified event facts."""
+    text = headline.casefold()
+    if any(k in text for k in ("inflation", "consumer price", "cpi", "pce", "ppi", "price index")):
+        return ("Inflation", "obligations, devises, indices/actions, or, ETF et fonds",
+                "Comparer impérativement le chiffre publié au consensus et au précédent. Une surprise inflationniste à la hausse peut relever les taux anticipés et peser sur les prix obligataires et les valorisations; une surprise à la baisse peut produire l'effet inverse. Le titre seul ne permet pas de connaître le sens de la surprise.")
+    if any(k in text for k in ("central bank", "federal reserve", "fed ", "ecb", "bank of japan", "interest rate", "rate decision", "monetary policy")):
+        return ("Banques centrales", "obligations, devises, indices/futures, actions, crypto, ETF et fonds",
+                "Lire le communiqué original et comparer le ton ainsi que la trajectoire des taux aux attentes déjà intégrées dans les prix. Un ton plus restrictif peut soutenir la devise et les rendements, mais peser sur les actifs sensibles aux taux; un ton plus accommodant peut inverser ces effets. La réaction dépend de la surprise, pas seulement de la décision.")
+    if any(k in text for k in ("payroll", "employment", "unemployment", "jobless", "jobs report", "wage growth", "labor market")):
+        return ("Emploi et salaires", "devises, obligations, indices/futures, actions, ETF et fonds",
+                "Vérifier les chiffres et les révisions par rapport au consensus. Un marché du travail plus robuste peut repousser les baisses de taux attendues; un affaiblissement peut les avancer si l'inflation le permet. Surveiller la devise concernée, les rendements obligataires et les secteurs sensibles à la croissance.")
+    if any(k in text for k in ("gdp", "gross domestic product", "pmi", "manufacturing", "retail sales", "economic growth", "recession", "industrial production")):
+        return ("Croissance et activité", "indices/futures, actions, matières premières, devises, obligations, ETF et fonds",
+                "Comparer la publication au consensus et aux données précédentes. Une activité plus forte peut soutenir les actifs cycliques et la demande de matières premières, tout en augmentant parfois les rendements; une surprise négative peut favoriser les obligations de qualité mais peser sur les actifs cycliques. L'effet dépend de l'inflation et du pays concerné.")
+    if any(k in text for k in ("crude oil", "oil prices", "opec", "natural gas", "energy supply", "eia", "petroleum")):
+        return ("Énergie et matières premières", "matières premières, devises des producteurs/importateurs, actions, indices, obligations, ETF et fonds",
+                "Distinguer variation de l'offre, de la demande, des stocks et prime géopolitique. Un choc d'offre peut soutenir les prix de l'énergie et raviver les risques inflationnistes; un ralentissement de la demande peut peser sur les matières premières cycliques. Vérifier les données d'origine et la réaction effective des contrats à terme.")
+    if any(k in text for k in ("tariff", "trade war", "trade deal", "sanction", "china economy", "chinese economy", "export restriction", "supply chain")):
+        return ("Commerce international et Chine", "indices/futures, actions cycliques, matières premières, devises, ETF et fonds",
+                "Évaluer les pays, secteurs et chaînes d'approvisionnement exposés. Des barrières commerciales ou restrictions peuvent modifier coûts, marges et perspectives de croissance; les matières premières et devises sensibles au commerce peuvent réagir. La direction dépend des mesures exactes, des représailles et de ce qui était déjà anticipé.")
+    if any(k in text for k in ("geopolitical", "war ", "conflict", "attack", "ceasefire", "sanctions", "election", "political crisis")):
+        return ("Géopolitique et risque", "matières premières, devises refuges, obligations, indices/futures, actions, crypto et fonds",
+                "Identifier d'abord les actifs directement exposés et la transmission par l'énergie, le commerce ou les sanctions. Une hausse de l'aversion au risque peut favoriser certains actifs refuges, mais les réactions sont instables et peuvent s'inverser rapidement. Ne pas déduire automatiquement un mouvement de marché du seul titre.")
+    if any(k in text for k in ("earnings", "quarterly results", "profit warning", "revenue", "guidance", "stock buyback")):
+        return ("Résultats d'entreprises", "actions concernées, secteurs, indices/futures, ETF et fonds",
+                "Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.")
+    if any(k in text for k in ("bitcoin", "crypto", "cryptocurrency", "digital asset", "crypto etf")):
+        return ("Cryptoactifs et réglementation", "cryptomonnaies, ETF concernés, actions liées et appétit pour le risque",
+                "Vérifier si la nouvelle porte sur la réglementation, les flux, la liquidité, la sécurité ou les conditions macroéconomiques. L'effet peut être spécifique à l'actif ou se transmettre au sentiment de risque; une corrélation avec les actions ne doit pas être supposée constante.")
+    if any(k in text for k in ("treasury yield", "bond yield", "government bond", "debt auction", "credit spread", "sovereign debt")):
+        return ("Obligations et crédit", "obligations, devises, indices/futures, actions, ETF obligataires et fonds",
+                "Rappel : le prix d'une obligation à taux fixe évolue généralement en sens inverse de son rendement. Examiner la maturité, l'inflation, les anticipations de taux et le risque de crédit avant d'expliquer le mouvement; l'impact sur actions et devises dépend du contexte.")
+    return ("À qualifier", "catégories à confirmer selon le sujet",
+            "Le titre seul ne permet pas de déduire un impact fiable. Ouvrir la source originale, vérifier les faits, la date, les chiffres et le consensus éventuel, puis observer la réaction des actifs concernés. Aucune direction n'est attribuée automatiquement.")
+
 def classify_move(pct: float | None) -> str:
     if pct is None:
         return "indisponible"
@@ -572,11 +609,14 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         )
     if not watch:
         lines.append("- Aucun mouvement ne dépasse les seuils de veille définis pour ce rapport.")
-    lines += ["", "ACTUALITÉS À VÉRIFIER"]
+    lines += ["", "ACTUALITÉS MACROÉCONOMIQUES ET IMPLICATIONS POSSIBLES",
+              "Les titres servent de pistes de vérification. Les implications ci-dessous sont des mécanismes conditionnels classés automatiquement; elles ne prétendent pas confirmer le chiffre publié ni la réaction du marché. Ouvrir chaque source avant toute conclusion."]
     for item in news[:15]:
-        lines.append(f"- {item['title']} — {item['source']} — {item['published']} — {item['url']}")
+        theme, categories, impact = infer_macro_impact(item["title"])
+        lines.append(f"- {item['title']} — Source/publication : {item['source']} — {item['published']} — Lien : {item['url']}")
+        lines.append(f"  Thème : {theme}. Catégories principalement à examiner : {categories}. Implications conditionnelles : {impact}")
     if not news:
-        lines.append("- Aucun flux d'actualité n'a pu être récupéré pendant cette exécution.")
+        lines.append("- Aucun flux d'actualité n'a pu être récupéré pendant cette exécution. Les conclusions macroéconomiques doivent donc rester limitées.")
     lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Titres : flux RSS Google News, liens vers les publications d'origine lorsqu'ils sont fournis.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}."]
     if data_errors:
         lines += ["", "DONNÉES MANQUANTES"] + [f"- {e}" for e in data_errors[:20]]
