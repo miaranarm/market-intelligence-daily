@@ -193,6 +193,12 @@ class NewsFreshnessTests(unittest.TestCase):
         now = datetime(2026, 10, 16, 12, 0, tzinfo=timezone.utc)
         self.assertFalse(_is_recent_news_item("Sun, 25 Oct 2026 12:00:00 GMT", now=now))
 
+    def test_iso8601_atom_dates_are_parsed_for_freshness(self):
+        now = datetime(2026, 10, 16, 12, 0, tzinfo=timezone.utc)
+        self.assertTrue(_is_recent_news_item("2026-10-16T10:00:00Z", now=now))
+        self.assertFalse(_is_recent_news_item("2026-07-23T07:00:00Z", now=now))
+        self.assertFalse(_is_recent_news_item("2026-10-25T12:00:00Z", now=now))
+
 
 class SecFundamentalParsingTests(unittest.TestCase):
     def test_quarterly_parser_selects_latest_quarter_and_year_comparable(self):
