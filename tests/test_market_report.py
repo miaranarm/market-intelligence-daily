@@ -29,6 +29,9 @@ class NewsSourceCoverageTests(unittest.TestCase):
         self.assertTrue(any("site%3Aworldbank.org" in url and "Google News" in name for name, url in feeds.items()))
         self.assertTrue(any("Federal Reserve" in name for name in feeds))
         self.assertTrue(any("Bank of Japan" in name for name in feeds))
+        self.assertTrue(any("Bureau of Labor Statistics" in name and url.endswith("/empsit.rss") for name, url in feeds.items()))
+        self.assertTrue(any("Bureau of Labor Statistics" in name and url.endswith("/cpi.rss") for name, url in feeds.items()))
+        self.assertTrue(any("Bureau of Labor Statistics" in name and url.endswith("/ppi.rss") for name, url in feeds.items()))
 
 
 class NewsDeduplicationTests(unittest.TestCase):
