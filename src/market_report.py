@@ -589,6 +589,62 @@ def market_conviction(rows: list[AssetRow]) -> dict[str, Any]:
             "method": "heuristique de momentum sur 5 séances et variation quotidienne du VIX; non calibrée, à évaluer contre les résultats futurs"}
 
 
+
+
+def evaluate_scenario_forecasts(snapshots: list[dict[str, Any]]) -> dict[str, Any]:
+    """Score saved morning scenario probabilities against the next distinct S&P 500 observation."""
+    series: dict[str, dict[str, float]] = {}
+    for snap in snapshots:
+        for asset in snap.get("assets", []):
+            ticker, day, price = asset.get("ticker"), asset.get("data_timestamp"), asset.get("price")
+            if ticker == "^GSPC" and day and price is not None:
+                try:
+                    series.setdefault(str(day), {})["price"] = float(price)
+                except (TypeError, ValueError):
+                    continue
+    dates = sorted(series)
+    matured: list[dict[str, Any]] = []
+    pending = 0
+    for snap in snapshots:
+        forecast = snap.get("scenario_forecast")
+        if snap.get("report_type") != "morning" or not forecast:
+            continue
+        base_asset = next((a for a in snap.get("assets", []) if a.get("ticker") == "^GSPC"), None)
+        if not base_asset or not base_asset.get("data_timestamp") or base_asset.get("price") is None:
+            pending += 1
+            continue
+        base_date = str(base_asset["data_timestamp"])
+        future_dates = [d for d in dates if d > base_date]
+        if not future_dates:
+            pending += 1
+            continue
+        target_date = future_dates[0]
+        base_price = float(base_asset["price"])
+        target_price = series[target_date]["price"]
+        if base_price <= 0:
+            continue
+        realized_pct = (target_price / base_price - 1) * 100
+        actual = "haussier" if realized_pct > 0.1 else ("baissier" if realized_pct < -0.1 else "central")
+        probs = forecast.get("probabilities", {})
+        predicted = max(("haussier", "central", "baissier"), key=lambda k: float(probs.get(k, 0)))
+        one_hot = {"haussier": 0.0, "central": 0.0, "baissier": 0.0}
+        one_hot[actual] = 1.0
+        brier = sum((float(probs.get(k, 0)) / 100 - one_hot[k]) ** 2 for k in one_hot)
+        matured.append({
+            "base_date": base_date, "target_date": target_date,
+            "predicted": predicted, "actual": actual,
+            "realized_pct": round(realized_pct, 4),
+            "probabilities": probs, "correct": predicted == actual,
+            "brier_score": round(brier, 4),
+        })
+    return {
+        "matured": matured,
+        "pending": pending,
+        "accuracy_pct": round(100 * sum(x["correct"] for x in matured) / len(matured), 1) if matured else None,
+        "mean_brier_score": round(sum(x["brier_score"] for x in matured) / len(matured), 4) if matured else None,
+    }
+
+
 def append_funnel_report(
     lines: list[str], report_type: str, rows: list[AssetRow],
     news: list[dict[str, str]], previous: list[dict[str, Any]],
@@ -733,6 +789,16 @@ def append_funnel_report(
         lines += ["", "ENGAGEMENT POUR L'AUDIT DU SOIR",
                   "- Les probabilités et les observations de cette édition doivent rester inchangées dans l'historique; le rapport du soir comparera ces hypothèses aux mouvements effectivement observés."]
     append_self_audit(lines, {"forecasts": previous, "forecast_records": read_state().get("forecast_records", [])})
+    scenario_audit = evaluate_scenario_forecasts(previous)
+    lines += ["", "AUDIT DES PROBABILITÉS DIRECTIONNELLES"]
+    if scenario_audit["matured"]:
+        lines.append(f"- Prévisions matinales évaluées sur la prochaine observation quotidienne distincte du S&P 500 : {len(scenario_audit['matured'])}; direction dominante correcte dans {scenario_audit['accuracy_pct']} % des cas.")
+        lines.append(f"- Score de Brier multiclasses moyen : {scenario_audit['mean_brier_score']} (plus bas est préférable; 0 est parfait). Échantillon encore exploratoire; ne pas interpréter comme preuve de rentabilité.")
+        for result in scenario_audit["matured"][-3:]:
+            lines.append(f"- {result['base_date']} → {result['target_date']} : prévu {result['predicted']} ({result['probabilities']}); réalisé {result['actual']} ({result['realized_pct']:+.2f} %); Brier {result['brier_score']}.")
+    else:
+        lines.append("- Aucune prévision matinale arrivée à échéance avec une observation quotidienne distincte. Le score de calibration n'est pas encore disponible.")
+    lines.append(f"- Prévisions matinales en attente : {scenario_audit['pending']}. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.")
 
 
 def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
@@ -778,6 +844,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         "run_time_utc": started.isoformat(timespec="seconds"),
         "run_time_madagascar": now_local.isoformat(timespec="seconds"),
         "assets": [asdict(r) for r in rows],
+        "scenario_forecast": market_conviction(rows),
         "news": news[:36],
         "data_error_count": len(data_errors),
         "news_error_count": len(news_errors),
