@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
 
 
@@ -73,6 +73,50 @@ class FredMacroSeriesTests(unittest.TestCase):
         self.assertEqual(row["value"], 4.1)
         self.assertIn("id=DGS10", get.call_args.args[0])
         self.assertEqual(get.call_args.kwargs["timeout"], 12)
+
+    def test_bls_fallback_parses_official_monthly_series_and_cpi_yoy(self):
+        class FakeResponse:
+            def raise_for_status(self):
+                return None
+            def json(self):
+                return {
+                    "status": "REQUEST_SUCCEEDED",
+                    "Results": {"series": [
+                        {"seriesID": "CUUR0000SA0", "data": [
+                            {"year": "2026", "period": "M09", "value": "320.0"},
+                            {"year": "2025", "period": "M09", "value": "310.0"},
+                        ]},
+                        {"seriesID": "LNS14000000", "data": [
+                            {"year": "2026", "period": "M09", "value": "4.2"},
+                        ]},
+                        {"seriesID": "CES0000000001", "data": [
+                            {"year": "2026", "period": "M09", "value": "159000.0"},
+                        ]},
+                    ]}
+                }
+        with patch("src.market_report.requests.post", return_value=FakeResponse()) as post:
+            rows, errors = fetch_bls_macro_fallback({"CPIAUCSL", "UNRATE", "PAYEMS"})
+        by_id = {x["id"]: x for x in rows}
+        self.assertEqual(set(by_id), {"CPIAUCSL", "UNRATE", "PAYEMS"})
+        self.assertEqual(by_id["CPIAUCSL"]["yoy_pct"], 3.23)
+        self.assertEqual(by_id["UNRATE"]["value"], 4.2)
+        self.assertEqual(by_id["PAYEMS"]["value"], 159000.0)
+        self.assertEqual(by_id["CPIAUCSL"]["provider"], "BLS — source officielle de repli")
+        self.assertEqual(errors, [])
+        self.assertIn("api.bls.gov/publicAPI/v1", post.call_args.args[0])
+        self.assertEqual(post.call_args.kwargs["timeout"], 12)
+
+    def test_macro_orchestrator_fills_missing_fred_series_with_bls_fallback(self):
+        fred = ([{"id": "DGS10", "name": "Treasury", "date": "2026-10-15", "value": 4.1}], ["FRED timeout"])
+        fallback = ([{"id": "UNRATE", "name": "Unemployment", "date": "2026-09-01", "value": 4.2, "provider": "BLS"}], [])
+        with patch("src.market_report.fetch_fred_macro_series", return_value=fred), patch(
+            "src.market_report.fetch_bls_macro_fallback", return_value=fallback
+        ) as fallback_call:
+            rows, errors = fetch_macro_series_with_fallback()
+        self.assertEqual([x["id"] for x in rows], ["UNRATE", "DGS10"])
+        self.assertEqual(errors, ["FRED timeout"])
+        self.assertEqual(fallback_call.call_args.args[0], {"CPIAUCSL", "UNRATE", "PAYEMS"})
+
 
 class NewsSourceCoverageTests(unittest.TestCase):
     def test_multilateral_sources_have_targeted_discovery_queries(self):
