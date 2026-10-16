@@ -32,9 +32,9 @@ class SecFundamentalParsingTests(unittest.TestCase):
 
     def test_q4_is_derived_only_when_annual_and_all_three_quarters_match(self):
         facts = []
-        for year, values, filed_base in (
-            (2024, (80, 180, 280, 1000), "2025"),
-            (2025, (100, 200, 300, 1400), "2026"),
+        for year, values in (
+            (2024, (80, 180, 280, 1000)),
+            (2025, (100, 200, 300, 1400)),
         ):
             starts = (f"{year}-01-01", f"{year}-04-01", f"{year}-07-01")
             ends = (f"{year}-03-31", f"{year}-06-30", f"{year}-09-30")
@@ -42,7 +42,7 @@ class SecFundamentalParsingTests(unittest.TestCase):
                 month = {"Q1": "05", "Q2": "08", "Q3": "11"}[quarter]
                 facts.append({
                     "form": "10-Q", "fp": quarter, "start": start, "end": end,
-                    "val": value, "filed": f"{filed_base}-{month}-01",
+                    "val": value, "filed": f"{year}-{month}-01",
                 })
             facts.append({
                 "form": "10-K", "fp": "FY", "start": f"{year}-01-01",
