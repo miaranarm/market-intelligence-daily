@@ -75,6 +75,13 @@ ASSETS: dict[str, dict[str, str]] = {
 }
 
 NEWS_FEEDS = [
+    # Official primary sources: macroeconomic releases, monetary policy and energy.
+    ("Federal Reserve — communiqués officiels", "https://www.federalreserve.gov/feeds/press_all.xml"),
+    ("Bureau of Labor Statistics — statistiques du travail et inflation", "https://www.bls.gov/feed/bls_latest.rss"),
+    ("Banque centrale européenne — communiqués", "https://www.ecb.europa.eu/rss/press.html"),
+    ("US Energy Information Administration — énergie", "https://www.eia.gov/rss/todayinenergy.xml"),
+    # Cross-checking across several publishers; aggregator headlines are leads, not independent proof.
+    ("Google News — macroéconomie mondiale et banques centrales", "https://news.google.com/rss/search?q=inflation+employment+GDP+central+banks+interest+rates&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — marchés et économie", "https://news.google.com/rss/search?q=global+markets+economy+central+banks&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — entreprises et résultats", "https://news.google.com/rss/search?q=stocks+earnings+corporate+results&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — matières premières et géopolitique", "https://news.google.com/rss/search?q=oil+gold+commodities+geopolitics&hl=en-US&gl=US&ceid=US:en"),
@@ -236,7 +243,9 @@ def scenario_context(rows: list[AssetRow]) -> list[str]:
             lines.append("Or et pétrole progressent ensemble : vérifier si le mouvement reflète dollar, inflation anticipée, offre ou risque géopolitique.")
     if btc and btc.daily_pct is not None:
         lines.append(f"Bitcoin : variation de la dernière séance disponible {fmt(btc.daily_pct, '%')}; la crypto cote en continu, contrairement à la plupart des marchés traditionnels.")
-    return lines or ["Pas assez de données croisées pour formuler un commentaire de régime robuste."]
+    if not lines:
+        return ["Pas assez de données croisées pour formuler un commentaire de régime robuste. — Source de données de marché : https://finance.yahoo.com/."]
+    return [line + " — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/." for line in lines]
 
 def read_state() -> dict[str, Any]:
     try:
@@ -371,6 +380,7 @@ def append_self_audit(lines: list[str], state: dict[str, Any]) -> None:
             lines.append(f"- Exemples d'erreurs à examiner : {details}.")
         else:
             lines.append("- Aucun échec directionnel dans l'échantillon arrivé à échéance; cela ne suffit pas à prouver la robustesse.")
+    lines.append("- Source des prix évalués : Yahoo Finance via yfinance (https://finance.yahoo.com/); la qualité et la disponibilité de ces données ne sont pas garanties.")
     lines.append("- Les prévisions originales sont conservées pour empêcher toute réécriture rétrospective. Les changements de méthode devront être justifiés par des échantillons suffisants et des tests hors échantillon.")
 
 
@@ -547,7 +557,8 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     for r in watch[:10]:
         lines.append(
             f"- {r.name} ({r.ticker}) : dernière séance {fmt(r.daily_pct, '%')}; "
-            f"5 séances {fmt(r.five_day_pct, '%')}; 1 mois {fmt(r.one_month_pct, '%')}."
+            f"5 séances {fmt(r.five_day_pct, '%')}; 1 mois {fmt(r.one_month_pct, '%')}. "
+            f"Source : https://finance.yahoo.com/quote/{r.ticker}/"
         )
     if not watch:
         lines.append("- Aucun mouvement ne dépasse les seuils de veille définis pour ce rapport.")
