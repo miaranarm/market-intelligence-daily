@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import AssetRow, NEWS_FEEDS, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
 
 
@@ -19,6 +19,15 @@ class PriceFreshnessTests(unittest.TestCase):
 
     def test_missing_quote_date_is_flagged(self):
         self.assertIn("indisponible", _price_freshness_note(None))
+
+
+class NewsSourceCoverageTests(unittest.TestCase):
+    def test_major_multilateral_primary_sources_are_configured(self):
+        feeds = dict(NEWS_FEEDS)
+        self.assertIn("https://www.imf.org/en/News/RSS?language=eng", feeds.values())
+        self.assertIn("https://www.worldbank.org/en/news/all?display=RSS", feeds.values())
+        self.assertTrue(any("Fonds monétaire international" in name for name in feeds))
+        self.assertTrue(any("Banque mondiale" in name for name in feeds))
 
 
 class NewsFreshnessTests(unittest.TestCase):
