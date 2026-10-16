@@ -265,6 +265,9 @@ REVENUE_TAGS = (
     "SalesRevenueServicesNet",
     "OperatingRevenues",
 )
+OPERATING_INCOME_TAGS = ("OperatingIncomeLoss",)
+OPERATING_CASH_FLOW_TAGS = ("NetCashProvidedByUsedInOperatingActivities",)
+CAPEX_TAGS = ("PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets")
 
 def _quarterly_fact_points(companyfacts: dict[str, Any], tag_names: tuple[str, ...], unit_names: tuple[str, ...]) -> tuple[dict[str, Any] | None, dict[str, Any] | None, str | None]:
     """Return latest reported 10-Q quarterly fact and comparable year-earlier fact, without mixing annual totals."""
@@ -322,7 +325,16 @@ def fetch_company_fundamentals() -> tuple[list[dict[str, Any]], list[str]]:
             eps, prior_eps, eps_tag = _quarterly_fact_points(
                 payload, ("EarningsPerShareDiluted",), ("USD/shares",)
             )
-            if not revenue and not eps:
+            operating_income, _, operating_income_tag = _quarterly_fact_points(
+                payload, OPERATING_INCOME_TAGS, ("USD",)
+            )
+            operating_cash_flow, _, cash_flow_tag = _quarterly_fact_points(
+                payload, OPERATING_CASH_FLOW_TAGS, ("USD",)
+            )
+            capex, _, capex_tag = _quarterly_fact_points(
+                payload, CAPEX_TAGS, ("USD",)
+            )
+            if not revenue and not eps and not operating_income and not operating_cash_flow:
                 errors.append(f"{ticker}: aucun chiffre trimestriel 10-Q exploitable dans les tags XBRL retenus")
                 continue
             revenue_growth = None
@@ -332,16 +344,36 @@ def fetch_company_fundamentals() -> tuple[list[dict[str, Any]], list[str]]:
             if eps and prior_eps and float(prior_eps["val"]) != 0:
                 eps_growth = (float(eps["val"]) / float(prior_eps["val"]) - 1) * 100
             latest_end = max(
-                [x["end"] for x in (revenue, eps) if x and x.get("end")],
+                [x["end"] for x in (revenue, eps, operating_income, operating_cash_flow, capex) if x and x.get("end")],
                 default="date inconnue"
+            )
+            revenue_value = float(revenue["val"]) if revenue else None
+            operating_income_value = float(operating_income["val"]) if operating_income else None
+            cash_flow_value = float(operating_cash_flow["val"]) if operating_cash_flow else None
+            capex_value = abs(float(capex["val"])) if capex else None
+            operating_margin_pct = (
+                round(operating_income_value / revenue_value * 100, 2)
+                if operating_income_value is not None and revenue_value not in (None, 0) else None
+            )
+            free_cash_flow_value = (
+                cash_flow_value - capex_value
+                if cash_flow_value is not None and capex_value is not None else None
             )
             results.append({
                 "ticker": ticker, "name": company["name"], "period": latest_end,
-                "revenue": float(revenue["val"]) if revenue else None,
+                "revenue": revenue_value,
                 "revenue_yoy_pct": round(revenue_growth, 2) if revenue_growth is not None else None,
                 "revenue_tag": revenue_tag, "eps": float(eps["val"]) if eps else None,
                 "eps_yoy_pct": round(eps_growth, 2) if eps_growth is not None else None,
                 "eps_tag": eps_tag,
+                "operating_income": operating_income_value,
+                "operating_income_tag": operating_income_tag,
+                "operating_margin_pct": operating_margin_pct,
+                "operating_cash_flow": cash_flow_value,
+                "operating_cash_flow_tag": cash_flow_tag,
+                "capex": capex_value,
+                "capex_tag": capex_tag,
+                "free_cash_flow": free_cash_flow_value,
                 "source": f"https://data.sec.gov/api/xbrl/companyfacts/CIK{company['cik']}.json",
             })
             time.sleep(0.12)
@@ -869,18 +901,23 @@ def append_funnel_report(
                 lines.append(f"  - {item['title']} — {item['url']}")
     lines += ["", "FONDAMENTAUX PUBLIÉS — ÉCHANTILLON SEC EDGAR",
               "Chiffres issus des données XBRL officielles de la SEC pour les derniers trimestres 10-Q disponibles. La comparaison annuelle n'est affichée que si un trimestre comparable existe; il ne s'agit pas d'une comparaison au consensus analystes. Les définitions comptables peuvent varier selon l'émetteur.",
-              "Montants de chiffre d'affaires en milliards USD; BPA dilué en USD/action."]
+              "Montants en milliards USD; BPA dilué en USD/action. La marge opérationnelle est calculée à partir du résultat opérationnel et du chiffre d'affaires trimestriels. Le flux de trésorerie disponible (FCF) est approximé par flux opérationnel moins investissements corporels; il peut être indisponible si un poste manque."]
     if company_fundamentals:
         for item in company_fundamentals:
             revenue = "n.d." if item["revenue"] is None else f"{item['revenue'] / 1_000_000_000:.2f} Md$"
             revenue_yoy = "comparaison annuelle indisponible" if item["revenue_yoy_pct"] is None else f"{item['revenue_yoy_pct']:+.1f} % sur un an"
             eps = "n.d." if item["eps"] is None else f"{item['eps']:.2f} $"
             eps_yoy = "comparaison annuelle indisponible" if item["eps_yoy_pct"] is None else f"{item['eps_yoy_pct']:+.1f} % sur un an"
+            operating_income = "n.d." if item.get("operating_income") is None else f"{item['operating_income'] / 1_000_000_000:.2f} Md$"
+            operating_margin = "n.d." if item.get("operating_margin_pct") is None else f"{item['operating_margin_pct']:.1f} %"
+            operating_cash_flow = "n.d." if item.get("operating_cash_flow") is None else f"{item['operating_cash_flow'] / 1_000_000_000:.2f} Md$"
+            capex = "n.d." if item.get("capex") is None else f"{item['capex'] / 1_000_000_000:.2f} Md$"
+            free_cash_flow = "n.d." if item.get("free_cash_flow") is None else f"{item['free_cash_flow'] / 1_000_000_000:.2f} Md$"
             name = item["name"]
             ticker = item["ticker"]
             period = item["period"]
             source = item["source"]
-            lines.append(f"- {name} ({ticker}), trimestre clos le {period} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}). Source SEC : {source}")
+            lines.append(f"- {name} ({ticker}), trimestre clos le {period} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}); résultat opérationnel {operating_income}; marge opérationnelle {operating_margin}; flux opérationnel {operating_cash_flow}; investissements corporels {capex}; FCF approximatif {free_cash_flow}. Source SEC : {source}")
     else:
         lines.append("- Aucun chiffre trimestriel SEC exploitable lors de cette collecte; aucune valeur n'est estimée ni remplacée par un chiffre de presse.")
     lines += ["", "NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE",
