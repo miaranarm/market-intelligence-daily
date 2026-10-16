@@ -447,7 +447,7 @@ def fetch_company_fundamentals() -> tuple[list[dict[str, Any]], list[str]]:
                 "revenue_yoy_pct": round(revenue_growth, 2) if revenue_growth is not None else None,
                 "revenue_tag": revenue_tag, "revenue_derived": bool(revenue and revenue.get("derived")), "eps": float(eps["val"]) if eps else None,
                 "eps_yoy_pct": round(eps_growth, 2) if eps_growth is not None else None,
-                "eps_tag": eps_tag,
+                "eps_tag": eps_tag, "eps_period": eps.get("end") if eps else None,
                 "operating_income": operating_income_value,
                 "operating_income_tag": operating_income_tag, "operating_income_derived": bool(operating_income and operating_income.get("derived")),
                 "operating_margin_pct": operating_margin_pct,
@@ -1006,7 +1006,7 @@ def append_funnel_report(
                     period_age_note = f"; ATTENTION : période publiée il y a {period_age_days} jours (>120 jours)"
             except (TypeError, ValueError):
                 period_age_note = "; ancienneté de la période indisponible"
-            period_kind = "quatrième trimestre calculé à partir du total annuel moins Q1-Q3" if any(item.get(key) for key in ("revenue_derived", "operating_income_derived", "operating_cash_flow_derived", "capex_derived")) else "trimestre déclaré dans un 10-Q"\n            lines.append(f"- {name} ({ticker}), {period_kind}, période close le {period}{period_age_note} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}); résultat opérationnel {operating_income}; marge opérationnelle {operating_margin}; flux opérationnel {operating_cash_flow}; investissements corporels {capex}; FCF approximatif {free_cash_flow}. Source SEC : {source}")
+            period_kind = "quatrième trimestre calculé à partir du total annuel moins Q1-Q3" if any(item.get(key) for key in ("revenue_derived", "operating_income_derived", "operating_cash_flow_derived", "capex_derived")) else "trimestre déclaré dans un 10-Q"\n            lines.append(f"- {name} ({ticker}), {period_kind}, période close le {period}{period_age_note} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}, période {item.get("eps_period") or "n.d."}); résultat opérationnel {operating_income}; marge opérationnelle {operating_margin}; flux opérationnel {operating_cash_flow}; investissements corporels {capex}; FCF approximatif {free_cash_flow}. Source SEC : {source}")
     else:
         lines.append("- Aucun chiffre trimestriel SEC exploitable lors de cette collecte; aucune valeur n'est estimée ni remplacée par un chiffre de presse.")
     lines += ["", "NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE",
