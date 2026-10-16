@@ -225,7 +225,27 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
                     seen.add(link)
                     batch.append({"title": title, "url": link, "published": published, "source": source})
         except Exception as exc:
-            errors.append(f"{feed_name}: {type(exc).__name__}: {str(exc)[:120]}")
+            # The BLS RSS endpoint may reject automated requests (HTTP 403). Use a
+            # clearly identified Google News search restricted to BLS releases as fallback.
+            if "Bureau of Labor Statistics" in feed_name:
+                fallback_url = "https://news.google.com/rss/search?q=site%3Abls.gov%2Fnews.release+OR+site%3Abls.gov%2Fnews.release%2Farchives+CPI+employment+inflation&hl=en-US&gl=US&ceid=US:en"
+                try:
+                    fallback_response = requests.get(fallback_url, headers=headers, timeout=15)
+                    fallback_response.raise_for_status()
+                    fallback_root = ET.fromstring(fallback_response.content)
+                    for item in fallback_root.findall(".//item")[:6]:
+                        title = (item.findtext("title") or "").strip()
+                        link = (item.findtext("link") or "").strip()
+                        published = (item.findtext("pubDate") or "").strip()
+                        source = (item.findtext("source") or "").strip() or "Google News — recherche ciblée BLS"
+                        if title and link and link not in seen:
+                            seen.add(link)
+                            batch.append({"title": title, "url": link, "published": published, "source": source})
+                    errors.append(f"{feed_name}: flux direct indisponible ({type(exc).__name__}); repli Google News ciblé BLS utilisé")
+                except Exception as fallback_exc:
+                    errors.append(f"{feed_name}: flux direct {type(exc).__name__}; repli également en échec: {type(fallback_exc).__name__}: {str(fallback_exc)[:100]}")
+            else:
+                errors.append(f"{feed_name}: {type(exc).__name__}: {str(exc)[:120]}")
         feed_batches.append(batch)
 
     # Round-robin interleaving keeps official sources and independent publishers visible together.
