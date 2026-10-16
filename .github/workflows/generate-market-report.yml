@@ -46,17 +46,25 @@ jobs:
           SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
           REPORT_RECIPIENT: ${{ secrets.REPORT_RECIPIENT }}
           REPORT_TYPE: ${{ inputs.report_type }}
-        run: python src/market_report.py --report-type "$REPORT_TYPE"
+        run: python src/market_report.py --report-type "$REPORT_TYPE" --no-email
 
       - name: Commit report history
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/
+          git add data/ docs/
           if git diff --cached --quiet; then
             echo "No report state changes to commit."
           else
             git commit -m "Record market report snapshot"
             git push
           fi
+
+      - name: Email the public report link
+        env:
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
+          REPORT_RECIPIENT: ${{ secrets.REPORT_RECIPIENT }}
+          REPORT_TYPE: ${{ inputs.report_type }}
+        run: python src/market_report.py --report-type "$REPORT_TYPE" --send-link-only
