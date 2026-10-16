@@ -186,7 +186,8 @@ def _price_freshness_note(last_date: str | None, today: Any = None, stale_after_
     try:
         from datetime import date
         observed = date.fromisoformat(last_date)
-        reference = today or date.today()
+        # Use Madagascar's local calendar date, not the GitHub runner's UTC date.
+        reference = today or datetime.now(TZ).date()
         age_days = (reference - observed).days
     except (TypeError, ValueError):
         return "Date du dernier cours illisible"
@@ -245,7 +246,14 @@ def _is_recent_news_item(published: str, now: datetime | None = None, max_age_da
     if not published:
         return True
     try:
-        published_at = parsedate_to_datetime(published)
+        try:
+            published_at = parsedate_to_datetime(published)
+        except (TypeError, ValueError, OverflowError):
+            # Atom feeds commonly publish ISO-8601 timestamps, unlike classic RSS.
+            iso_value = published.strip()
+            if iso_value.endswith("Z"):
+                iso_value = iso_value[:-1] + "+00:00"
+            published_at = datetime.fromisoformat(iso_value)
         if published_at.tzinfo is None:
             published_at = published_at.replace(tzinfo=timezone.utc)
         reference = now or datetime.now(timezone.utc)
@@ -254,6 +262,7 @@ def _is_recent_news_item(published: str, now: datetime | None = None, max_age_da
         age_days = (reference - published_at.astimezone(timezone.utc)).total_seconds() / 86400
         return -1 <= age_days <= max_age_days
     except (TypeError, ValueError, OverflowError):
+        # Preserve malformed/undated headlines transparently; valid ISO dates are filtered above.
         return True
 
 
