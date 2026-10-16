@@ -473,6 +473,7 @@ def linkify_text(value: str) -> str:
 def render_professional_html(plain: str, title: str, now_local: datetime, started: datetime) -> str:
     """Turn the text report into a responsive, sectioned HTML briefing."""
     lines = plain.splitlines()
+    reading_minutes = max(1, round(len(plain.split()) / 180))
     content_lines = lines[4:] if len(lines) >= 4 else lines
     blocks: list[str] = []
     i = 0
@@ -527,7 +528,8 @@ def render_professional_html(plain: str, title: str, now_local: datetime, starte
         "</style></head><body><main class='wrap'>"
         "<header class='hero'><div class='eyebrow'>Daily Market Intelligence · Briefing multi-actifs</div>"
         f"<h1>{html.escape(title)}</h1><div class='meta'>Heure de Madagascar : {now_local:%d/%m/%Y à %H:%M:%S %Z}</div>"
-        f"<div class='meta'>Généré le {started:%d/%m/%Y à %H:%M:%S UTC}</div></header>"
+        f"<div class='meta'>Généré le {started:%d/%m/%Y à %H:%M:%S UTC}</div>"
+        f"<div class='meta'>Temps de lecture estimé : {reading_minutes} min (à 180 mots/minute)</div></header>"
         "<div class='notice'><strong>Lecture critique :</strong> les données de marché peuvent être retardées, révisées ou indisponibles. "
         "Les faits observés sont distingués des interprétations; les liens permettent de retrouver les sources citées.</div>"
         "<article class='report'>" + "".join(blocks) + "</article>"
