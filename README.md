@@ -6,16 +6,16 @@ Public repository for a multi-asset market-intelligence system with three planne
 
 - [x] Public repository verified.
 - [x] Report HTML generation and single-link email delivery workflow added.
-- [ ] GitHub Pages enabled from branch `main`, folder `/docs`.
+- [ ] GitHub Pages publication confirmed from branch `main`, folder `/docs`.
 - [ ] First public report page validated.
 - [x] Manual GitHub Actions workflow for testing Gmail SMTP delivery.
-- [ ] Gmail credentials added as GitHub Actions secrets.
+- [ ] Gmail credentials verified as GitHub Actions secrets.
 - [ ] Test email received successfully.
 - [x] First prototype of market-data/news collection and report generation committed.
 - [ ] Prototype run validated against live sources and email delivery.
-- [ ] Scheduled reports enabled only after the prototype is validated.
+- [x] Scheduled workflow configured for 05:30, 13:30 and 21:00 Madagascar time (UTC+3); end-to-end delivery still unverified.
 
-**Important:** The scheduled market reports are not enabled yet. The prototype collects market prices and headlines, keeps technical/quantitative indicators out of the reader-facing report, emails a single link after the report page is committed, and saves snapshots for later audit. Because this repository is public, the tracked snapshots under `data/` are also public. Technical indicators (such as RSI and moving averages) must not appear in the reader-facing report. The system does not yet provide a complete fundamental analysis or calibrated directional probabilities.
+**Important:** The scheduled workflow is configured, but the first scheduled report, public Pages URL, and email delivery have not yet been verified end to end. The prototype collects market prices and headlines, keeps technical/quantitative indicators out of the reader-facing report, emails a single link after the report page is committed, and saves snapshots for later audit. Because this repository is public, the tracked snapshots under `data/` are also public. Technical indicators (such as RSI and moving averages) must not appear in the reader-facing report. The system does not yet provide a complete fundamental analysis or calibrated directional probabilities.
 
 ## Configure Gmail securely
 
@@ -48,7 +48,7 @@ If it fails, the workflow log should identify missing secrets or an SMTP authent
 
 ## Current prototype scope
 
-The initial watchlist spans major equity indices, volatility, US Treasury yields, FX, commodities, crypto, ETFs and selected large-cap US stocks. Technical and quantitative measures (including RSI, moving averages and realized volatility) are for internal analysis and scenario comparison only; they are not displayed in the reader-facing report. The report should emphasize what happened, why it may matter, cross-asset effects, relevant news, scenarios, and assets to monitor. Price changes may be shown as market observations, not as standalone trading signals. Data are subject to provider availability, delays and quality limits; missing data and collection errors are listed in each report. The report-generation workflow is currently manual so it can be tested before scheduled emails are enabled.
+The initial watchlist spans major equity indices, volatility, US Treasury yields, FX, commodities, crypto, ETFs and selected large-cap US stocks. Technical and quantitative measures (including RSI, moving averages and realized volatility) are for internal analysis and scenario comparison only; they are not displayed in the reader-facing report. The report should emphasize what happened, why it may matter, cross-asset effects, relevant news, scenarios, and assets to monitor. Price changes may be shown as market observations, not as standalone trading signals. Data are subject to provider availability, delays and quality limits; missing data and collection errors are listed in each report. The report-generation workflow supports both scheduled and manual runs; scheduled emails depend on valid repository secrets and a working public report URL.
 
 ## Planned report schedule
 
