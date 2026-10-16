@@ -1,0 +1,56 @@
+name: Test email delivery
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-email:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Send a test email with the report link
+        env:
+          SMTP_USERNAME: \${{ secrets.SMTP_USERNAME }}
+          SMTP_APP_PASSWORD: \${{ secrets.SMTP_APP_PASSWORD }}
+          REPORT_RECIPIENT: \${{ secrets.REPORT_RECIPIENT }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import html
+          import os
+          import smtplib
+          import ssl
+          from email.message import EmailMessage
+
+          required = ("SMTP_USERNAME", "SMTP_APP_PASSWORD", "REPORT_RECIPIENT")
+          missing = [key for key in required if not os.environ.get(key, "").strip()]
+          if missing:
+              raise SystemExit("Secrets manquants dans Settings > Secrets and variables > Actions : " + ", ".join(missing))
+
+          sender = os.environ["SMTP_USERNAME"].strip()
+          recipient = os.environ["REPORT_RECIPIENT"].strip()
+          url = "https://miaranarm.github.io/market-intelligence-daily/"
+          message = EmailMessage()
+          message["Subject"] = "[Market Intelligence] Test de réception"
+          message["From"] = sender
+          message["To"] = recipient
+          message.set_content("Ceci est un test de réception du projet Market Intelligence Daily. Lien prévu du rapport : " + url)
+          message.add_alternative(
+              "<html><body style='font-family:Arial,sans-serif;color:#172238'>"
+              "<h2>Market Intelligence Daily</h2>"
+              "<p>Ceci est un test de réception. Le lien prévu du rapport est :</p>"
+              f"<p><a href='{html.escape(url, quote=True)}'>Ouvrir le rapport</a></p>"
+              "<p>Ce message de test ne contient pas de données de marché.</p>"
+              "</body></html>", subtype="html"
+          )
+          with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as server:
+              server.ehlo()
+              server.starttls(context=ssl.create_default_context())
+              server.ehlo()
+              server.login(sender, os.environ["SMTP_APP_PASSWORD"].replace(" ", ""))
+              server.send_message(message)
+          print("Message de test transmis au serveur SMTP. Vérifier la boîte de réception et les courriers indésirables.")
+          PY
