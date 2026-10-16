@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from email.message import EmailMessage
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -204,6 +205,23 @@ def analyse_asset(ticker: str, frame: pd.DataFrame) -> AssetRow:
         data_timestamp=last_date, note=note
     )
 
+def _is_recent_news_item(published: str, now: datetime | None = None, max_age_days: int = 10) -> bool:
+    """Reject dated headlines older than the freshness window; keep undated/unparseable items transparently."""
+    if not published:
+        return True
+    try:
+        published_at = parsedate_to_datetime(published)
+        if published_at.tzinfo is None:
+            published_at = published_at.replace(tzinfo=timezone.utc)
+        reference = now or datetime.now(timezone.utc)
+        if reference.tzinfo is None:
+            reference = reference.replace(tzinfo=timezone.utc)
+        age_days = (reference - published_at.astimezone(timezone.utc)).total_seconds() / 86400
+        return -1 <= age_days <= max_age_days
+    except (TypeError, ValueError, OverflowError):
+        return True
+
+
 def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
     feed_batches: list[list[dict[str, str]]] = []
     errors: list[str] = []
@@ -221,7 +239,7 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
                 link = (item.findtext("link") or "").strip()
                 published = (item.findtext("pubDate") or "").strip()
                 source = (item.findtext("source") or "").strip() or feed_name
-                if title and link and link not in seen:
+                if title and link and link not in seen and _is_recent_news_item(published):
                     seen.add(link)
                     batch.append({"title": title, "url": link, "published": published, "source": source})
         except Exception as exc:
@@ -238,7 +256,7 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
                         link = (item.findtext("link") or "").strip()
                         published = (item.findtext("pubDate") or "").strip()
                         source = (item.findtext("source") or "").strip() or "Google News — recherche ciblée BLS"
-                        if title and link and link not in seen:
+                        if title and link and link not in seen and _is_recent_news_item(published):
                             seen.add(link)
                             batch.append({"title": title, "url": link, "published": published, "source": source})
                     errors.append(f"{feed_name}: flux direct indisponible ({type(exc).__name__}); repli Google News ciblé BLS utilisé")
