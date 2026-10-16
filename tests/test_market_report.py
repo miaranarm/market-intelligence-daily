@@ -5,8 +5,19 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
+
+
+class AssetUniverseTests(unittest.TestCase):
+    def test_fx_watchlist_covers_major_currency_pairs(self):
+        expected = {
+            "EURUSD=X", "USDJPY=X", "GBPUSD=X", "AUDUSD=X",
+            "NZDUSD=X", "USDCAD=X", "USDCHF=X", "USDCNY=X",
+            "USDINR=X", "EURGBP=X",
+        }
+        self.assertTrue(expected.issubset(ASSETS))
+        self.assertTrue(all(ASSETS[ticker]["class"] == "FX" for ticker in expected))
 
 
 class PriceFreshnessTests(unittest.TestCase):
