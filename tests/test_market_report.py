@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import AssetRow, NEWS_FEEDS, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import AssetRow, NEWS_FEEDS, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
 
 
@@ -29,6 +29,20 @@ class NewsSourceCoverageTests(unittest.TestCase):
         self.assertTrue(any("site%3Aworldbank.org" in url and "Google News" in name for name, url in feeds.items()))
         self.assertTrue(any("Federal Reserve" in name for name in feeds))
         self.assertTrue(any("Bank of Japan" in name for name in feeds))
+
+
+class NewsDeduplicationTests(unittest.TestCase):
+    def test_headline_key_ignores_case_punctuation_and_html_entities(self):
+        self.assertEqual(
+            _news_dedupe_key("Markets &amp; Rates: Policy UPDATE!"),
+            _news_dedupe_key("MARKETS rates policy update"),
+        )
+
+    def test_different_headlines_remain_distinct(self):
+        self.assertNotEqual(
+            _news_dedupe_key("Inflation rises in September"),
+            _news_dedupe_key("Inflation falls in September"),
+        )
 
 
 class FeedFormatCompatibilityTests(unittest.TestCase):
