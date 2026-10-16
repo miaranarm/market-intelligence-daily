@@ -247,6 +247,45 @@ def _is_recent_news_item(published: str, now: datetime | None = None, max_age_da
         return True
 
 
+def _feed_entries(root: ET.Element, default_source: str) -> list[dict[str, str]]:
+    """Normalize RSS 2.0 and Atom entries without assuming a particular XML namespace."""
+    entries: list[dict[str, str]] = []
+    for node in root.iter():
+        node_type = node.tag.rsplit("}", 1)[-1].split(":")[-1].lower()
+        if node_type not in {"item", "entry"}:
+            continue
+        fields: dict[str, str] = {}
+        atom_link = ""
+        atom_source = ""
+        for child in list(node):
+            name = child.tag.rsplit("}", 1)[-1].split(":")[-1].lower()
+            value = (child.text or "").strip()
+            if name == "link":
+                href = (child.attrib.get("href") or "").strip()
+                rel = (child.attrib.get("rel") or "alternate").strip().lower()
+                if href and (not atom_link or rel == "alternate"):
+                    atom_link = href
+                elif value and not atom_link:
+                    atom_link = value
+            elif name == "source":
+                atom_source = value
+                if not atom_source:
+                    atom_source = next(
+                        ((grand.text or "").strip() for grand in list(child)
+                         if grand.tag.rsplit("}", 1)[-1].split(":")[-1].lower() == "title"),
+                        "",
+                    )
+            elif name in {"title", "pubdate", "published", "updated", "date"}:
+                fields[name] = value
+        title = fields.get("title", "")
+        link = atom_link or fields.get("link", "")
+        published = next((fields[k] for k in ("pubdate", "published", "updated", "date") if fields.get(k)), "")
+        source = atom_source or fields.get("source", "") or default_source
+        if title and link:
+            entries.append({"title": title, "url": link, "published": published, "source": source})
+    return entries
+
+
 def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
     feed_batches: list[list[dict[str, str]]] = []
     errors: list[str] = []
@@ -259,14 +298,10 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
             response.raise_for_status()
             root = ET.fromstring(response.content)
             # Cap each feed so one prolific publisher cannot crowd out other sources.
-            for item in root.findall(".//item")[:6]:
-                title = (item.findtext("title") or "").strip()
-                link = (item.findtext("link") or "").strip()
-                published = (item.findtext("pubDate") or "").strip()
-                source = (item.findtext("source") or "").strip() or feed_name
-                if title and link and link not in seen and _is_recent_news_item(published):
-                    seen.add(link)
-                    batch.append({"title": title, "url": link, "published": published, "source": source})
+            for item in _feed_entries(root, feed_name)[:6]:
+                if item["url"] not in seen and _is_recent_news_item(item["published"]):
+                    seen.add(item["url"])
+                    batch.append(item)
         except Exception as exc:
             # The BLS RSS endpoint may reject automated requests (HTTP 403). Use a
             # clearly identified Google News search restricted to BLS releases as fallback.
@@ -276,14 +311,10 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
                     fallback_response = requests.get(fallback_url, headers=headers, timeout=15)
                     fallback_response.raise_for_status()
                     fallback_root = ET.fromstring(fallback_response.content)
-                    for item in fallback_root.findall(".//item")[:6]:
-                        title = (item.findtext("title") or "").strip()
-                        link = (item.findtext("link") or "").strip()
-                        published = (item.findtext("pubDate") or "").strip()
-                        source = (item.findtext("source") or "").strip() or "Google News — recherche ciblée BLS"
-                        if title and link and link not in seen and _is_recent_news_item(published):
-                            seen.add(link)
-                            batch.append({"title": title, "url": link, "published": published, "source": source})
+                    for item in _feed_entries(fallback_root, "Google News — recherche ciblée BLS")[:6]:
+                        if item["url"] not in seen and _is_recent_news_item(item["published"]):
+                            seen.add(item["url"])
+                            batch.append(item)
                     errors.append(f"{feed_name}: flux direct indisponible ({type(exc).__name__}); repli Google News ciblé BLS utilisé")
                 except Exception as fallback_exc:
                     errors.append(f"{feed_name}: flux direct {type(exc).__name__}; repli également en échec: {type(fallback_exc).__name__}: {str(fallback_exc)[:100]}")
