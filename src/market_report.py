@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import io
 import html
 import json
 import math
@@ -560,6 +561,85 @@ def fetch_company_fundamentals() -> tuple[list[dict[str, Any]], list[str]]:
         except Exception as exc:
             errors.append(f"{ticker}: {type(exc).__name__}: {str(exc)[:120]}")
     return results, errors
+
+
+FRED_SERIES: dict[str, dict[str, str]] = {
+    "CPIAUCSL": {"name": "Indice des prix à la consommation (CPI)", "unit": "indice; variation annuelle calculée"},
+    "UNRATE": {"name": "Taux de chômage américain", "unit": "% de la population active"},
+    "PAYEMS": {"name": "Emploi salarié non agricole (payrolls)", "unit": "milliers de personnes"},
+    "FEDFUNDS": {"name": "Taux effectif des fonds fédéraux", "unit": "% annuel"},
+    "DGS10": {"name": "Rendement du Treasury à 10 ans", "unit": "% annuel"},
+    "DGS2": {"name": "Rendement du Treasury à 2 ans", "unit": "% annuel"},
+    "T10YIE": {"name": "Anticipations d'inflation à 10 ans (breakeven)", "unit": "% annuel"},
+}
+FRED_CSV_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=" + ",".join(FRED_SERIES)
+
+
+def _parse_fred_csv(csv_text: str) -> list[dict[str, Any]]:
+    """Parse FRED's public graph CSV and return latest valid observations with explicit dates."""
+    if not csv_text.strip():
+        return []
+    frame = pd.read_csv(io.StringIO(csv_text), na_values=[".", ""])
+    if frame.empty:
+        return []
+    date_col = next((c for c in frame.columns if str(c).casefold() in ("observation_date", "date")), None)
+    if date_col is None:
+        raise ValueError("colonne de date absente du CSV FRED")
+    frame[date_col] = pd.to_datetime(frame[date_col], errors="coerce")
+    frame = frame.dropna(subset=[date_col]).sort_values(date_col)
+    result: list[dict[str, Any]] = []
+    for series_id, meta in FRED_SERIES.items():
+        if series_id not in frame.columns:
+            continue
+        series = pd.to_numeric(frame[series_id], errors="coerce").dropna()
+        if series.empty:
+            continue
+        latest_date = pd.Timestamp(frame.loc[series.index[-1], date_col])
+        latest_value = float(series.iloc[-1])
+        item: dict[str, Any] = {
+            "id": series_id, "name": meta["name"], "unit": meta["unit"],
+            "date": latest_date.date().isoformat(), "value": latest_value,
+            "source": f"https://fred.stlouisfed.org/series/{series_id}",
+        }
+        if series_id == "CPIAUCSL":
+            prior_month = latest_date - pd.DateOffset(years=1)
+            prior_rows = frame.loc[frame[date_col].dt.to_period("M") == prior_month.to_period("M"), series_id]
+            prior_values = pd.to_numeric(prior_rows, errors="coerce").dropna()
+            if not prior_values.empty and float(prior_values.iloc[-1]) != 0:
+                item["yoy_pct"] = round((latest_value / float(prior_values.iloc[-1]) - 1) * 100, 2)
+        result.append(item)
+    return result
+
+
+def fetch_fred_macro_series() -> tuple[list[dict[str, Any]], list[str]]:
+    """Fetch structured public macro series from FRED's CSV endpoint; no API key required."""
+    try:
+        response = requests.get(FRED_CSV_URL, headers={"User-Agent": USER_AGENT}, timeout=20)
+        response.raise_for_status()
+        rows = _parse_fred_csv(response.text)
+        if not rows:
+            return [], ["FRED: le CSV a été reçu mais aucune observation exploitable n'a été trouvée"]
+        return rows, []
+    except Exception as exc:
+        return [], [f"FRED: {type(exc).__name__}: {str(exc)[:160]}"]
+
+
+def append_macro_series(lines: list[str], series: list[dict[str, Any]]) -> None:
+    """Render observed official macro time-series, clearly distinguishing CPI index from calculated inflation."""
+    lines += ["", "INDICATEURS MACROÉCONOMIQUES STRUCTURÉS — FRED",
+              "Observations issues de séries statistiques FRED, dont plusieurs sont produites par des organismes publics américains. La date de chaque observation est indiquée; les fréquences diffèrent selon les séries et les valeurs ne sont pas nécessairement du jour."]
+    if not series:
+        lines.append("- Aucune série FRED exploitable dans cette exécution; consulter la section qualité et sources.")
+        return
+    for item in series:
+        if item["id"] == "CPIAUCSL":
+            extra = (f"; inflation CPI calculée sur un an : {item['yoy_pct']:+.2f} %" if item.get("yoy_pct") is not None
+                     else "; variation annuelle non calculable faute d'observation comparable à 12 mois")
+            value = f"{item['value']:.3f}{extra}"
+        else:
+            value = f"{item['value']:.3f} {item['unit']}"
+        lines.append(f"- {item['name']} ({item['id'])} : {value}; observation du {item['date']}; source : {item['source']}.")
+
 
 def infer_macro_impact(headline: str) -> tuple[str, str, str]:
     """Conservative headline taxonomy; this proposes transmission channels, not verified event facts."""
@@ -1204,6 +1284,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     rows = [analyse_asset(ticker, frame) for ticker, frame in data.items()]
     news, news_errors = fetch_news()
     company_fundamentals, fundamentals_errors = fetch_company_fundamentals()
+    macro_series, macro_errors = fetch_fred_macro_series()
     rows.sort(key=lambda r: (r.asset_class, r.name))
     previous = read_state().get("forecasts", [])
     prior_morning = next((x for x in reversed(previous) if x.get("report_type") == "morning"), None)
@@ -1226,14 +1307,17 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         "",
     ]
 
+    append_macro_series(lines, macro_series)
     append_funnel_report(lines, report_type, rows, news, previous, prior_morning, prior_update, data_errors, news_errors, company_fundamentals)
-    lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Actualités : flux officiels Fed, BEA, Census Bureau, BCE, EIA, Banque d'Angleterre et Banque du Japon. Les publications BLS emploi/CPI/PPI sont repérées par des recherches ciblées Google News vers les archives BLS; une recherche ciblée DOL complète les demandes d'allocations chômage. Les recherches FMI/Banque mondiale sont aussi des outils de découverte, pas des preuves indépendantes : ouvrir et vérifier la publication institutionnelle originale avant de retenir un chiffre.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}; erreurs données fondamentales SEC : {len(fundamentals_errors)}."]
+    lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Séries macroéconomiques : FRED public CSV; la source primaire de chaque série est indiquée sur la page FRED correspondante. Les fréquences et délais de publication diffèrent.", "- Actualités : flux officiels Fed, BEA, Census Bureau, BCE, EIA, Banque d'Angleterre et Banque du Japon. Les publications BLS emploi/CPI/PPI sont repérées par des recherches ciblées Google News vers les archives BLS; une recherche ciblée DOL complète les demandes d'allocations chômage. Les recherches FMI/Banque mondiale sont aussi des outils de découverte, pas des preuves indépendantes : ouvrir et vérifier la publication institutionnelle originale avant de retenir un chiffre.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}; erreurs données fondamentales SEC : {len(fundamentals_errors)}; erreurs séries macro FRED : {len(macro_errors)}."]
     if data_errors:
         lines += ["", "DONNÉES MANQUANTES"] + [f"- {e}" for e in data_errors[:20]]
     if news_errors:
         lines += ["", "ERREURS DE FLUX"] + [f"- {e}" for e in news_errors]
     if fundamentals_errors:
         lines += ["", "ERREURS DONNÉES FONDAMENTALES SEC"] + [f"- {e}" for e in fundamentals_errors[:15]]
+    if macro_errors:
+        lines += ["", "ERREURS SÉRIES MACRO FRED"] + [f"- {e}" for e in macro_errors]
     lines += ["", "Avertissement : contenu informatif et expérimental, pas un conseil d'investissement. Vérifier les données et les actualités avant toute décision."]
     plain = "\n".join(lines)
 
@@ -1247,6 +1331,8 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         "news": news[:36],
         "data_error_count": len(data_errors),
         "news_error_count": len(news_errors),
+        "macro_series_count": len(macro_series),
+        "macro_error_count": len(macro_errors),
     }
     return plain, html_body, snapshot
 
