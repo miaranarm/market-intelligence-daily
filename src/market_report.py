@@ -309,7 +309,7 @@ def _quarterly_fact_points(companyfacts: dict[str, Any], tag_names: tuple[str, .
     return latest, prior_item, latest_tag
 
 def fetch_company_fundamentals() -> tuple[list[dict[str, Any]], list[str]]:
-    """Fetch a limited, transparent sample of reported quarterly revenue and diluted EPS from SEC XBRL Company Facts."""
+    """Fetch reported interim-quarter fundamentals from SEC XBRL Company Facts; never substitute estimates."""
     results: list[dict[str, Any]] = []
     errors: list[str] = []
     headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
@@ -917,7 +917,14 @@ def append_funnel_report(
             ticker = item["ticker"]
             period = item["period"]
             source = item["source"]
-            lines.append(f"- {name} ({ticker}), trimestre clos le {period} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}); résultat opérationnel {operating_income}; marge opérationnelle {operating_margin}; flux opérationnel {operating_cash_flow}; investissements corporels {capex}; FCF approximatif {free_cash_flow}. Source SEC : {source}")
+            period_age_note = ""
+            try:
+                period_age_days = (datetime.now(timezone.utc).date() - datetime.fromisoformat(period).date()).days
+                if period_age_days > 120:
+                    period_age_note = f"; ATTENTION : période publiée il y a {period_age_days} jours (>120 jours)"
+            except (TypeError, ValueError):
+                period_age_note = "; ancienneté de la période indisponible"
+            lines.append(f"- {name} ({ticker}), trimestre clos le {period}{period_age_note} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}); résultat opérationnel {operating_income}; marge opérationnelle {operating_margin}; flux opérationnel {operating_cash_flow}; investissements corporels {capex}; FCF approximatif {free_cash_flow}. Source SEC : {source}")
     else:
         lines.append("- Aucun chiffre trimestriel SEC exploitable lors de cette collecte; aucune valeur n'est estimée ni remplacée par un chiffre de presse.")
     lines += ["", "NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE",
