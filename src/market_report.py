@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 STATE_DIR = ROOT / "data"
 FORECAST_FILE = STATE_DIR / "forecasts.json"
 HISTORY_FILE = STATE_DIR / "market_history.csv"
+REPORT_URL = "https://miaranarm.github.io/market-intelligence-daily/"
 USER_AGENT = "MarketIntelligenceDaily/0.1 (personal research; contact via repository owner)"
 
 ASSETS: dict[str, dict[str, str]] = {
@@ -380,7 +381,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     }
     return plain, html_body, snapshot
 
-def send_email(subject: str, plain: str, html_body: str) -> None:
+def send_email(subject: str, report_url: str) -> None:
     required = ("SMTP_USERNAME", "SMTP_APP_PASSWORD", "REPORT_RECIPIENT")
     missing = [key for key in required if not os.environ.get(key)]
     if missing:
@@ -389,8 +390,13 @@ def send_email(subject: str, plain: str, html_body: str) -> None:
     message["Subject"] = subject
     message["From"] = os.environ["SMTP_USERNAME"].strip()
     message["To"] = os.environ["REPORT_RECIPIENT"].strip()
-    message.set_content(plain)
-    message.add_alternative(html_body, subtype="html")
+    message.set_content(f"Le rapport de marché est disponible ici :\n{report_url}\n")
+    message.add_alternative(
+        "<html><body style=\"font-family:Arial,sans-serif\">"
+        f"<p>Le rapport de marché est disponible ici : <a href=\"{html.escape(report_url, quote=True)}\">Ouvrir le rapport</a></p>"
+        "</body></html>",
+        subtype="html",
+    )
     context = ssl.create_default_context()
     with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as server:
         server.ehlo()
@@ -403,19 +409,32 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--report-type", choices=("morning", "update", "audit"), default="morning")
     parser.add_argument("--no-email", action="store_true", help="Generate files/state without sending email")
+    parser.add_argument("--send-link-only", action="store_true", help="Send the public report link without regenerating the report")
     args = parser.parse_args()
+    if args.send_link_only:
+        state = read_state()
+        snapshot = next((x for x in reversed(state.get("forecasts", [])) if x.get("report_type") == args.report_type), None)
+        if not snapshot:
+            raise RuntimeError(f"Aucun rapport enregistré pour le type {args.report_type}")
+        subject = f"[Market Intelligence] {args.report_type.upper()} — {snapshot['run_time_madagascar'][:16]}"
+        send_email(subject, REPORT_URL)
+        print(f"Report link emailed: type={args.report_type}; url={REPORT_URL}")
+        return 0
     plain, html_body, snapshot = make_report(args.report_type)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     # Save the exact report text to aid later audit.
     report_path = STATE_DIR / f"latest_{args.report_type}.txt"
     report_path.write_text(plain, encoding="utf-8")
+    public_dir = ROOT / "docs"
+    public_dir.mkdir(parents=True, exist_ok=True)
+    (public_dir / "index.html").write_text(html_body, encoding="utf-8")
     # Append the immutable forecast/data snapshot before email delivery.
     # Workflow commits state only after successful completion.
     rows = [AssetRow(**item) for item in snapshot["assets"]]
     write_state(snapshot, rows)
     subject = f"[Market Intelligence] {args.report_type.upper()} — {snapshot['run_time_madagascar'][:16]}"
     if not args.no_email:
-        send_email(subject, plain, html_body)
+        send_email(subject, REPORT_URL)
     print(f"Report generated: {report_path.name}; assets={len(rows)}; type={args.report_type}; email={'disabled' if args.no_email else 'sent'}")
     return 0
 
