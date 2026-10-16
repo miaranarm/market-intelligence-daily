@@ -249,11 +249,128 @@ def write_state(snapshot: dict[str, Any], rows: list[AssetRow]) -> None:
     forecasts = state.get("forecasts", [])
     forecasts.append(snapshot)
     state["forecasts"] = forecasts[-500:]
+    record_new_forecasts(state, rows)
     FORECAST_FILE.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
     out = pd.DataFrame([asdict(r) for r in rows])
     out.insert(0, "run_time_utc", snapshot["run_time_utc"])
     out.insert(1, "report_type", snapshot["report_type"])
     out.to_csv(HISTORY_FILE, mode="a", header=not HISTORY_FILE.exists(), index=False)
+
+
+def evaluate_forecasts(state: dict[str, Any]) -> dict[str, Any]:
+    """Evaluate stored, rule-based directional forecasts against later distinct market dates."""
+    snapshots = state.get("forecasts", [])
+    prices: dict[str, dict[str, float]] = {}
+    for snap in snapshots:
+        for asset in snap.get("assets", []):
+            ticker, day, price = asset.get("ticker"), asset.get("data_timestamp"), asset.get("price")
+            if ticker and day and price is not None:
+                try:
+                    prices.setdefault(ticker, {})[str(day)] = float(price)
+                except (TypeError, ValueError):
+                    continue
+
+    records = state.get("forecast_records", [])
+    matured: list[dict[str, Any]] = []
+    pending = 0
+    for record in records:
+        series = prices.get(record.get("ticker", ""), {})
+        base_date = str(record.get("base_date", ""))
+        future_dates = sorted(day for day in series if day > base_date)
+        horizon = int(record.get("horizon_sessions", 1))
+        if len(future_dates) < horizon:
+            pending += 1
+            continue
+        target_date = future_dates[horizon - 1]
+        base_price = record.get("base_price")
+        target_price = series[target_date]
+        if not base_price:
+            continue
+        realized_pct = (target_price / float(base_price) - 1) * 100
+        direction = "hausse" if realized_pct > 0.1 else ("baisse" if realized_pct < -0.1 else "neutre")
+        predicted = record.get("direction", "neutre")
+        matured.append({
+            **record,
+            "target_date": target_date,
+            "realized_pct": round(realized_pct, 4),
+            "realized_direction": direction,
+            "correct": direction == predicted,
+        })
+
+    by_horizon: dict[str, Any] = {}
+    for horizon in (1, 5):
+        sample = [r for r in matured if int(r.get("horizon_sessions", 1)) == horizon]
+        by_horizon[str(horizon)] = {
+            "n": len(sample),
+            "correct": sum(bool(r["correct"]) for r in sample),
+            "accuracy_pct": round(100 * sum(bool(r["correct"]) for r in sample) / len(sample), 1) if sample else None,
+            "mean_abs_move_pct": round(sum(abs(float(r["realized_pct"])) for r in sample) / len(sample), 3) if sample else None,
+        }
+    return {"matured": matured, "pending": pending, "by_horizon": by_horizon}
+
+
+def record_new_forecasts(state: dict[str, Any], rows: list[AssetRow]) -> None:
+    """Store a transparent momentum-baseline forecast once per asset and market date."""
+    records = state.setdefault("forecast_records", [])
+    known = {r.get("id") for r in records}
+    for row in rows:
+        if not row.data_timestamp or row.price is None or row.five_day_pct is None:
+            continue
+        # Neutral forecasts are retained too; the simple baseline must be judged fairly.
+        direction = "hausse" if row.five_day_pct >= 0.5 else ("baisse" if row.five_day_pct <= -0.5 else "neutre")
+        for horizon in (1, 5):
+            record_id = f"{row.ticker}|{row.data_timestamp}|{horizon}"
+            if record_id in known:
+                continue
+            records.append({
+                "id": record_id,
+                "ticker": row.ticker,
+                "name": row.name,
+                "asset_class": row.asset_class,
+                "base_date": row.data_timestamp,
+                "base_price": row.price,
+                "direction": direction,
+                "horizon_sessions": horizon,
+                "rule": "baseline descriptive: direction from 5-session return; >= +0.5% hausse, <= -0.5% baisse, otherwise neutre",
+                "created_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            })
+            known.add(record_id)
+    state["forecast_records"] = records[-10000:]
+
+
+def append_self_audit(lines: list[str], state: dict[str, Any]) -> None:
+    evaluation = evaluate_forecasts(state)
+    lines.extend([
+        "",
+        "AUDIT CRITIQUE DES ANALYSES PRÉCÉDENTES",
+        f"- Prévisions historiques enregistrées : {len(state.get('forecast_records', []))}; prévisions arrivées à échéance : {len(evaluation['matured'])}; encore en attente : {evaluation['pending']}.",
+        "- Référence évaluée : règle de momentum simple fondée sur le rendement des cinq dernières séances. C'est un point de comparaison expérimental, pas une recommandation de trading.",
+    ])
+    for horizon, label in (("1", "1 séance"), ("5", "5 séances")):
+        stats = evaluation["by_horizon"][horizon]
+        if stats["n"]:
+            lines.append(
+                f"- Horizon {label} : {stats['correct']}/{stats['n']} directions correctes "
+                f"({stats['accuracy_pct']} %); mouvement absolu moyen observé : {stats['mean_abs_move_pct']} %."
+            )
+        else:
+            lines.append(f"- Horizon {label} : aucun échantillon arrivé à échéance; performance non évaluable.")
+    if len(evaluation["matured"]) < 30:
+        lines.append("- Conclusion méthodologique : échantillon encore insuffisant pour déclarer cette règle fiable ou modifier automatiquement la méthode.")
+    else:
+        lines.append("- Contrôle critique : interpréter les résultats avec les coûts, les régimes de marché et une validation hors échantillon; une exactitude directionnelle seule ne prouve pas la rentabilité.")
+    if evaluation["matured"]:
+        wrong = [r for r in evaluation["matured"] if not r["correct"]]
+        if wrong:
+            recent = wrong[-3:]
+            details = "; ".join(
+                f"{r['name']} ({r['horizon_sessions']} séance(s), prévu {r['direction']}, réalisé {r['realized_direction']}, {r['realized_pct']:+.2f} %)"
+                for r in recent
+            )
+            lines.append(f"- Exemples d'erreurs à examiner : {details}.")
+        else:
+            lines.append("- Aucun échec directionnel dans l'échantillon arrivé à échéance; cela ne suffit pas à prouver la robustesse.")
+    lines.append("- Les prévisions originales sont conservées pour empêcher toute réécriture rétrospective. Les changements de méthode devront être justifiés par des échantillons suffisants et des tests hors échantillon.")
 
 def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     started = datetime.now(timezone.utc)
@@ -317,6 +434,9 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         ]
         lines += ["- " + s for s in scenario_context(rows)]
 
+    # Critique des prévisions passées : les résultats sont mesurés, pas auto-déclarés.
+    append_self_audit(lines, {"forecasts": previous, "forecast_records": read_state().get("forecast_records", [])})
+
     # Les indicateurs techniques restent dans les données internes pour aider à
     # hiérarchiser les scénarios; ils ne sont pas affichés dans le rapport envoyé.
     lines += ["", "PANORAMA DES MARCHÉS — MOUVEMENTS OBSERVÉS",
@@ -362,13 +482,30 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     lines += ["", "Avertissement : contenu informatif et expérimental, pas un conseil d'investissement. Vérifier les données et les actualités avant toute décision."]
     plain = "\n".join(lines)
 
-    escaped = html.escape(plain)
+    escaped_title = html.escape(title)
+    escaped_plain = html.escape(plain)
     html_body = (
-        "<html><body style='font-family:Arial,sans-serif;line-height:1.45'>"
-        f"<h2>{html.escape(title)}</h2><p>Heure Madagascar : {now_local:%Y-%m-%d %H:%M:%S %Z}</p>"
-        "<p>Rapport orienté décision. Les indicateurs techniques servent à l'analyse interne et ne sont pas affichés. Les probabilités directionnelles calibrées ne sont pas encore activées.</p>"
-        f"<pre style='white-space:pre-wrap;font-family:Arial,sans-serif'>{escaped}</pre>"
-        "</body></html>"
+        "<!doctype html><html lang='fr'><head><meta charset='utf-8'>"
+        "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+        f"<title>{escaped_title} | Market Intelligence Daily</title>"
+        "<style>"
+        ":root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#eef2f7;color:#172033;"
+        "font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}"
+        ".wrap{max-width:1120px;margin:0 auto;padding:28px 18px 56px}.hero{background:linear-gradient(130deg,#101b33,#203b61);"
+        "color:#fff;padding:30px;border-radius:18px;box-shadow:0 12px 30px #14213d22}.eyebrow{font-size:12px;letter-spacing:.16em;"
+        "text-transform:uppercase;color:#a9c7ed;font-weight:700}.hero h1{font-size:clamp(25px,4vw,38px);line-height:1.15;margin:10px 0}"
+        ".meta{color:#d4dfef;font-size:13px}.notice{margin:18px 0;padding:14px 16px;background:#fff8e7;border-left:4px solid #d79b26;"
+        "border-radius:8px;color:#634a15}.report{background:#fff;margin-top:18px;padding:clamp(18px,3vw,34px);border-radius:16px;"
+        "box-shadow:0 4px 20px #14213d0c}.report pre{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace;"
+        "margin:0;color:#25334b}.footer{color:#66758b;font-size:12px;margin:18px 4px}a{color:#1559a6} </style></head><body>"
+        "<main class='wrap'><header class='hero'><div class='eyebrow'>Daily Market Intelligence · Briefing multi-actifs</div>"
+        f"<h1>{escaped_title}</h1><div class='meta'>Heure de Madagascar : {now_local:%d/%m/%Y à %H:%M:%S %Z}</div>"
+        f"<div class='meta'>Généré le {started:%d/%m/%Y à %H:%M:%S UTC}</div></header>"
+        "<div class='notice'><strong>Lecture critique :</strong> les cours peuvent être retardés ou indisponibles. Les constats, hypothèses et scénarios doivent être distingués. "
+        "Les indicateurs techniques sont utilisés en interne et ne constituent pas des signaux de trading.</div>"
+        f"<section class='report'><pre>{escaped_plain}</pre></section>"
+        "<p class='footer'>Sources et limites : les sources disponibles sont indiquées dans le rapport. Document expérimental, informatif, non assimilable à un conseil en investissement.</p>"
+        "</main></body></html>"
     )
     snapshot = {
         "report_type": report_type,
