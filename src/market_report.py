@@ -876,7 +876,11 @@ def append_funnel_report(
             revenue_yoy = "comparaison annuelle indisponible" if item["revenue_yoy_pct"] is None else f"{item['revenue_yoy_pct']:+.1f} % sur un an"
             eps = "n.d." if item["eps"] is None else f"{item['eps']:.2f} $"
             eps_yoy = "comparaison annuelle indisponible" if item["eps_yoy_pct"] is None else f"{item['eps_yoy_pct']:+.1f} % sur un an"
-            lines.append(f"- {item['name']} ({item['ticker'}), trimestre clos le {item['period']} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}). Source SEC : {item['source']}")
+            name = item["name"]
+            ticker = item["ticker"]
+            period = item["period"]
+            source = item["source"]
+            lines.append(f"- {name} ({ticker}), trimestre clos le {period} : chiffre d'affaires {revenue} ({revenue_yoy}); BPA dilué {eps} ({eps_yoy}). Source SEC : {source}")
     else:
         lines.append("- Aucun chiffre trimestriel SEC exploitable lors de cette collecte; aucune valeur n'est estimée ni remplacée par un chiffre de presse.")
     lines += ["", "NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE",
