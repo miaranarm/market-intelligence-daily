@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip && pip install -r requirements.txt
 
-      - name: Generate report and email it
+      - name: Generate report files
         env:
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
           SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
