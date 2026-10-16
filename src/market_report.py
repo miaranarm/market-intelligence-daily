@@ -95,7 +95,9 @@ ASSETS: dict[str, dict[str, str]] = {
 NEWS_FEEDS = [
     # Official primary sources: macroeconomic releases, monetary policy and energy.
     ("Federal Reserve — communiqués officiels", "https://www.federalreserve.gov/feeds/press_all.xml"),
-    ("Bureau of Labor Statistics — statistiques du travail et inflation", "https://www.bls.gov/feed/bls_latest.rss"),
+    ("Bureau of Labor Statistics — emploi et chômage (flux officiel)", "https://www.bls.gov/feed/empsit.rss"),
+    ("Bureau of Labor Statistics — indice des prix à la consommation, CPI (flux officiel)", "https://www.bls.gov/feed/cpi.rss"),
+    ("Bureau of Labor Statistics — indice des prix à la production, PPI (flux officiel)", "https://www.bls.gov/feed/ppi.rss"),
     ("Banque centrale européenne — communiqués", "https://www.ecb.europa.eu/rss/press.html"),
     ("US Energy Information Administration — énergie", "https://www.eia.gov/rss/todayinenergy.xml"),
     ("Bank of England — actualités et stabilité financière", "https://www.bankofengland.co.uk/rss/news"),
