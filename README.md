@@ -1,10 +1,13 @@
 # Market Intelligence Daily
 
-Private repository for a multi-asset market-intelligence system with three planned daily email reports in Madagascar time (UTC+3).
+Public repository for a multi-asset market-intelligence system with three planned daily email reports in Madagascar time (UTC+3). The public report page is intended to be published at https://miaranarm.github.io/market-intelligence-daily/.
 
 ## Current status
 
-- [x] Private repository verified.
+- [x] Public repository verified.
+- [x] Report HTML generation and single-link email delivery workflow added.
+- [ ] GitHub Pages enabled from branch `main`, folder `/docs`.
+- [ ] First public report page validated.
 - [x] Manual GitHub Actions workflow for testing Gmail SMTP delivery.
 - [ ] Gmail credentials added as GitHub Actions secrets.
 - [ ] Test email received successfully.
@@ -61,6 +64,6 @@ GitHub Actions schedules can start late. We will schedule the jobs early enough 
 
 The report engine must distinguish observations from interpretation, cite data/news sources and timestamps, state when data is unavailable, retain the exact forecast snapshots for later audit, and avoid presenting estimated probabilities as certainties. Technical/quantitative methods will be evaluated out of sample with costs and slippage where relevant. No trading execution is planned.
 
-## Security
+## Public visibility and security
 
-The workflow uses read-only repository permissions, does not print secrets, and sends mail only through Gmail SMTP over STARTTLS. Keep the repository private and review GitHub Actions logs before sharing them.
+This repository is public. Source code, commit history, the `docs/` report page, and tracked files in `data/` are visible to anyone. In particular, `data/forecasts.json` and `data/market_history.csv` contain quantitative indicators intended for internal analysis; they are nevertheless public because they are tracked in this public repository. Do not commit credentials, API keys, app passwords, or personal data. GitHub Actions secrets are stored separately in repository settings and are not automatically published. The report workflow needs `contents: write` to commit report snapshots and the generated page, and sends email through Gmail SMTP over STARTTLS without printing credentials.
