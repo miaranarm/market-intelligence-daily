@@ -797,7 +797,8 @@ def append_funnel_report(
         if matching:
             for item in matching[:2]:
                 lines.append(f"  - Actualité associée à vérifier : {item['title']} — {item['url']}")
-        lines.append("  - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.")    if not movers:
+        lines.append("  - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.")
+    if not movers:
         lines.append("- Aucun instrument n'a fourni de variation exploitable.")
     lines += ["", "PANORAMA COMPLET DES INSTRUMENTS COLLECTÉS",
               "Les cours sont ceux de la dernière observation quotidienne disponible; ils ne sont pas nécessairement des cours intrajournaliers. Pour les fonds communs, la valeur liquidative peut être publiée avec retard.",
