@@ -29,6 +29,43 @@ class SecFundamentalParsingTests(unittest.TestCase):
         self.assertEqual(prior["val"], 800)
         self.assertEqual(latest["end"], "2026-06-30")
 
+
+    def test_q4_is_derived_only_when_annual_and_all_three_quarters_match(self):
+        facts = []
+        for year, values, filed_base in (
+            (2024, (80, 180, 280, 1000), "2025"),
+            (2025, (100, 200, 300, 1400), "2026"),
+        ):
+            starts = (f"{year}-01-01", f"{year}-04-01", f"{year}-07-01")
+            ends = (f"{year}-03-31", f"{year}-06-30", f"{year}-09-30")
+            for quarter, start, end, value in zip(("Q1", "Q2", "Q3"), starts, ends, values[:3]):
+                month = {"Q1": "05", "Q2": "08", "Q3": "11"}[quarter]
+                facts.append({
+                    "form": "10-Q", "fp": quarter, "start": start, "end": end,
+                    "val": value, "filed": f"{filed_base}-{month}-01",
+                })
+            facts.append({
+                "form": "10-K", "fp": "FY", "start": f"{year}-01-01",
+                "end": f"{year}-12-31", "val": values[3],
+                "filed": f"{year + 1}-02-01",
+            })
+        payload = {"facts": {"us-gaap": {"Revenues": {"units": {"USD": facts}}}}}
+        latest, prior, tag = _quarterly_or_q4_fact_points(payload, ("Revenues",), ("USD",))
+        self.assertEqual(tag, "Revenues")
+        self.assertEqual(latest["fp"], "Q4 (calculé)")
+        self.assertEqual(latest["val"], 800)
+        self.assertTrue(latest["derived"])
+        self.assertEqual(prior["val"], 460)
+
+    def test_q4_is_not_derived_without_all_three_discrete_quarters(self):
+        payload = {"facts": {"us-gaap": {"Revenues": {"units": {"USD": [
+            {"form": "10-Q", "fp": "Q1", "start": "2025-01-01", "end": "2025-03-31", "val": 100, "filed": "2025-05-01"},
+            {"form": "10-Q", "fp": "Q2", "start": "2025-04-01", "end": "2025-06-30", "val": 200, "filed": "2025-08-01"},
+            {"form": "10-K", "fp": "FY", "start": "2025-01-01", "end": "2025-12-31", "val": 1000, "filed": "2026-02-01"},
+        ]}}}}}
+        latest, _, _ = _quarterly_or_q4_fact_points(payload, ("Revenues",), ("USD",))
+        self.assertEqual(latest["fp"], "Q2")
+
     def test_quarterly_parser_returns_none_when_only_annual_fact_exists(self):
         payload = {
             "facts": {
