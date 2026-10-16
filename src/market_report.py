@@ -100,6 +100,8 @@ NEWS_FEEDS = [
     ("US Energy Information Administration — énergie", "https://www.eia.gov/rss/todayinenergy.xml"),
     ("Bank of England — actualités et stabilité financière", "https://www.bankofengland.co.uk/rss/news"),
     ("Bank of Japan — actualités, politique monétaire et statistiques", "https://www.boj.or.jp/en/rss/whatsnew.xml"),
+    ("Fonds monétaire international — actualités et analyses macroéconomiques", "https://www.imf.org/en/News/RSS?language=eng"),
+    ("Banque mondiale — actualités économiques et développement", "https://www.worldbank.org/en/news/all?display=RSS"),
     # Cross-checking across several publishers; aggregator headlines are leads, not independent proof.
     ("Google News — macroéconomie mondiale et banques centrales", "https://news.google.com/rss/search?q=inflation+employment+GDP+central+banks+interest+rates&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — marchés et économie", "https://news.google.com/rss/search?q=global+markets+economy+central+banks&hl=en-US&gl=US&ceid=US:en"),
