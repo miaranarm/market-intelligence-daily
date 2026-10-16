@@ -47,10 +47,10 @@ jobs:
           message["To"] = recipient
           message.set_content(
               "Ceci est un e-mail de test envoyé par GitHub Actions via Gmail SMTP.\n\n"
-              "Si tu reçois ce message, la configuration d'envoi fonctionne. "
-              "Les rapports de marché programmés ne sont pas encore activés : "
-              "le moteur d'analyse et ses contrôles doivent être installés et testés "
-              "avant l'envoi automatique.\n\n"
+              "Si tu reçois ce message, la configuration SMTP fonctionne. "
+              "Le workflow des rapports est configuré pour trois horaires quotidiens ; "
+              "ce test vérifie uniquement l'envoi SMTP, pas la génération ni la publication "
+              "des rapports.\n\n"
               "Heure UTC du test : "
               + datetime.now(timezone.utc).isoformat(timespec="seconds")
               + "\n"
