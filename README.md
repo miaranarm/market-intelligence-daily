@@ -60,9 +60,23 @@ Target delivery times in Madagascar time (Indian/Antananarivo, UTC+3):
 
 GitHub Actions schedules can start late. We will schedule the jobs early enough to leave time for analysis and email delivery, record actual timestamps, and report delays transparently. Exact delivery times cannot be guaranteed.
 
-## Research and quality controls planned
+## Research and quality controls
 
-The report engine must distinguish observations from interpretation, cite data/news sources and timestamps, state when data is unavailable, retain the exact forecast snapshots for later audit, and avoid presenting estimated probabilities as certainties. Technical/quantitative methods will be evaluated out of sample with costs and slippage where relevant. No trading execution is planned.
+Implemented in the current prototype:
+- Responsive, sectioned HTML report with clickable source URLs and a market-data source link on each price row.
+- Macro/news collection from official feeds (Federal Reserve, US Bureau of Labor Statistics, European Central Bank and US Energy Information Administration) plus several Google News RSS searches. Headlines are interleaved by feed so a single source is less likely to dominate the report.
+- Forecast ledger: a transparent, simple five-session momentum baseline is recorded once per asset and market date, with one- and five-session evaluation horizons.
+- Self-audit section reports matured sample sizes and directional accuracy, shows recent errors, and warns when the sample is too small to support conclusions.
+- Automated GitHub Actions checks for Python syntax and unit tests on pushes to the main branch and pull requests.
+
+Still required before this can be called a professional-grade macro briefing:
+- Generate explanatory macroeconomic analysis that connects each verified event to the nine asset categories; the current news module primarily collects headlines and does not yet provide a complete, source-by-source macro narrative.
+- Validate each official RSS feed's availability and the provenance of article links during live runs.
+- Test the complete market-data collection, report publication, GitHub Pages URL and SMTP email delivery end to end.
+- Expand coverage and validate data freshness, especially for intraday quotes, bonds, funds and non-US markets.
+- Evaluate forecast performance over a sufficiently large out-of-sample sample, with relevant benchmarks and costs before changing analytical rules automatically.
+
+The self-audit baseline is experimental, not a validated trading strategy. Directional accuracy alone does not demonstrate profitability. No probabilities will be presented as calibrated until calibration has been measured, and no trading execution is planned.
 
 ## Public visibility and security
 
