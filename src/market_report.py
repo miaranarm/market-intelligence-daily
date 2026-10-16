@@ -930,7 +930,12 @@ def evaluate_scenario_forecasts(snapshots: list[dict[str, Any]]) -> dict[str, An
             "probabilities": probs, "correct": predicted == actual,
             "brier_score": round(brier, 4),
         })
+    forecast_count = sum(
+        1 for snap in snapshots
+        if snap.get("report_type") == "morning" and snap.get("scenario_forecast")
+    )
     return {
+        "forecast_count": forecast_count,
         "matured": matured,
         "pending": pending,
         "accuracy_pct": round(100 * sum(x["correct"] for x in matured) / len(matured), 1) if matured else None,
@@ -1148,9 +1153,11 @@ def append_funnel_report(
         lines.append(f"- Score de Brier multiclasses moyen : {scenario_audit['mean_brier_score']} (plus bas est préférable; 0 est parfait). Échantillon encore exploratoire; ne pas interpréter comme preuve de rentabilité.")
         for result in scenario_audit["matured"][-3:]:
             lines.append(f"- {result['base_date']} → {result['target_date']} : prévu {result['predicted']} ({result['probabilities']}); réalisé {result['actual']} ({result['realized_pct']:+.2f} %); Brier {result['brier_score']}.")
+    elif scenario_audit["pending"]:
+        lines.append("- Des prévisions matinales sont enregistrées, mais aucune n'a encore atteint une observation quotidienne distincte et terminée. Le score de calibration n'est pas encore disponible.")
     else:
-        lines.append("- Aucune prévision matinale arrivée à échéance avec une observation quotidienne distincte. Le score de calibration n'est pas encore disponible.")
-    lines.append(f"- Prévisions matinales en attente : {scenario_audit['pending']}. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.")
+        lines.append("- Aucune prévision matinale avec probabilités n'est présente dans l'historique exploitable. L'audit démarrera après une édition du matin enregistrée avec la version actuelle.")
+    lines.append(f"- Prévisions matinales enregistrées : {scenario_audit['forecast_count']}; en attente : {scenario_audit['pending']}. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.")
 
 
 def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
