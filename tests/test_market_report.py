@@ -63,7 +63,7 @@ class FredMacroSeriesTests(unittest.TestCase):
 
     def test_single_series_fetch_uses_series_specific_endpoint_and_parses_row(self):
         class FakeResponse:
-            text = "observation_date,DGS10\\n2026-10-15,4.1\\n"
+            text = "observation_date,DGS10\n2026-10-15,4.1\n"
             def raise_for_status(self):
                 return None
         with patch("src.market_report.requests.get", return_value=FakeResponse()) as get:
