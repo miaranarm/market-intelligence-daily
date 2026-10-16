@@ -71,6 +71,8 @@ Implemented in the current prototype:
 - Macro/news collection from official feeds (Federal Reserve, US Bureau of Labor Statistics, European Central Bank and US Energy Information Administration) plus several Google News RSS searches. Headlines are interleaved by feed so a single source is less likely to dominate the report.
 - Forecast ledger: a transparent, simple five-session momentum baseline is recorded once per asset and market date, with one- and five-session evaluation horizons.
 - Self-audit section reports matured sample sizes and directional accuracy, shows recent errors, and warns when the sample is too small to support conclusions.
+- Saved morning scenario probabilities are evaluated against the next distinct S&P 500 observation using directional accuracy and a multiclass Brier score; the system waits for a later market date so an incomplete same-day bar is not treated as a final result.
+- The HTML report estimates reading time from its generated word count; the target is approximately 30 minutes when market news and instrument coverage justify that length.
 - Automated GitHub Actions checks for Python syntax and unit tests on pushes to the main branch and pull requests.
 
 Still required before this can be called a professional-grade macro briefing:
