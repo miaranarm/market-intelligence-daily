@@ -95,6 +95,8 @@ jobs:
         run: python src/market_report.py --report-type "$REPORT_TYPE" --no-email
 
       - name: Commit report history
+        env:
+          REPORT_TYPE: ${{ steps.report_type.outputs.value }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -102,12 +104,30 @@ jobs:
           git add data/ docs/
           if git diff --cached --quiet; then
             echo "No report state changes to commit."
-          else
-            git commit -m "Record market report snapshot"
-            # Rebase onto the latest main in case documentation or settings changed during generation.
-            git pull --rebase origin main
-            git push
+            exit 0
           fi
+          git commit -m "Record market report snapshot"
+          # If main advanced while data were being collected, regenerate on top of the latest
+          # history instead of trying to merge two independently generated snapshots.
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Report commit conflicted or push raced; rebuilding on latest main (attempt $attempt/3)."
+            git rebase --abort || true
+            git fetch origin main
+            git reset --hard origin/main
+            python src/market_report.py --report-type "$REPORT_TYPE" --no-email
+            git add data/ docs/
+            if ! git diff --cached --quiet; then
+              git commit -m "Record market report snapshot (rebuilt on latest main)"
+            else
+              echo "Regenerated report has no state changes."
+              exit 0
+            fi
+          done
+          echo "Unable to publish report after three attempts."
+          exit 1
 
       - name: Email the public report link
         env:
