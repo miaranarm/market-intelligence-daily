@@ -3,11 +3,45 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14233c">
   <title>Market Intelligence Daily</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#edf1f7;color:#172238;font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+    main{max-width:1000px;margin:auto;padding:24px 16px 48px}
+    header{padding:clamp(28px,5vw,48px);border-radius:20px;background:linear-gradient(125deg,#101a2d,#1d3b62 72%,#28517a);color:#fff;box-shadow:0 16px 38px #10213b20}
+    .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#b6d0f1;font-weight:800}
+    h1{font-size:clamp(30px,5vw,46px);line-height:1.12;margin:14px 0}
+    .subtitle{color:#d3deed;max-width:700px}
+    section{background:#fff;border-radius:16px;margin-top:18px;padding:clamp(20px,3vw,32px);box-shadow:0 6px 26px #1722380a}
+    h2{font-size:19px;color:#19365b;margin:0 0 12px}
+    .status{display:inline-block;background:#fff3d8;color:#79551b;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:750}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:16px}
+    .item{background:#f4f7fb;border:1px solid #e4eaf2;border-radius:12px;padding:16px}
+    .item strong{display:block;color:#19365b;margin-bottom:5px}
+    .muted{color:#66758b;font-size:13px}
+    footer{font-size:12px;color:#68778d;margin:18px 4px}
+  </style>
 </head>
-<body style="font-family:Arial,sans-serif;max-width:900px;margin:3rem auto;padding:0 1rem;line-height:1.6">
-  <h1>Market Intelligence Daily</h1>
-  <p>Le rapport de marché sera publié ici après la première exécution réussie du workflow.</p>
-  <p>Les rapports sont expérimentaux et informatifs ; ils ne constituent pas un conseil en investissement.</p>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Daily Market Intelligence · Briefing multi-actifs</div>
+      <h1>Comprendre les marchés.<br>Évaluer les risques.</h1>
+      <p class="subtitle">Un briefing destiné à relier l'actualité macroéconomique aux marchés financiers, avec sources vérifiables, scénarios conditionnels et audit critique des analyses précédentes.</p>
+    </header>
+    <section>
+      <span class="status">Premier rapport en attente de validation</span>
+      <h2>Le rapport complet sera publié ici</h2>
+      <p>Cette page est une page d'attente. Elle ne contient pas de données de marché du jour et ne doit pas être utilisée comme signal de trading. Le rapport réel sera publié après l'exécution réussie du workflow et la vérification de la publication.</p>
+      <div class="grid">
+        <div class="item"><strong>Macroéconomie mondiale</strong><span class="muted">Actualités multi-sources et liens vers les publications d'origine.</span></div>
+        <div class="item"><strong>Neuf catégories d'actifs</strong><span class="muted">Indices, futures, actions, matières premières, devises, crypto, obligations, ETF et fonds.</span></div>
+        <div class="item"><strong>Auto-évaluation</strong><span class="muted">Historique des prévisions, résultats observés, erreurs et limites méthodologiques.</span></div>
+        <div class="item"><strong>Lecture structurée</strong><span class="muted">Sections lisibles sur téléphone et ordinateur, avec sources cliquables.</span></div>
+      </div>
+    </section>
+    <footer>Projet expérimental. Les données peuvent être retardées ou indisponibles. Ce document ne constitue pas un conseil en investissement.</footer>
+  </main>
 </body>
 </html>
