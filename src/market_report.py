@@ -1310,10 +1310,38 @@ def append_funnel_report(
         "semiconductor", "bank earnings", "company results")
     corporate_news = [n for n in news if any(k in n["title"].casefold() for k in corporate_keywords)]
     if corporate_news:
+        proxy_by_theme = {
+            "Inflation": ("^TNX", "DX-Y.NYB", "^GSPC", "GC=F"),
+            "Banques centrales": ("^TNX", "DX-Y.NYB", "^GSPC", "GC=F"),
+            "Emploi et salaires": ("^TNX", "DX-Y.NYB", "^GSPC", "^IXIC"),
+            "Croissance et activité": ("^GSPC", "^IXIC", "HG=F", "DX-Y.NYB"),
+            "Énergie et matières premières": ("CL=F", "NG=F", "XLE", "DX-Y.NYB"),
+            "Commerce international et Chine": ("^HSI", "HG=F", "DX-Y.NYB", "^GSPC"),
+            "Géopolitique et risque": ("GC=F", "CL=F", "DX-Y.NYB", "^GSPC"),
+            "Résultats d'entreprises": ("^GSPC", "^IXIC", "SPY", "XLK"),
+            "Obligations et crédit": ("^TNX", "TLT", "LQD", "DX-Y.NYB"),
+            "Cryptoactifs et réglementation": ("BTC-USD", "ETH-USD", "COIN", "^IXIC"),
+        }
         for item in corporate_news[:6]:
             theme, categories, impact = infer_macro_impact(item["title"])
             lines.append(f"- {item['title']} — {item['source']} ({item['published']}) — {item['url']}")
             lines.append(f"  - Thème : {theme}; actifs potentiellement concernés : {categories}. À confirmer dans la publication originale et par rapport aux attentes.")
+            title = item["title"].casefold()
+            direct_matches = [
+                row for row in rows
+                if row.name.casefold() in title
+                or (len(row.ticker) >= 3 and re.search(rf"(?<![A-Za-z0-9]){re.escape(row.ticker.casefold())}(?![A-Za-z0-9])", title))
+            ]
+            proxies = [by[ticker] for ticker in proxy_by_theme.get(theme, ("^GSPC", "^IXIC")) if ticker in by]
+            observed = []
+            for row in (direct_matches[:2] + [x for x in proxies if x.ticker not in {r.ticker for r in direct_matches[:2]}])[:4]:
+                if row.daily_pct is not None:
+                    weekly = f"; 5 séances {row.five_day_pct:+.2f} %" if row.five_day_pct is not None else ""
+                    observed.append(f"{row.name} {row.daily_pct:+.2f} %{weekly}")
+            if observed:
+                lines.append("  - Mouvements observés sur les instruments associés (dernière séance disponible) : " + "; ".join(observed) + ". Coïncidence temporelle, pas preuve que le titre explique ces mouvements.")
+            else:
+                lines.append("  - Réaction de marché associée : données comparables indisponibles dans cette collecte; aucune réaction n'est inventée.")
     else:
         lines.append("- Aucun titre clairement identifié comme publication d'entreprise dans les flux reçus. Cela ne signifie pas qu'aucune entreprise ne publie aujourd'hui : le calendrier des résultats n'est pas encore alimenté par une source spécialisée structurée.")
     sector_counts = {
