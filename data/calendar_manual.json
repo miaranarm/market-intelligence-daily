@@ -1,0 +1,86 @@
+{
+  "_lisez_moi": "Calendrier tenu à la main. Une entrée = un événement. Heures en UTC (time_utc, ou null si inconnue). status : « confirmé » seulement si la date vient du site officiel de l'institution ; sinon « à confirmer ». Ne jamais inventer une date : une entrée douteuse reste « à confirmer » avec sa source. Mettre à jour chaque dimanche (voir CONSIGNE_CHATGPT.md).",
+  "mis_a_jour": "2026-10-17",
+  "events": [
+    {
+      "date": "2026-10-19", "time_utc": "02:00",
+      "title": "Chine : PIB du 3e trimestre et données d'activité (production industrielle, ventes au détail)",
+      "region": "Chine", "importance": "élevée",
+      "categories": ["devises", "matieres", "indices", "actions"],
+      "currencies": ["AUD", "NZD", "CNY"],
+      "status": "à confirmer",
+      "source": "Analyse « Daily Market Analyse » du 17/10/2026, non vérifiée à la source officielle",
+      "note": "Heure indicative; vérifier sur le site du Bureau national de la statistique de Chine."
+    },
+    {
+      "date": "2026-10-23", "time_utc": null,
+      "title": "Indices PMI préliminaires d'octobre : États-Unis, zone euro, Royaume-Uni",
+      "region": "États-Unis / Europe", "importance": "élevée",
+      "categories": ["devises", "indices", "obligations"],
+      "currencies": ["USD", "EUR", "GBP"],
+      "status": "à confirmer",
+      "source": "Analyse « Daily Market Analyse » du 17/10/2026, non vérifiée à la source officielle",
+      "note": "Les horaires exacts varient selon la zone; vérifier sur le calendrier de l'éditeur des PMI."
+    },
+    {
+      "date": "2026-10-28", "time_utc": "18:00",
+      "title": "Décision de politique monétaire de la Réserve fédérale (FOMC)",
+      "region": "États-Unis", "importance": "élevée",
+      "categories": ["devises", "obligations", "indices", "futures", "matieres", "crypto", "etf"],
+      "currencies": ["USD"],
+      "status": "confirmé",
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+      "note": "Réunion des 27 et 28 octobre; communiqué à 14:00 heure de New York (18:00 UTC), conférence de presse à 18:30 UTC."
+    },
+    {
+      "date": "2026-10-29", "time_utc": "13:15",
+      "title": "Décision de politique monétaire de la Banque centrale européenne",
+      "region": "Zone euro", "importance": "élevée",
+      "categories": ["devises", "obligations", "indices", "futures", "etf"],
+      "currencies": ["EUR"],
+      "status": "confirmé",
+      "source": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
+      "note": "Réunion des 28 et 29 octobre; décision à 14:15 heure de Francfort (13:15 UTC), conférence de presse à 13:45 UTC."
+    },
+    {
+      "date": "2026-10-30", "time_utc": "03:00",
+      "title": "Banque du Japon : décision de politique monétaire et rapport trimestriel de perspectives",
+      "region": "Japon", "importance": "élevée",
+      "categories": ["devises", "obligations", "indices", "futures"],
+      "currencies": ["JPY"],
+      "status": "confirmé",
+      "source": "https://www.boj.or.jp/en/mopo/mpmsche_minu/index.htm",
+      "note": "Réunion des 29 et 30 octobre; la date est confirmée, l'heure (autour de midi à Tokyo) est approximative."
+    },
+    {
+      "date": "2026-11-05", "time_utc": "12:00",
+      "title": "Banque d'Angleterre : décision de politique monétaire",
+      "region": "Royaume-Uni", "importance": "élevée",
+      "categories": ["devises", "obligations", "indices"],
+      "currencies": ["GBP"],
+      "status": "à confirmer",
+      "source": "Analyse « Daily Market Analyse » du 17/10/2026 (citant Reuters), non vérifiée sur le site de la Banque d'Angleterre",
+      "note": "Heure indicative."
+    },
+    {
+      "date": "2026-12-09", "time_utc": "19:00",
+      "title": "Décision de politique monétaire de la Réserve fédérale (FOMC) avec projections économiques",
+      "region": "États-Unis", "importance": "élevée",
+      "categories": ["devises", "obligations", "indices", "futures", "matieres", "crypto", "etf"],
+      "currencies": ["USD"],
+      "status": "confirmé",
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+      "note": "Réunion des 8 et 9 décembre; communiqué à 14:00 heure de New York (19:00 UTC)."
+    },
+    {
+      "date": "2026-12-17", "time_utc": "13:15",
+      "title": "Décision de politique monétaire de la Banque centrale européenne avec projections",
+      "region": "Zone euro", "importance": "élevée",
+      "categories": ["devises", "obligations", "indices", "futures", "etf"],
+      "currencies": ["EUR"],
+      "status": "confirmé",
+      "source": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
+      "note": "Réunion des 16 et 17 décembre; décision à 14:15 heure de Francfort (13:15 UTC)."
+    }
+  ]
+}
