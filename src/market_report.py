@@ -337,6 +337,45 @@ def _news_dedupe_key(title: str) -> str:
     return " ".join(normalized.split())
 
 
+def prioritize_news(news: list[dict[str, str]], limit: int = 12) -> list[dict[str, str]]:
+    """Select a diverse, market-relevant headline shortlist without inventing article content."""
+    high_impact = (
+        "inflation", "cpi", "pce", "gdp", "recession", "central bank", "federal reserve",
+        "fed ", "ecb", "interest rate", "employment", "payroll", "jobs report", "tariff",
+        "sanction", "geopolit", "war ", "conflict", "oil", "crude", "treasury", "bond yield",
+        "pmi", "retail sales", "earnings", "quarterly results", "profit warning", "guidance",
+        "revenue", "semiconductor", "artificial intelligence", "nvidia", "china", "bitcoin",
+        "crypto", "merger", "acquisition", "opec", "supply disruption", "export restriction",
+    )
+    def score(item: dict[str, str]) -> tuple[int, float]:
+        title = item.get("title", "").casefold()
+        source = item.get("source", "").casefold()
+        points = sum(2 for keyword in high_impact if keyword in title)
+        # Prefer a named publisher or institution over an aggregator's generic feed label.
+        if "google news" in source:
+            points -= 2
+        elif any(token in source for token in ("federal reserve", "bureau", "bank", "administration", "commission", "department", "sec", "reuters", "associated press", "bloomberg", "financial times", "cnbc", "bbc")):
+            points += 2
+        published = item.get("published", "")
+        recency = 0.0
+        if published:
+            try:
+                try:
+                    dt = parsedate_to_datetime(published)
+                except (TypeError, ValueError, OverflowError):
+                    iso = published[:-1] + "+00:00" if published.endswith("Z") else published
+                    dt = datetime.fromisoformat(iso)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                age = (datetime.now(timezone.utc) - dt.astimezone(timezone.utc)).total_seconds() / 86400
+                recency = max(-2.0, 5.0 - max(0.0, age))
+            except (TypeError, ValueError, OverflowError):
+                pass
+        return points, recency
+    # Stable sort preserves source-feed diversity when relevance and freshness are similar.
+    return sorted(news, key=score, reverse=True)[:max(0, limit)]
+
+
 def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
     feed_batches: list[list[dict[str, str]]] = []
     errors: list[str] = []
@@ -1251,6 +1290,19 @@ def append_funnel_report(
         "inflation", "cpi", "pce", "gdp", "growth", "recession", "central bank", "federal reserve",
         "fed ", "ecb", "interest rate", "employment", "payroll", "tariff", "sanction", "geopolit",
         "oil", "crude", "treasury", "bond yield", "pmi", "retail sales"))]
+    lines += ["", "ACTUALITÉS PRIORITAIRES — LES FAITS D'ABORD, L'ANALYSE ENSUITE",
+              "Sélection des titres les plus pertinents parmi les flux récupérés. Chaque titre renvoie à sa source; l'analyse décrit les canaux possibles et ne prétend pas que le titre a causé un mouvement. Un titre seul ne remplace pas la lecture de l'article ni la vérification des chiffres.",
+              f"Titres retenus : {min(12, len(news))} sur {len(news)} actualités uniques collectées."]
+    priority_news = prioritize_news(news, 12)
+    if priority_news:
+        for item in priority_news:
+            theme, categories, impact = infer_macro_impact(item["title"])
+            published = item.get("published") or "date de publication non fournie par le flux"
+            source = item.get("source") or "source non précisée par le flux"
+            lines.append(f"- ACTUALITÉ : {item['title']} — {source} — {published} — {item['url']}")
+            lines.append(f"  - ANALYSE : {theme}. Actifs potentiellement concernés : {categories}. {impact}")
+    else:
+        lines.append("- Aucun titre n'a pu être récupéré lors de cette collecte. Le rapport ne doit pas être interprété comme une synthèse complète de l'actualité.")
     lines += ["", "NIVEAU 2 — RÉGIONS ET ÉCONOMIES MAJEURES",
               "Lecture régionale : les signaux ci-dessous sont limités aux publications et instruments effectivement récupérés. L'absence de titre ne signifie pas l'absence de risque."]
     region_rules = [
