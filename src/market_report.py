@@ -427,10 +427,9 @@ def _news_fact_and_market_readthrough(item: dict[str, str]) -> tuple[str, str]:
 def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
     """Recover a publisher's real description when an RSS discovery feed gives only a headline."""
     result = dict(item)
-    title = re.sub(r"\\s+", " ", result.get("title", "")).strip()
-    summary = re.sub(r"\\s+", " ", result.get("summary", "")).strip()
-    # Google News discovery feeds often put the headline and publisher name in
-    # description; that is not a useful article summary.
+    title = re.sub(r"\s+", " ", result.get("title", "")).strip()
+    summary = re.sub(r"\s+", " ", result.get("summary", "")).strip()
+    # Discovery feeds sometimes put the headline and publisher name in description.
     normalized_title = re.sub(r"[^a-z0-9]+", " ", title.casefold()).strip()
     normalized_summary = re.sub(r"[^a-z0-9]+", " ", summary.casefold()).strip()
     if summary and normalized_summary.startswith(normalized_title):
@@ -448,21 +447,18 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
         response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=7, allow_redirects=True)
         response.raise_for_status()
         page = response.text[:1_500_000]
-        candidates = re.findall(
-            r'<meta[^>]+(?:name|property)=["\\'](?:description|og:description|twitter:description|article:description)["\\'][^>]+content=["\\']([^"\\']+)["\\']',
-            page, flags=re.IGNORECASE
-        )
-        if not candidates:
-            candidates = re.findall(
-                r'<meta[^>]+content=["\\']([^"\\']+)["\\'][^>]+(?:name|property)=["\\'](?:description|og:description|twitter:description|article:description)["\\']',
-                page, flags=re.IGNORECASE
-            )
+        patterns = [
+            r"<meta[^>]+(?:name|property)=[\"'](?:description|og:description|twitter:description|article:description)[\"'][^>]+content=[\"']([^\"']+)[\"']",
+            r"<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+(?:name|property)=[\"'](?:description|og:description|twitter:description|article:description)[\"']",
+        ]
+        candidates = []
+        for pattern in patterns:
+            candidates.extend(re.findall(pattern, page, flags=re.IGNORECASE))
         for candidate in candidates:
-            candidate = html.unescape(re.sub(r"\\s+", " ", candidate)).strip()
+            candidate = html.unescape(re.sub(r"\s+", " ", candidate)).strip()
             normalized = re.sub(r"[^a-z0-9]+", " ", candidate.casefold()).strip()
             if len(candidate) >= 100 and not normalized.startswith(normalized_title):
                 result["summary"] = candidate[:1200]
-                # Keep the publisher URL after redirects when it is a real article page.
                 final_url = getattr(response, "url", "")
                 if final_url and "news.google.com/rss/articles" not in final_url:
                     result["url"] = final_url
@@ -471,7 +467,6 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
         pass
     result["summary"] = summary
     return result
-
 
 def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
     """Lead with recent reported events and distinguish article facts from interpretation."""
