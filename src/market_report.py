@@ -567,13 +567,16 @@ def fetch_company_fundamentals() -> tuple[list[dict[str, Any]], list[str]]:
             operating_income_value = float(operating_income["val"]) if operating_income else None
             cash_flow_value = float(operating_cash_flow["val"]) if operating_cash_flow else None
             capex_value = abs(float(capex["val"])) if capex else None
+            # Never combine XBRL facts from different reporting periods.
+            same_revenue_period = bool(revenue and operating_income and revenue.get("end") == operating_income.get("end"))
+            same_cashflow_period = bool(operating_cash_flow and capex and operating_cash_flow.get("end") == capex.get("end"))
             operating_margin_pct = (
                 round(operating_income_value / revenue_value * 100, 2)
-                if operating_income_value is not None and revenue_value not in (None, 0) else None
+                if same_revenue_period and operating_income_value is not None and revenue_value not in (None, 0) else None
             )
             free_cash_flow_value = (
                 cash_flow_value - capex_value
-                if cash_flow_value is not None and capex_value is not None else None
+                if same_cashflow_period and cash_flow_value is not None and capex_value is not None else None
             )
             results.append({
                 "ticker": ticker, "name": company["name"], "period": latest_end,
@@ -1105,26 +1108,28 @@ def market_conviction(rows: list[AssetRow]) -> dict[str, Any]:
             score -= 2; evidence.append(f"VIX en hausse marquée sur la dernière séance ({vix.daily_pct:+.2f} %)")
         elif vix.daily_pct <= -8:
             score += 1; evidence.append(f"VIX en net recul sur la dernière séance ({vix.daily_pct:+.2f} %)")
+    # Probabilities are deliberately capped until out-of-sample calibration exists.
+    # A short momentum heuristic does not justify 65–75% directional confidence.
     if score >= 3:
-        probs = {"haussier": 75, "central": 15, "baissier": 10}
-        stance = "Biais haussier net"
+        probs = {"haussier": 60, "central": 20, "baissier": 20}
+        stance = "Biais haussier à confirmer"
     elif score == 2:
-        probs = {"haussier": 65, "central": 20, "baissier": 15}
-        stance = "Biais haussier"
+        probs = {"haussier": 55, "central": 25, "baissier": 20}
+        stance = "Avantage haussier, conviction limitée"
     elif score == 1:
-        probs = {"haussier": 60, "central": 25, "baissier": 15}
-        stance = "Avantage haussier modéré"
+        probs = {"haussier": 50, "central": 30, "baissier": 20}
+        stance = "Léger avantage haussier"
     elif score <= -3:
-        probs = {"haussier": 10, "central": 15, "baissier": 75}
-        stance = "Biais baissier net"
+        probs = {"haussier": 20, "central": 20, "baissier": 60}
+        stance = "Biais baissier à confirmer"
     elif score == -2:
-        probs = {"haussier": 15, "central": 20, "baissier": 65}
-        stance = "Biais baissier"
+        probs = {"haussier": 20, "central": 25, "baissier": 55}
+        stance = "Avantage baissier, conviction limitée"
     elif score == -1:
-        probs = {"haussier": 15, "central": 25, "baissier": 60}
-        stance = "Avantage baissier modéré"
+        probs = {"haussier": 20, "central": 30, "baissier": 50}
+        stance = "Léger avantage baissier"
     else:
-        probs = {"haussier": 20, "central": 60, "baissier": 20}
+        probs = {"haussier": 25, "central": 50, "baissier": 25}
         stance = "Signaux contradictoires : scénario central dominant"
     return {"score": score, "probabilities": probs, "stance": stance, "evidence": evidence,
             "method": "heuristique de momentum sur 5 séances et variation quotidienne du VIX; non calibrée, à évaluer contre les résultats futurs"}
@@ -1263,9 +1268,10 @@ def append_funnel_report(
         best = max(daily, key=lambda x: x.daily_pct) if daily else None
         worst = min(daily, key=lambda x: x.daily_pct) if daily else None
         avg = sum(x.daily_pct for x in daily) / len(daily) if daily else None
-        lines.append(f"- {cls} : {len(members)} instrument(s) reçu(s); variation quotidienne moyenne non pondérée {fmt(avg, '%')}.")
-        if best and worst:
-            lines.append(f"  - Leader : {best.name} ({fmt(best.daily_pct, '%')}); lanterne rouge : {worst.name} ({fmt(worst.daily_pct, '%')}).")
+        lines.append(f"- {cls} : {len(members)} instrument(s); variation moyenne non pondérée {fmt(avg, '%')}.")
+        # A one-instrument category has no meaningful leader/laggard comparison.
+        if best and worst and len(daily) >= 2:
+            lines.append(f"  - Meilleure variation : {best.name} ({fmt(best.daily_pct, '%')}); plus faible : {worst.name} ({fmt(worst.daily_pct, '%')}).")
         if weekly:
             positive = sum(1 for x in weekly if (x.five_day_pct or 0) > 0)
             lines.append(f"  - Sur cinq séances : {positive}/{len(weekly)} instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.")
@@ -1278,11 +1284,10 @@ def append_funnel_report(
         "semiconductor", "bank earnings", "company results")
     corporate_news = [n for n in news if any(k in n["title"].casefold() for k in corporate_keywords)]
     if corporate_news:
-        for item in corporate_news[:18]:
+        for item in corporate_news[:8]:
             theme, categories, impact = infer_macro_impact(item["title"])
-            lines.append(f"- Publication/événement d'entreprise ou sectoriel : {item['title']} — {item['source']} ({item['published']}) — Source : {item['url']}")
-            lines.append(f"  - Lecture à vérifier : {impact}")
-            lines.append(f"  - Transmission potentielle : {categories}.")
+            lines.append(f"- {item['title']} — {item['source']} ({item['published']}) — {item['url']}")
+            lines.append(f"  - Thème : {theme}; actifs potentiellement concernés : {categories}. À confirmer dans la publication originale et par rapport aux attentes.")
     else:
         lines.append("- Aucun titre clairement identifié comme publication d'entreprise dans les flux reçus. Cela ne signifie pas qu'aucune entreprise ne publie aujourd'hui : le calendrier des résultats n'est pas encore alimenté par une source spécialisée structurée.")
     sector_groups = [
@@ -1344,8 +1349,8 @@ def append_funnel_report(
         lines += [x[1] for x in sorted(changes, reverse=True)[:12]] if changes else ["- Aucun changement comparable supérieur à 0,5 point détecté ou rapport du matin indisponible."]
     movers = sorted([r for r in rows if r.daily_pct is not None],
                     key=lambda r: max(abs(r.daily_pct or 0), abs(r.five_day_pct or 0), abs(r.one_month_pct or 0)), reverse=True)
-    lines.append("Instruments dont le mouvement mérite un examen prioritaire :")
-    for r in movers[:20]:
+    lines.append("Instruments à examiner en priorité (sélection par amplitude; pas une recommandation d'achat/vente) :")
+    for r in movers[:12]:
         lines.append(f"- {r.name} ({r.ticker}) — classe : {r.asset_class}; dernier prix {fmt(r.price)}; dernière séance {fmt(r.daily_pct, '%')}; 5 séances {fmt(r.five_day_pct, '%')}; 1 mois {fmt(r.one_month_pct, '%')}. Source cours : https://finance.yahoo.com/quote/{r.ticker}/")
         if r.daily_pct is not None and r.five_day_pct is not None:
             if r.daily_pct * r.five_day_pct > 0:
@@ -1354,27 +1359,11 @@ def append_funnel_report(
                 lines.append("  - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.")
             else:
                 lines.append("  - Lecture multi-horizon : les horizons ne donnent pas de signal directionnel concordant; la conviction doit rester conditionnelle.")
-        if r.asset_class in ("US equity",):
-            lines.append("  - Grille fondamentale : confronter le mouvement aux revenus, bénéfices, marges, flux de trésorerie, valorisation, prévisions des dirigeants et attentes déjà intégrées dans le cours. Sans chiffres de consensus vérifiés, aucune surprise bénéficiaire n'est présumée.")
-        elif "index" in r.asset_class.lower():
-            lines.append("  - Grille d'indice : vérifier la largeur du marché, la concentration des contributions, la dispersion sectorielle et la cohérence avec les rendements obligataires et la volatilité; un indice pondéré peut masquer une participation étroite.")
-        elif "future" in r.asset_class.lower():
-            lines.append("  - Grille futures : comparer le contrat au comptant, l'échéance, le roulement et l'heure de cotation. Les futures peuvent intégrer des nouvelles hors séance, mais une variation quotidienne ne constitue pas à elle seule une anticipation fiable de l'ouverture.")
-        elif "bond" in r.asset_class.lower() or r.asset_class == "Rates":
-            lines.append("  - Grille obligataire : distinguer rendement et prix. Les rendements et les prix des obligations à taux fixe évoluent généralement en sens inverse; surveiller inflation, trajectoire des banques centrales, duration, qualité de crédit et calendrier d'émissions.")
-        elif r.asset_class in ("FX",):
-            lines.append("  - Grille devises : rechercher le différentiel de taux et de croissance entre les deux zones, les surprises de données et le régime de risque. Un mouvement du dollar affecte différemment les importateurs, exportateurs et matières premières.")
-        elif r.asset_class in ("Commodity",):
-            lines.append("  - Grille matières premières : séparer l'offre, la demande, les stocks, la saisonnalité, la structure des échéances et la prime géopolitique. Le mouvement du contrat ne révèle pas seul lequel de ces facteurs domine.")
-        elif r.asset_class == "Crypto":
-            lines.append("  - Grille crypto : considérer la négociation continue, la liquidité, les flux, les risques de plateforme et de réglementation; les corrélations avec les actions peuvent se renforcer ou se rompre rapidement.")
-        elif "fund" in r.asset_class.lower() or r.asset_class in ("ETF", "Bond ETF", "Credit ETF"):
-            lines.append("  - Grille ETF/fonds : analyser l'exposition réelle, les principales positions, la concentration, les frais et la date de valeur liquidative. Les fonds communs publient souvent leur valeur avec retard; les variations ne sont pas nécessairement intrajournalières.")
+        # Les grilles génériques par classe sont documentées dans la méthodologie, pas répétées pour chaque actif.
         matching = [n for n in news if r.ticker.casefold() in n["title"].casefold() or r.name.casefold() in n["title"].casefold()]
         if matching:
             for item in matching[:2]:
                 lines.append(f"  - Actualité associée à vérifier : {item['title']} — {item['url']}")
-        lines.append("  - Confirmation/invalidation : vérifier la prochaine observation de clôture et rechercher une confirmation fondamentale ou inter-marchés. Invalider le scénario si le catalyseur supposé disparaît ou si les marchés de confirmation évoluent durablement à l'opposé.")
     if not movers:
         lines.append("- Aucun instrument n'a fourni de variation exploitable.")
     lines += ["", "PANORAMA COMPLET DES INSTRUMENTS COLLECTÉS",
