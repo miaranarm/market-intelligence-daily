@@ -392,28 +392,54 @@ def prioritize_news(news: list[dict[str, str]], limit: int = 12) -> list[dict[st
 
 
 
-def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
-    """Place substantive headlines and conditional analysis before macro and asset sections."""
-    priority_news = prioritize_news(news, 12)
-    lines += [
-        "",
-        "ACTUALITÉS PRIORITAIRES — LES FAITS D'ABORD, L'ANALYSE ENSUITE",
-        "Les titres et extraits viennent des flux collectés. Les agrégateurs servent à découvrir les articles; privilégier la publication originale lorsqu'elle est identifiable. L'analyse distingue les faits des effets possibles et ne traite pas une coïncidence comme une causalité.",
-        f"Titres retenus : {len(priority_news)} sur {len(news)} actualités uniques collectées.",
-    ]
-    if not priority_news:
-        lines.append("- Aucun titre n'a pu être récupéré lors de cette collecte. Le rapport ne constitue donc pas une synthèse complète de l'actualité.")
-        return
-    for item in priority_news:
-        theme, categories, impact = infer_macro_impact(item["title"])
-        published = item.get("published") or "date de publication non fournie par le flux"
-        source = item.get("source") or "source non précisée par le flux"
-        lines.append(f"- ACTUALITÉ : {item['title']} — {source} — {published}")
-        if item.get("summary"):
-            lines.append(f"  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : {item['summary']}")
-        lines.append(f"  - SOURCE À OUVRIR : {item['url']}")
-        lines.append(f"  - ANALYSE : {theme}. Actifs potentiellement concernés : {categories}. {impact}")
+def _news_fact_and_market_readthrough(item: dict[str, str]) -> tuple[str, str]:
+    """Summarize supplied headline/excerpt facts, then state a conditional market read-through."""
+    title = item.get("title", "").strip()
+    summary = re.sub(r"\s+", " ", item.get("summary", "")).strip()
+    text = f"{title} {summary}".casefold()
+    fact = summary or title
+    if summary and len(fact) > 620:
+        fact = fact[:617].rsplit(" ", 1)[0] + "…"
 
+    if any(k in text for k in ("artificial intelligence", " ai ", "semiconductor", "chip stocks", "data centre", "data center", "nvidia", "broadcom")):
+        impact = "Le marché arbitre entre la croissance attendue des revenus liés à l’IA et le coût du financement des infrastructures. À suivre : prévisions de ventes, dépenses d’investissement, dette des opérateurs de centres de données et réaction des semi-conducteurs."
+    elif any(k in text for k in ("treasury yield", "bond yield", "government bonds", "sovereign yields", "interest rate", "rate hike", "federal reserve", "central bank", "monetary policy")):
+        impact = "Les rendements modifient le coût du crédit et les valorisations. Une hausse pénalise généralement les obligations déjà émises et les actions à valorisation élevée; une détente peut les soutenir. Le prochain test est l’écart entre les données d’inflation/activité et les attentes de taux."
+    elif any(k in text for k in ("crude", "brent", "oil prices", "oil price", "strait of hormuz", "opec", "energy prices")):
+        impact = "Le pétrole transmet le choc aux anticipations d’inflation, aux coûts de transport et aux marges. Les producteurs peuvent en bénéficier; les compagnies aériennes, consommateurs et pays importateurs sont plus exposés. Vérifier si le mouvement vient d’une rupture d’offre durable ou d’une prime géopolitique."
+    elif any(k in text for k in ("inflation", "consumer price", "cpi", "ppi", "producer prices")):
+        impact = "Le point décisif est la surprise par rapport au consensus et au chiffre précédent. Une inflation plus forte peut retarder l’assouplissement monétaire et maintenir les rendements élevés; une désinflation crédible peut produire l’effet inverse. Le titre seul ne suffit pas sans les chiffres."
+    elif any(k in text for k in ("earnings", "quarterly results", "revenue", "profit", "guidance", "forecast", "sales", "cash flow", "margin")):
+        impact = "Pour l’action concernée, comparer chiffre d’affaires, bénéfice, marges et prévisions de direction aux attentes, puis regarder la réaction du cours. Une publication en hausse peut faire baisser le titre si les attentes étaient plus élevées; l’effet sur l’indice dépend du poids de l’entreprise."
+    elif any(k in text for k in ("bitcoin", "ethereum", "crypto", "digital asset")):
+        impact = "Distinguer les facteurs propres au secteur (réglementation, ETF, liquidations, sécurité) du mouvement général d’appétit pour le risque. Vérifier les flux d’ETF et l’évolution simultanée du dollar, des rendements et des actifs risqués avant d’attribuer une cause."
+    elif any(k in text for k in ("gdp", "gross domestic product", "pmi", "retail sales", "industrial production", "economic growth", "recession", "employment", "payroll", "unemployment", "jobless")):
+        impact = "La surprise par rapport aux attentes est plus informative que le chiffre isolé. Une activité robuste peut soutenir les secteurs cycliques mais repousser les baisses de taux; une faiblesse peut soutenir les obligations si elle réduit les taux anticipés, tout en pénalisant les actions sensibles à la croissance."
+    elif any(k in text for k in ("china", "tariff", "trade", "sanction", "export restriction", "supply chain")):
+        impact = "Les effets passent par les entreprises exposées aux échanges, les coûts d’importation et les chaînes d’approvisionnement, puis les devises et matières premières. Identifier la mesure exacte, son calendrier et les représailles éventuelles avant d’en déduire un scénario."
+    elif any(k in text for k in ("war", "conflict", "attack", "geopolitical", "ceasefire", "iran", "ukraine")):
+        impact = "Les actifs directement exposés et les matières premières concernées sont à surveiller. Une escalade peut accroître la prime de risque et les prix de l’énergie; une désescalade peut l’effacer rapidement. La réaction dépend de la durée du choc et de son effet réel sur l’offre."
+    else:
+        impact = "La portée de cette nouvelle dépend de ses détails et de la surprise par rapport aux attentes. Identifier les entreprises ou pays concernés, puis vérifier la réaction des prix et les prochaines données qui confirmeraient ou invalideraient l’interprétation."
+    return fact, impact
+
+
+def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
+    """Lead with actual reported events and concise, fact-grounded market consequences."""
+    priority_news = prioritize_news(news, 10)
+    lines += ["", "LES ACTUALITÉS QUI COMPTENT"]
+    if not priority_news:
+        lines.append("Aucune actualité exploitable n’a été récupérée. Les conclusions de marché doivent être considérées comme incomplètes.")
+        return
+    for index, item in enumerate(priority_news, 1):
+        fact, impact = _news_fact_and_market_readthrough(item)
+        published = item.get("published") or "date non fournie"
+        source = item.get("source") or "éditeur non précisé"
+        lines.append(f"{index}. {item['title']}")
+        lines.append(f"   {source} · {published}")
+        lines.append(f"   CE QUI S’EST PASSÉ : {fact}")
+        lines.append(f"   POUR LES MARCHÉS : {impact}")
+        lines.append(f"   Source : {item['url']}")
 
 def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
     feed_batches: list[list[dict[str, str]]] = []
@@ -1559,25 +1585,22 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         title, f"Heure Madagascar : {now_local:%Y-%m-%d %H:%M:%S %Z}",
         f"Généré UTC : {started:%Y-%m-%d %H:%M:%S UTC}",
         "",
-        "RÉSUMÉ ET LIMITES",
-        f"Données de prix reçues pour {len(rows)}/{len(ASSETS)} actifs suivis.",
-        "Le rapport est orienté vers les événements, les mouvements de marché, les scénarios et les actifs à surveiller. Les indicateurs techniques sont conservés et utilisés en interne pour l'analyse, mais ne sont pas affichés. L'analyse fondamentale est alimentée par des titres multi-sources, mais le consensus chiffré et les rapports originaux ne sont pas disponibles pour chaque société. Les probabilités directionnelles sont expérimentales, explicites et non calibrées; elles seront auditées au rapport du soir.",
-        "Les données de marché peuvent être retardées, révisées ou indisponibles. Les variations portent sur la dernière séance reçue, pas nécessairement sur la séance en cours.",
+        f"Couverture : {len(rows)} actifs avec données reçues sur {len(ASSETS)} suivis. Les cours correspondent à la dernière observation disponible.",
         "",
     ]
 
     append_priority_news(lines, news)
     append_macro_series(lines, macro_series)
     append_funnel_report(lines, report_type, rows, news, previous, prior_morning, prior_update, data_errors, news_errors, company_fundamentals)
-    lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Séries macroéconomiques : FRED en priorité; repli vers l’API publique officielle BLS pour CPI, chômage et emploi si FRED est indisponible. Les dates et sources sont indiquées; fréquences et délais diffèrent.", "- Actualités : flux officiels Fed, BEA, Census Bureau, BCE, EIA, Banque d'Angleterre et Banque du Japon. Les publications BLS emploi/CPI/PPI sont repérées par des recherches ciblées Google News vers les archives BLS; une recherche ciblée DOL complète les demandes d'allocations chômage. Les recherches FMI/Banque mondiale sont aussi des outils de découverte, pas des preuves indépendantes : ouvrir et vérifier la publication institutionnelle originale avant de retenir un chiffre.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}; erreurs données fondamentales SEC : {len(fundamentals_errors)}; erreurs de collecte macro (FRED puis repli BLS) : {len(macro_errors)}."]
+    lines += ["", "À PROPOS DES DONNÉES", f"Collecte : {started:%d/%m/%Y à %H:%M UTC}. Données de prix reçues pour {len(rows)}/{len(ASSETS)} actifs; {len(news)} actualités collectées."]
     if data_errors:
-        lines += ["", "DONNÉES MANQUANTES"] + [f"- {e}" for e in data_errors[:20]]
+        lines.append(f"Certains cours n’ont pas été récupérés ({len(data_errors)} actifs). Les valeurs absentes ne doivent pas être interprétées comme nulles.")
     if news_errors:
-        lines += ["", "ERREURS DE FLUX"] + [f"- {e}" for e in news_errors]
+        lines.append(f"Certains flux d’actualités étaient indisponibles ({len(news_errors)} flux); la couverture peut être incomplète.")
     if fundamentals_errors:
-        lines += ["", "ERREURS DONNÉES FONDAMENTALES SEC"] + [f"- {e}" for e in fundamentals_errors[:15]]
+        lines.append("Certaines données fondamentales d’entreprises n’ont pas pu être récupérées.")
     if macro_errors:
-        lines += ["", "ERREURS DE COLLECTE MACRO (FRED / REPLI BLS)"] + [f"- {e}" for e in macro_errors]
+        lines.append("Certaines séries macroéconomiques n’ont pas pu être récupérées.")
     lines += ["", "Avertissement : contenu informatif et expérimental, pas un conseil d'investissement. Vérifier les données et les actualités avant toute décision."]
     plain = "\n".join(lines)
 
