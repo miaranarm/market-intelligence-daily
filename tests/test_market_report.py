@@ -36,12 +36,25 @@ class PriorityNewsRenderingTests(unittest.TestCase):
             "url": "https://example.org/fed-release",
         }]
         append_priority_news(lines, news)
-        rendered = "\\n".join(lines)
+        rendered = "\n".join(lines)
         self.assertLess(rendered.index("ACTUALITÉS PRIORITAIRES"), rendered.index("ACTUALITÉ :"))
         self.assertIn("The committee maintained the target range", rendered)
         self.assertIn("https://example.org/fed-release", rendered)
         self.assertIn("ANALYSE :", rendered)
 
+
+
+class NewsFeedSummaryTests(unittest.TestCase):
+    def test_rss_excerpt_html_and_whitespace_are_normalized(self):
+        xml = ET.fromstring(
+            "<rss><channel><item><title>Market update</title>"
+            "<link>https://example.org/story</link>"
+            "<description><![CDATA[<p>First line\n  second line</p>]]></description>"
+            "</item></channel></rss>"
+        )
+        entries = _feed_entries(xml, "Test feed")
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["summary"], "First line second line")
 
 
 class AssetUniverseTests(unittest.TestCase):
