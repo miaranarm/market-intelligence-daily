@@ -1383,9 +1383,9 @@ def linkify_text(value: str) -> str:
 def render_professional_html(plain: str, title: str, now_local: datetime, started: datetime) -> str:
     """Render a readable briefing with detailed supporting tables available on demand."""
     lines = plain.splitlines()
+    # Keep the actual market analysis and all nine asset classes visible by default.
+    # Only detailed fundamentals and the full instrument table are supporting annexes.
     collapsed_sections = {
-        "NIVEAU 4 — CLASSES D'ACTIFS : OÙ SE CONCENTRE LE RISQUE ?": "LES 9 CATÉGORIES — ANALYSE PAR UNIVERS D’INVESTISSEMENT",
-        "NIVEAU 5 — SECTEURS, SEGMENTS, THÉMATIQUES ET MICROÉCONOMIE": "FONDAMENTAUX PUBLIÉS — ÉCHANTILLON SEC EDGAR",
         "FONDAMENTAUX PUBLIÉS — ÉCHANTILLON SEC EDGAR": "NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE",
         "PANORAMA COMPLET DES INSTRUMENTS COLLECTÉS": "NIVEAU 7 — DÉCISION, INVALIDATION ET AUDIT",
     }
