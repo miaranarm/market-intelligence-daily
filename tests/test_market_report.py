@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename, fmt, send_email
+from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, _summarize_news_text, _enrich_news_item, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename, fmt, send_email
 
 
 
@@ -123,6 +123,46 @@ class PriorityNewsRenderingTests(unittest.TestCase):
 
 
 class NewsFeedSummaryTests(unittest.TestCase):
+    def test_extractive_summary_prioritizes_concrete_facts_and_skips_boilerplate(self):
+        source = (
+            "The central bank said it will publish further information in due course. "
+            "Consumer prices rose 3.2 percent in September, above the 2.8 percent forecast, "
+            "according to the official release. Investors pushed the 10-year Treasury yield "
+            "up 12 basis points after the data was released."
+        )
+        summary = _summarize_news_text(source, max_chars=500)
+        self.assertIn("3.2 percent", summary)
+        self.assertIn("2.8 percent forecast", summary)
+        self.assertIn("12 basis points", summary)
+        self.assertLessEqual(len(summary), 500)
+
+    @patch("src.market_report.requests.get")
+    def test_enrichment_extracts_factual_publisher_paragraphs(self, get_mock):
+        class FakeResponse:
+            url = "https://publisher.example/article"
+            text = (
+                "<html><head><title>Market story</title></head><body>"
+                "<p>Consumer prices rose 3.2 percent in September, above economists' "
+                "forecast of 2.8 percent, the government reported on Friday.</p>"
+                "<p>The 10-year Treasury yield climbed 12 basis points as traders "
+                "reassessed the expected path of interest rates.</p>"
+                "</body></html>"
+            )
+            def raise_for_status(self):
+                return None
+        get_mock.return_value = FakeResponse()
+        item = {
+            "title": "Inflation surprises markets",
+            "url": "https://publisher.example/article",
+            "published": "2026-10-17T05:00:00Z",
+            "source": "Publisher",
+            "summary": "",
+        }
+        result = _enrich_news_item(item)
+        self.assertIn("3.2 percent", result["summary"])
+        self.assertIn("12 basis points", result["summary"])
+        self.assertEqual(result["url"], "https://publisher.example/article")
+
     def test_rss_excerpt_html_and_whitespace_are_normalized(self):
         xml = ET.fromstring(
             "<rss><channel><item><title>Market update</title>"
