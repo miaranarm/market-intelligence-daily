@@ -34,7 +34,7 @@ concurrency:
 
 jobs:
   report:
-    if: ${{ github.event_name != 'issue_comment' || (github.event.comment.user.login == 'miaranarm' && !github.event.issue.pull_request && contains(fromJSON('["/run-market-report morning","/run-market-report update","/run-market-report audit"]'), github.event.comment.body)) }}
+    if: ${{ github.event_name != 'issue_comment' || (github.event.comment.user.login == 'miaranarm' && !github.event.issue.pull_request && contains(fromJSON('["/run-market-report morning","/run-market-report update","/run-market-report audit","/run-market-report weekly"]'), github.event.comment.body)) }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
