@@ -212,12 +212,14 @@ class FeedFormatCompatibilityTests(unittest.TestCase):
         root = ET.fromstring(
             "<rss><channel><item><title>Policy update</title>"
             "<link>https://example.org/rss</link><pubDate>Fri, 16 Oct 2026 10:00:00 GMT</pubDate>"
-            "<source>Publisher</source></item></channel></rss>"
+            "<source>Publisher</source><description><![CDATA[Inflation came in above forecasts, pushing Treasury yields higher.]]></description></item></channel></rss>"
         )
         items = _feed_entries(root, "Fallback")
         self.assertEqual(len(items), 1)
         self.assertEqual(items[0]["url"], "https://example.org/rss")
         self.assertEqual(items[0]["source"], "Publisher")
+        self.assertIn("Inflation came in above forecasts", items[0]["summary"])
+        self.assertIn("Treasury yields higher", items[0]["summary"])
 
     def test_atom_entries_with_namespaces_are_normalized(self):
         root = ET.fromstring(
