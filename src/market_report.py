@@ -197,7 +197,11 @@ def num(value: Any, digits: int = 2) -> float | None:
         return None
 
 def fmt(value: float | None, suffix: str = "", digits: int = 2) -> str:
-    return "n.d." if value is None else f"{value:+.{digits}f}{suffix}"
+    """Format raw prices as unsigned values and percentage changes with an explicit sign."""
+    if value is None:
+        return "n.d."
+    number = f"{value:+.{digits}f}" if suffix == "%" else f"{value:.{digits}f}"
+    return f"{number}{suffix}"
 
 def fetch_prices() -> tuple[dict[str, pd.DataFrame], list[str]]:
     data: dict[str, pd.DataFrame] = {}
@@ -580,8 +584,8 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
         host = urlparse(item.get("url", "")).netloc.casefold().removeprefix("www.")
         if host == "news.google.com" or host.endswith(".news.google.com"):
             continue
-        if len(summary) < 100:
-            continue
+        # Keep direct-publisher headlines even when article metadata cannot be retrieved.
+        # The renderer explicitly labels these as headline-only instead of silently dropping them.
         if any(term in title for term in market_terms):
             item["summary"] = summary
             factual_items.append(item)
