@@ -605,12 +605,17 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
             paragraph = " ".join(html.unescape(re.sub(r"<[^>]+>", " ", paragraph)).split())
             if len(paragraph) >= 90:
                 candidates.append(paragraph)
+        usable_candidates = []
         for candidate in candidates:
             candidate = " ".join(html.unescape(re.sub(r"<[^>]+>", " ", candidate)).split())
             if is_useful_summary(candidate):
-                result["summary"] = _summarize_news_text(candidate)
-                if len(result["summary"]) >= 100:
-                    return result
+                usable_candidates.append(candidate)
+        if usable_candidates:
+            # Combine factual metadata and article paragraphs before ranking sentences,
+            # otherwise a short meta description can hide the more useful figures below.
+            result["summary"] = _summarize_news_text(" ".join(usable_candidates), max_chars=1200)
+            if len(result["summary"]) >= 100:
+                return result
     except Exception:
         pass
     # Never present generic institutional boilerplate as facts about a specific event.
