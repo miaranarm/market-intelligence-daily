@@ -5,7 +5,23 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, prioritize_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+
+
+
+
+class PriorityNewsTests(unittest.TestCase):
+    def test_prioritizes_market_moving_news_and_keeps_source_details(self):
+        news = [
+            {"title": "Local community event", "source": "Google News", "published": "2026-10-17T04:00:00Z", "url": "https://example.com/local"},
+            {"title": "Federal Reserve signals interest rate decision after inflation data", "source": "Federal Reserve", "published": "2026-10-16T12:00:00Z", "url": "https://example.com/fed"},
+            {"title": "Company earnings and guidance disappoint investors", "source": "Financial Times", "published": "2026-10-16T10:00:00Z", "url": "https://example.com/earnings"},
+        ]
+        selected = prioritize_news(news, 2)
+        self.assertEqual(len(selected), 2)
+        self.assertEqual(selected[0]["url"], "https://example.com/fed")
+        self.assertIn("source", selected[0])
+        self.assertIn("published", selected[0])
 
 
 
