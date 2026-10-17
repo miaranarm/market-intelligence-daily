@@ -474,21 +474,53 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
         response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=7, allow_redirects=True)
         response.raise_for_status()
         page = response.text[:1_500_000]
-        # Prefer article-specific metadata to generic institutional page descriptions.
+        # Google News often keeps the RSS URL as the final URL. Try canonical article
+        # metadata and structured Article JSON-LD before accepting an aggregator link.
+        final_url = getattr(response, "url", "")
+        canonical_patterns = [
+            r'<link[^>]+rel=["\\']canonical["\\'][^>]+href=["\\']([^"\\']+)["\\']',
+            r'<meta[^>]+property=["\\']og:url["\\'][^>]+content=["\\']([^"\\']+)["\\']',
+            r'<meta[^>]+content=["\\']([^"\\']+)["\\'][^>]+property=["\\']og:url["\\']',
+        ]
+        for pattern in canonical_patterns:
+            match = re.search(pattern, page, flags=re.IGNORECASE)
+            if match and match.group(1).startswith(("https://", "http://")):
+                candidate_url = html.unescape(match.group(1))
+                if "news.google.com" not in urlparse(candidate_url).netloc:
+                    final_url = candidate_url
+                    break
+        if final_url and "news.google.com" not in urlparse(final_url).netloc:
+            result["url"] = final_url
+
         patterns = [
-            r"<meta[^>]+(?:property|name)=[\"'](?:og:description|article:description|twitter:description)[\"'][^>]+content=[\"']([^\"']+)[\"']",
-            r"<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+(?:property|name)=[\"'](?:og:description|article:description|twitter:description)[\"']",
-            r"<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']+)[\"']",
-            r"<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+name=[\"']description[\"']",
+            r"<meta[^>]+(?:property|name)=["\\'](?:og:description|article:description|twitter:description)["\\'][^>]+content=["\\']([^"\\']+)["\\']",
+            r"<meta[^>]+content=["\\']([^"\\']+)["\\'][^>]+(?:property|name)=["\\'](?:og:description|article:description|twitter:description)["\\']",
+            r"<meta[^>]+name=["\\']description["\\'][^>]+content=["\\']([^"\\']+)["\\']",
+            r"<meta[^>]+content=["\\']([^"\\']+)["\\'][^>]+name=["\\']description["\\']",
         ]
         candidates = []
         for pattern in patterns:
             candidates.extend(re.findall(pattern, page, flags=re.IGNORECASE))
-        final_url = getattr(response, "url", "")
-        if final_url and "news.google.com/rss/articles" not in final_url:
-            result["url"] = final_url
+        # Structured data frequently contains the actual article description even
+        # when Open Graph metadata is absent. Do not treat generic site boilerplate as facts.
+        for match in re.findall(r'<script[^>]+type=["\\']application/ld\\+json["\\'][^>]*>(.*?)</script>', page, flags=re.IGNORECASE | re.DOTALL):
+            try:
+                payload = json.loads(html.unescape(match))
+                nodes = payload if isinstance(payload, list) else [payload]
+                for node in nodes:
+                    if not isinstance(node, dict):
+                        continue
+                    graph = node.get("@graph", [])
+                    if isinstance(graph, list):
+                        nodes.extend(x for x in graph if isinstance(x, dict))
+                    for key in ("description", "articleBody"):
+                        value = node.get(key)
+                        if isinstance(value, str):
+                            candidates.append(value)
+            except (ValueError, TypeError):
+                continue
         for candidate in candidates:
-            candidate = html.unescape(re.sub(r"\s+", " ", candidate)).strip()
+            candidate = html.unescape(re.sub(r"\\s+", " ", re.sub(r"<[^>]+>", " ", candidate))).strip()
             if is_useful_summary(candidate):
                 result["summary"] = candidate[:1200]
                 return result
