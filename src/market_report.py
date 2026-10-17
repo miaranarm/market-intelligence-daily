@@ -149,6 +149,11 @@ NEWS_FEEDS = [
     ("Google News — énergie et industrie", "https://news.google.com/rss/search?q=energy+industrial+company+earnings+production+guidance&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — consommation et santé", "https://news.google.com/rss/search?q=consumer+healthcare+company+earnings+sales+guidance&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — matières premières et géopolitique", "https://news.google.com/rss/search?q=oil+gold+commodities+geopolitics&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — Reuters, marchés mondiaux (découverte, ouvrir la dépêche originale)", "https://news.google.com/rss/search?q=site%3Areuters.com%2Fmarkets+stocks+bonds+currencies+commodities&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — CNBC, marchés et entreprises (découverte)", "https://news.google.com/rss/search?q=site%3Acnbc.com+markets+stocks+earnings+economy&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — Financial Times, marchés mondiaux (découverte)", "https://news.google.com/rss/search?q=site%3Aft.com+markets+equities+bonds+currencies+economy&hl=en-GB&gl=GB&ceid=GB:en"),
+    ("Google News — devises et obligations internationales (découverte)", "https://news.google.com/rss/search?q=forex+currency+markets+government+bonds+Treasury+yields&hl=en-US&gl=US&ceid=US:en"),
+    ("Google News — actifs numériques et réglementation crypto (découverte)", "https://news.google.com/rss/search?q=cryptocurrency+bitcoin+ether+ETF+regulation+markets&hl=en-US&gl=US&ceid=US:en"),
 ]
 
 @dataclass
@@ -417,7 +422,7 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
         for batch in feed_batches:
             if item_index < len(batch):
                 items.append(batch[item_index])
-    return items[:36], errors
+    return items[:48], errors
 
 
 
