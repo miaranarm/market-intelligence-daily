@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, _summarize_news_text, _enrich_news_item, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename, fmt, send_email
+from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, _summarize_news_text, _enrich_news_item, _is_google_news_url, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename, fmt, send_email
 
 
 
@@ -124,9 +124,9 @@ class PriorityNewsRenderingTests(unittest.TestCase):
 
 class NewsFeedSummaryTests(unittest.TestCase):
     def test_google_news_url_is_detected_until_resolved_to_publisher(self):
-        self.assertTrue(mr._is_google_news_url("https://news.google.com/rss/articles/example"))
+        self.assertTrue(_is_google_news_url("https://news.google.com/rss/articles/example"))
         self.assertTrue(mr._is_google_news_url("https://news.google.com"))
-        self.assertFalse(mr._is_google_news_url("https://www.reuters.com/world/markets/story"))
+        self.assertFalse(_is_google_news_url("https://www.reuters.com/world/markets/story"))
         self.assertFalse(mr._is_google_news_url("https://www.cnbc.com/2026/10/17/story.html"))
 
     def test_extractive_summary_prioritizes_concrete_facts_and_skips_boilerplate(self):
