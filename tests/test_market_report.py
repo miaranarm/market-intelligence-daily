@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename
+from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename, fmt
 
 
 
@@ -51,7 +51,7 @@ class PriorityNewsRenderingTests(unittest.TestCase):
         self.assertIn("POUR LES MARCHÉS :", rendered)
 
     @patch("src.market_report._enrich_news_item", side_effect=lambda item: item)
-    def test_excludes_aggregator_links_and_headline_only_items(self, _enrich):
+    def test_excludes_aggregator_links_but_keeps_direct_headline_only_items(self, _enrich):
         news = [
             {
                 "title": "Bitcoin ETF rules announced",
@@ -80,8 +80,8 @@ class PriorityNewsRenderingTests(unittest.TestCase):
         rendered = "\n".join(lines)
         self.assertIn("Oil prices rise after supply disruption", rendered)
         self.assertNotIn("news.google.com", rendered)
-        self.assertNotIn("Central bank publishes policy statement", rendered)
-        self.assertNotIn("le résumé détaillé de l’éditeur n’a pas pu être vérifié", rendered)
+        self.assertIn("Central bank publishes policy statement", rendered)
+        self.assertIn("le résumé détaillé de l’éditeur n’a pas pu être vérifié", rendered)
 
 
 
@@ -118,6 +118,13 @@ class AssetUniverseTests(unittest.TestCase):
         self.assertEqual(ASSETS["^GDAXI"]["class"], "German equity index")
         self.assertEqual(ASSETS["ZW=F"]["class"], "Agricultural commodity")
         self.assertEqual(ASSETS["AGG"]["class"], "Bond ETF")
+
+
+class PriceFormattingTests(unittest.TestCase):
+    def test_raw_prices_are_unsigned_but_percentage_changes_keep_sign(self):
+        self.assertEqual(fmt(19.99), "19.99")
+        self.assertEqual(fmt(19.99, "%"), "+19.99%")
+        self.assertEqual(fmt(-2.5, "%"), "-2.50%")
 
 
 class PriceFreshnessTests(unittest.TestCase):
