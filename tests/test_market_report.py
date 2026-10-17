@@ -5,8 +5,16 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename
 
+
+
+
+class ReportArchiveLinkTests(unittest.TestCase):
+    def test_archive_filename_is_stable_and_separates_report_types(self):
+        timestamp = "2026-10-17T09:59:02+03:00"
+        self.assertEqual(report_archive_filename("morning", timestamp), "morning-20261017-095902.html")
+        self.assertEqual(report_archive_filename("update", timestamp), "update-20261017-095902.html")
 
 
 
