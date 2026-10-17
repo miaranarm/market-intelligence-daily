@@ -1,6 +1,6 @@
 Rapport initial — marchés multi-actifs
-Heure Madagascar : 2026-10-17 09:59:02 EAT
-Généré UTC : 2026-10-17 06:59:02 UTC
+Heure Madagascar : 2026-10-17 10:30:31 EAT
+Généré UTC : 2026-10-17 07:30:31 UTC
 
 Couverture : 82 actifs avec données reçues sur 82 suivis. Les cours correspondent à la dernière observation disponible.
 
@@ -11,6 +11,11 @@ LES ACTUALITÉS QUI COMPTENT
    FAITS RAPPORTÉS : U.S. crude oil prices rose sharply Friday as Iran escalated attacks in the Strait of Hormuz this week.
    POUR LES MARCHÉS : Le pétrole transmet le choc aux anticipations d’inflation, aux coûts de transport et aux marges. Les producteurs peuvent en bénéficier; les compagnies aériennes, consommateurs et pays importateurs sont plus exposés. Vérifier si le mouvement vient d’une rupture d’offre durable ou d’une prime géopolitique.
    Source : https://www.cnbc.com/2026/10/16/oil-price-today-iran-strait-hormuz-ukraine-russia.html
+2. David Roberts CV and questionnaire for the Treasury Select Committee
+   Bank of England — actualités et stabilité financière · Thu, 15 Oct 2026 10:52:41 +0100
+   FAITS RAPPORTÉS : le titre indique l’événement ci-dessus; le résumé détaillé de l’éditeur n’a pas pu être vérifié. Aucun chiffre ni détail supplémentaire n’est inféré.
+   POUR LES MARCHÉS : La portée de cette nouvelle dépend de ses détails et de la surprise par rapport aux attentes. Identifier les entreprises ou pays concernés, puis vérifier la réaction des prix et les prochaines données qui confirmeraient ou invalideraient l’interprétation.
+   Source : https://www.bankofengland.co.uk/news/2026/october/david-roberts-tsc-reappointment
 
 INDICATEURS MACROÉCONOMIQUES STRUCTURÉS — FRED ET SOURCE OFFICIELLE DE REPLI
 La source et la date de chaque observation sont indiquées. Les fréquences et délais de publication diffèrent; les valeurs ne sont pas nécessairement du jour.
@@ -45,12 +50,12 @@ Lecture régionale : les signaux ci-dessous sont limités aux publications et in
 NIVEAU 3 — GRANDES FORCES ET INTERACTIONS ENTRE LES MARCHÉS
 - Les grands indices US ont reculé sur cinq séances : momentum récent négatif, sans que cela suffise à établir une prévision directionnelle. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
 - Le VIX a fortement progressé sur la dernière séance disponible : surveiller une hausse de l'aversion au risque. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
-- Bitcoin : variation de la dernière séance disponible -0.78%; la crypto cote en continu, contrairement à la plupart des marchés traditionnels. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
+- Bitcoin : variation de la dernière séance disponible +0.12%; la crypto cote en continu, contrairement à la plupart des marchés traditionnels. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
 - Actions US vs taux longs US : S&P 500 -1.09 %; US 10-year Treasury yield +0.18 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
 - Technologie vs marché large : Nasdaq Composite -2.15 %; S&P 500 -1.09 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
 - Or vs dollar : Gold futures +0.26 %; US Dollar Index -0.16 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
 - Pétrole vs dollar : WTI crude oil futures +3.51 %; US Dollar Index -0.16 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
-- Bitcoin vs technologie : Bitcoin -0.78 %; Nasdaq Composite -2.15 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
+- Bitcoin vs technologie : Bitcoin +0.12 %; Nasdaq Composite -2.15 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
 
 NIVEAU 4 — CLASSES D'ACTIFS : OÙ SE CONCENTRE LE RISQUE ?
 La classification ci-dessous repose sur les actifs reçus. Les fonds communs sont inclus lorsque leur cotation de valeur liquidative est disponible; une donnée absente est signalée, jamais inventée.
@@ -77,8 +82,8 @@ La classification ci-dessous repose sur les actifs reçus. Les fonds communs son
   - Sur cinq séances : 1/5 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 - Credit ETF : 1 instrument(s); variation moyenne non pondérée -0.35%.
   - Sur cinq séances : 0/1 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- Crypto : 4 instrument(s); variation moyenne non pondérée -0.90%.
-  - Meilleure variation : Ethereum (-0.47%); plus faible : XRP (-1.86%).
+- Crypto : 4 instrument(s); variation moyenne non pondérée +0.30%.
+  - Meilleure variation : Solana (+0.66%); plus faible : XRP (-0.09%).
   - Sur cinq séances : 0/4 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 - ETF : 8 instrument(s); variation moyenne non pondérée -1.11%.
   - Meilleure variation : Developed markets ex-US equity ETF (-0.12%); plus faible : Invesco Nasdaq 100 ETF (-2.50%).
@@ -144,7 +149,7 @@ Chaque rubrique combine les instruments effectivement reçus et les nouvelles qu
 - Actualité à examiner : European shares close out best week since June as earnings soften blow from tech selloff - Reuters — Reuters (Fri, 16 Oct 2026 16:34:41 GMT) — https://news.google.com/rss/articles/CBMivAFBVV95cUxOa1lsVE9lQzRmN0pzeFRqTUcyTFN0a3ZfNDh6Zk9MdU9hYUFXSnIzZzFINmJOd0pCbFcxaTV6VnU2QnRfazFpR1lSNHdEMlB4NHJ6RDZOVmhlZVkwZ0hPbEJoVlBrOUpYcF81YUJTYjIyRTdhNE5mNzhUeExmOS1HNDliT3Z6MEYxX2t2OVVSeDJJLVlWM0dJa3dqZUVKOTBIVmsxVlAwZEgyM3lvT2VUUlJiRkFhQi13OHBmRA?oc=5
 - Actualité à examiner : European Stocks Decline as US Inflation Data Triggers Global Technology Sell-Off: DAX, CAC, FTSE100 - Yahoo Finance UK — Yahoo Finance UK (Thu, 15 Oct 2026 09:15:25 GMT) — https://news.google.com/rss/articles/CBMijgFBVV95cUxOLU5YSnMyb2staW5EV3hRTkVrcVN3cEZ2aDJlR043SGZISDlsRkw2YmxCZ1BGRzRQQzhEWHoxQmFPZ0tFYjFLU1p5VDJjNlhPbUtJYkRPOGtFazhqNGhYMjlkUXBCLW54cFRYUXhNRG5pWFhtQ1cxOFpsQjFLNDY2WVZtZ205Z2JtTjZPc0p3?oc=5
 6. CRYPTO-ACTIFS
-- Instruments suivis : Ethereum (séance -0.47 %; 5 séances -4.17 %; cours au 2026-10-17); Solana (séance -0.50 %; 5 séances -5.79 %; cours au 2026-10-17); Bitcoin (séance -0.78 %; 5 séances -2.60 %; cours au 2026-10-17); XRP (séance -1.86 %; 5 séances -7.15 %; cours au 2026-10-17).
+- Instruments suivis : Solana (séance +0.66 %; 5 séances -0.55 %; cours au 2026-10-17); Ethereum (séance +0.53 %; 5 séances -0.48 %; cours au 2026-10-17); Bitcoin (séance +0.12 %; 5 séances -0.20 %; cours au 2026-10-17); XRP (séance -0.09 %; 5 séances -2.29 %; cours au 2026-10-17).
 - Actualité à examiner : Thailand launches new crypto ETF rules allowing Bitcoin and Ether trading on its stock exchange. - Pluang — Pluang (Sat, 17 Oct 2026 01:23:53 GMT) — https://news.google.com/rss/articles/CBMioAFBVV95cUxQMXdmalRPeldjamNBWEt6bXg3YnlKUWQ4R1FmV1NYOGRkLUVfcHRLam1Fc0VYY05pVVdjWHlkRDhvdFRZb0VrZlp3MjNMWXZPSjBObVRoS3FKOEtDU3RXRC1QRTVraER4cl91YTBtMWFjSlp4OWlLd0oteGhheFV3emdvYWtxVHFVc3VGZ1NzTENZTUFSalVWNHhINXBBQjFv?oc=5
 - Actualité à examiner : Today's Crypto News: Bitcoin, Ether and Altcoin Insights - Investing News Network — Investing News Network (Wed, 14 Oct 2026 21:05:00 GMT) — https://news.google.com/rss/articles/CBMiZEFVX3lxTE9PU3pBdGY0NWJMSWFUTFRDUGx3RklNQlNENWdlQjBiNG9meUo5andqSHFER0lkNlhEaFVwOXpLYWZseVJ1YVZsU2Q4RzBWT1RoeUhTM19YaFljM2ZHcm5yMHYxTlc?oc=5
 7. OBLIGATIONS ET CRÉDIT
@@ -198,109 +203,109 @@ Montants en milliards USD; BPA dilué en USD/action. La marge opérationnelle es
 NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE
 Les instruments sont sélectionnés par importance du mouvement et disponibilité des données, non comme recommandation automatique d'achat ou de vente.
 Instruments à examiner en priorité (sélection par amplitude; pas une recommandation d'achat/vente) :
-- VIX volatility index (^VIX) — classe : Implied volatility; dernier prix +19.99; dernière séance +21.45%; 5 séances +34.70%; 1 mois +29.47%. Source cours : https://finance.yahoo.com/quote/^VIX/
+- VIX volatility index (^VIX) — classe : Implied volatility; dernier prix 19.99; dernière séance +21.45%; 5 séances +34.70%; 1 mois +29.47%. Source cours : https://finance.yahoo.com/quote/^VIX/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
-- KOSPI (^KS11) — classe : South Korean equity index; dernier prix +5668.05; dernière séance +2.05%; 5 séances -14.46%; 1 mois -17.97%. Source cours : https://finance.yahoo.com/quote/^KS11/
+- KOSPI (^KS11) — classe : South Korean equity index; dernier prix 5668.05; dernière séance +2.05%; 5 séances -14.46%; 1 mois -17.97%. Source cours : https://finance.yahoo.com/quote/^KS11/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
-- XRP (XRP-USD) — classe : Crypto; dernier prix +1.31; dernière séance -1.86%; 5 séances -7.15%; 1 mois -16.58%. Source cours : https://finance.yahoo.com/quote/XRP-USD/
+- XRP (XRP-USD) — classe : Crypto; dernier prix 1.31; dernière séance -0.09%; 5 séances -2.29%; 1 mois -14.35%. Source cours : https://finance.yahoo.com/quote/XRP-USD/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
-- Solana (SOL-USD) — classe : Crypto; dernier prix +104.80; dernière séance -0.50%; 5 séances -5.79%; 1 mois -14.11%. Source cours : https://finance.yahoo.com/quote/SOL-USD/
-  - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
-- Silver futures (SI=F) — classe : Commodity; dernier prix +56.99; dernière séance +0.28%; 5 séances -6.06%; 1 mois -12.94%. Source cours : https://finance.yahoo.com/quote/SI=F/
+- Solana (SOL-USD) — classe : Crypto; dernier prix 104.98; dernière séance +0.66%; 5 séances -0.55%; 1 mois -13.54%. Source cours : https://finance.yahoo.com/quote/SOL-USD/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
-- Bank of America (BAC) — classe : US equity; dernier prix +51.23; dernière séance -0.91%; 5 séances -5.69%; 1 mois -11.95%. Source cours : https://finance.yahoo.com/quote/BAC/
+- Silver futures (SI=F) — classe : Commodity; dernier prix 56.99; dernière séance +0.28%; 5 séances -6.06%; 1 mois -12.94%. Source cours : https://finance.yahoo.com/quote/SI=F/
+  - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
+- Bank of America (BAC) — classe : US equity; dernier prix 51.23; dernière séance -0.91%; 5 séances -5.69%; 1 mois -11.95%. Source cours : https://finance.yahoo.com/quote/BAC/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
   - Actualité associée à vérifier : FOREX-Dollar pulls back from 18-month high as Treasury yields fall; Fed hike bets ease - Devdiscourse — https://news.google.com/rss/articles/CBMi2wFBVV95cUxOcC1EZEdtN1VtN1VVMEFNbnl5QzdobXdncWFSbzc5LUhPNlpQRmpxTmlQMXV6U0htOUN6ZnlCUmhrTUU2bzZfRElCVlBwYmNMa1NFZFFndEtkczRHTzJrSnd3N3MzUERaUnh3QjBQYkEwNnlaQUxQcVlGRkM1dThZdTJEY2tkbVRkR3J2MWUxREZTWG1LaWhNTDZyRzFZN3pjTVlfWndNWkRVQ2s3Y3l3c0Y4U013U1RwZUliSExVZXJvMUlPdG9uZUx5ZWRkSDBwenFhZnRzWXZvdHPSAeABQVVfeXFMUEs5aEJzdzFFSGkwQ3pkenAwQnZxaDZ6SWFHSE5LRTlVb1NraVFEa0JJencydU9IQkkwbFJqV2VIREVhQjdwMzY3bUY2YWFSUG9BNXZVcncybTVDU281QVFMZ1FrWmY4aHAwZVJlUGFEejNjT0QtT0pINFo5d3AyclFYRUpid3Y1YllaN0wya21mNEZLeWNXWDFYT2hFWnp6M2t6R01IUW1WVnRtLTVKNWlkWU84YVY5cVV3ZHdLOElabkJBV2h6Y01LZlJVWkZXajA0REh4RTlJMWMzTmJxdUM?oc=5
-- Walmart (WMT) — classe : US equity; dernier prix +118.81; dernière séance +0.80%; 5 séances +6.70%; 1 mois +11.26%. Source cours : https://finance.yahoo.com/quote/WMT/
+- Walmart (WMT) — classe : US equity; dernier prix 118.81; dernière séance +0.80%; 5 séances +6.70%; 1 mois +11.26%. Source cours : https://finance.yahoo.com/quote/WMT/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
-- Costco (COST) — classe : US equity; dernier prix +989.11; dernière séance +1.13%; 5 séances +4.46%; 1 mois +10.65%. Source cours : https://finance.yahoo.com/quote/COST/
+- Costco (COST) — classe : US equity; dernier prix 989.11; dernière séance +1.13%; 5 séances +4.46%; 1 mois +10.65%. Source cours : https://finance.yahoo.com/quote/COST/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
 
 PANORAMA COMPLET DES INSTRUMENTS COLLECTÉS
 Les cours sont ceux de la dernière observation quotidienne disponible; ils ne sont pas nécessairement des cours intrajournaliers. Pour les fonds communs, la valeur liquidative peut être publiée avec retard.
 Actif | Classe | Dernier prix | Dernière séance disponible | 5 séances | 1 mois | Source
-Coffee futures (KC=F) | Agricultural commodity | +305.60 | +3.66% | +6.50% | +5.18% | https://finance.yahoo.com/quote/KC=F/
-Corn futures (ZC=F) | Agricultural commodity | +474.25 | -0.78% | -1.15% | -10.60% | https://finance.yahoo.com/quote/ZC=F/
-Soybean futures (ZS=F) | Agricultural commodity | +1261.25 | -0.14% | -2.38% | -4.43% | https://finance.yahoo.com/quote/ZS=F/
-Wheat futures (ZW=F) | Agricultural commodity | +660.50 | -1.42% | -1.56% | -9.15% | https://finance.yahoo.com/quote/ZW=F/
-S&P/ASX 200 (^AXJO) | Australian equity index | +8806.70 | +1.00% | +1.03% | +0.85% | https://finance.yahoo.com/quote/^AXJO/
-Fidelity Balanced Fund (FBALX) | Balanced mutual fund | +32.28 | -0.77% | -1.31% | -0.16% | https://finance.yahoo.com/quote/FBALX/
-Vanguard Wellington Fund (VWELX) | Balanced mutual fund | +46.94 | -0.70% | -0.87% | +0.44% | https://finance.yahoo.com/quote/VWELX/
-Investment-grade corporate bond ETF (LQD) | Bond ETF | +103.40 | -0.10% | +0.97% | -1.25% | https://finance.yahoo.com/quote/LQD/
-US Treasury 20+ year ETF (TLT) | Bond ETF | +80.05 | +0.10% | +2.65% | -1.72% | https://finance.yahoo.com/quote/TLT/
-Vanguard Total Bond Market ETF (BND) | Bond ETF | +70.82 | +0.01% | +0.85% | -0.56% | https://finance.yahoo.com/quote/BND/
-iShares 7–10 Year Treasury ETF (IEF) | Bond ETF | +90.42 | +0.08% | +1.14% | -0.57% | https://finance.yahoo.com/quote/IEF/
-iShares Core U.S. Aggregate Bond ETF (AGG) | Bond ETF | +95.38 | -0.03% | +0.84% | -0.64% | https://finance.yahoo.com/quote/AGG/
-US Treasury 10-year note futures (ZN=F) | Bond futures | +105.45 | -0.07% | +0.82% | -0.90% | https://finance.yahoo.com/quote/ZN=F/
-US Treasury bond futures (ZB=F) | Bond futures | +105.41 | -0.03% | +2.21% | -2.49% | https://finance.yahoo.com/quote/ZB=F/
-Fidelity Total Bond Fund (FTBFX) | Bond mutual fund | +9.19 | +0.00% | +0.77% | -0.92% | https://finance.yahoo.com/quote/FTBFX/
-S&P/TSX Composite (^GSPTSE) | Canadian equity index | +36176.60 | +0.11% | +2.93% | +1.93% | https://finance.yahoo.com/quote/^GSPTSE/
-Copper futures (HG=F) | Commodity | +6.53 | +0.30% | -1.68% | -0.84% | https://finance.yahoo.com/quote/HG=F/
-Gold futures (GC=F) | Commodity | +4181.10 | +0.26% | -0.83% | -4.97% | https://finance.yahoo.com/quote/GC=F/
-Natural gas futures (NG=F) | Commodity | +3.12 | -3.71% | -3.23% | +7.41% | https://finance.yahoo.com/quote/NG=F/
-Silver futures (SI=F) | Commodity | +56.99 | +0.28% | -6.06% | -12.94% | https://finance.yahoo.com/quote/SI=F/
-WTI crude oil futures (CL=F) | Commodity | +101.41 | +3.51% | +10.41% | -0.49% | https://finance.yahoo.com/quote/CL=F/
-High-yield corporate bond ETF (HYG) | Credit ETF | +76.86 | -0.35% | -0.48% | -1.93% | https://finance.yahoo.com/quote/HYG/
-Bitcoin (BTC-USD) | Crypto | +81500.04 | -0.78% | -2.60% | -3.02% | https://finance.yahoo.com/quote/BTC-USD/
-Ethereum (ETH-USD) | Crypto | +2429.08 | -0.47% | -4.17% | -9.72% | https://finance.yahoo.com/quote/ETH-USD/
-Solana (SOL-USD) | Crypto | +104.80 | -0.50% | -5.79% | -14.11% | https://finance.yahoo.com/quote/SOL-USD/
-XRP (XRP-USD) | Crypto | +1.31 | -1.86% | -7.15% | -16.58% | https://finance.yahoo.com/quote/XRP-USD/
-Developed markets ex-US equity ETF (EFA) | ETF | +103.55 | -0.12% | +0.15% | -2.35% | https://finance.yahoo.com/quote/EFA/
-Emerging markets equity ETF (EEM) | ETF | +62.85 | -1.74% | -5.91% | -6.07% | https://finance.yahoo.com/quote/EEM/
-Gold ETF (GLD) | ETF | +382.01 | -0.18% | -0.67% | -4.10% | https://finance.yahoo.com/quote/GLD/
-Invesco Nasdaq 100 ETF (QQQ) | ETF | +709.80 | -2.50% | -5.52% | -0.89% | https://finance.yahoo.com/quote/QQQ/
-Russell 2000 small-cap equity ETF (IWM) | ETF | +270.44 | -1.69% | -3.05% | -5.25% | https://finance.yahoo.com/quote/IWM/
-SPDR S&P 500 ETF (SPY) | ETF | +763.25 | -1.11% | -1.97% | +0.33% | https://finance.yahoo.com/quote/SPY/
-Vanguard FTSE Developed Markets ETF (VEA) | ETF | +69.49 | -0.24% | -1.22% | -3.45% | https://finance.yahoo.com/quote/VEA/
-Vanguard FTSE Emerging Markets ETF (VWO) | ETF | +58.03 | -1.29% | -2.89% | -2.95% | https://finance.yahoo.com/quote/VWO/
-Dow Jones E-mini futures (YM=F) | Equity index futures | +52214.00 | -0.41% | +0.55% | +0.79% | https://finance.yahoo.com/quote/YM=F/
-Nasdaq 100 E-mini futures (NQ=F) | Equity index futures | +29391.50 | -2.50% | -5.52% | -0.19% | https://finance.yahoo.com/quote/NQ=F/
-Russell 2000 E-mini futures (RTY=F) | Equity index futures | +2735.50 | -1.66% | -3.07% | -4.88% | https://finance.yahoo.com/quote/RTY=F/
-S&P 500 E-mini futures (ES=F) | Equity index futures | +7704.25 | -1.11% | -1.98% | +0.84% | https://finance.yahoo.com/quote/ES=F/
-Euro Stoxx 50 (^STOXX50E) | European equity index | +6204.23 | +0.58% | +0.50% | -1.88% | https://finance.yahoo.com/quote/^STOXX50E/
-AUD/USD (AUDUSD=X) | FX | +0.69 | +0.44% | -0.51% | -2.34% | https://finance.yahoo.com/quote/AUDUSD=X/
-EUR/GBP (EURGBP=X) | FX | +0.84 | -0.34% | -0.50% | -1.61% | https://finance.yahoo.com/quote/EURGBP=X/
-EUR/USD (EURUSD=X) | FX | +1.12 | +0.43% | +0.27% | -1.97% | https://finance.yahoo.com/quote/EURUSD=X/
-GBP/USD (GBPUSD=X) | FX | +1.33 | +0.43% | +0.67% | -0.21% | https://finance.yahoo.com/quote/GBPUSD=X/
-NZD/USD (NZDUSD=X) | FX | +0.57 | +0.59% | +0.70% | -1.29% | https://finance.yahoo.com/quote/NZDUSD=X/
-US Dollar Index (DX-Y.NYB) | FX | +101.84 | -0.16% | -0.36% | +1.62% | https://finance.yahoo.com/quote/DX-Y.NYB/
-USD/CAD (USDCAD=X) | FX | +1.41 | -0.40% | -0.86% | +1.05% | https://finance.yahoo.com/quote/USDCAD=X/
-USD/CHF (USDCHF=X) | FX | +0.82 | -0.96% | -0.93% | -0.21% | https://finance.yahoo.com/quote/USDCHF=X/
-USD/CNY (USDCNY=X) | FX | +6.69 | -0.07% | -0.09% | -0.32% | https://finance.yahoo.com/quote/USDCNY=X/
-USD/INR (USDINR=X) | FX | +94.96 | +0.46% | -1.88% | -0.88% | https://finance.yahoo.com/quote/USDINR=X/
-USD/JPY (USDJPY=X) | FX | +157.99 | +0.02% | -0.05% | +1.26% | https://finance.yahoo.com/quote/USDJPY=X/
-CAC 40 (^FCHI) | French equity index | +7956.70 | +0.28% | +1.97% | -2.81% | https://finance.yahoo.com/quote/^FCHI/
-DAX 40 (^GDAXI) | German equity index | +25622.61 | +0.95% | +2.13% | -0.37% | https://finance.yahoo.com/quote/^GDAXI/
-Hang Seng (^HSI) | Hong Kong equity index | +24186.83 | +0.52% | -0.10% | -2.13% | https://finance.yahoo.com/quote/^HSI/
-VIX volatility index (^VIX) | Implied volatility | +19.99 | +21.45% | +34.70% | +29.47% | https://finance.yahoo.com/quote/^VIX/
-Nifty 50 (^NSEI) | Indian equity index | +23146.15 | +0.65% | +2.78% | -0.31% | https://finance.yahoo.com/quote/^NSEI/
-Nikkei 225 (^N225) | Japanese equity index | +65324.29 | +1.39% | -5.38% | +2.05% | https://finance.yahoo.com/quote/^N225/
-Fidelity 500 Index Fund (FXAIX) | Mutual fund | +266.21 | -1.09% | -1.94% | +0.35% | https://finance.yahoo.com/quote/FXAIX/
-Vanguard 500 Index Fund Admiral Shares (VFIAX) | Mutual fund | +707.08 | -1.09% | -1.94% | +0.35% | https://finance.yahoo.com/quote/VFIAX/
-Vanguard Total Stock Market Index Fund Admiral Shares (VTSAX) | Mutual fund | +182.09 | -1.16% | -2.07% | -0.08% | https://finance.yahoo.com/quote/VTSAX/
-US 10-year Treasury yield (^TNX) | Rates | +5.10 | +0.18% | -2.78% | +3.05% | https://finance.yahoo.com/quote/^TNX/
-Energy Select Sector SPDR ETF (XLE) | Sector ETF | +68.24 | +2.52% | +4.86% | +6.46% | https://finance.yahoo.com/quote/XLE/
-Technology Select Sector SPDR ETF (XLK) | Sector ETF | +183.47 | -3.02% | -7.70% | -2.33% | https://finance.yahoo.com/quote/XLK/
-KOSPI (^KS11) | South Korean equity index | +5668.05 | +2.05% | -14.46% | -17.97% | https://finance.yahoo.com/quote/^KS11/
-FTSE 100 (^FTSE) | UK equity index | +10881.90 | +0.38% | +3.13% | +0.61% | https://finance.yahoo.com/quote/^FTSE/
-Alphabet (GOOGL) | US equity | +340.59 | -2.47% | -3.15% | -1.94% | https://finance.yahoo.com/quote/GOOGL/
-Amazon (AMZN) | US equity | +250.00 | -1.87% | -4.74% | -0.47% | https://finance.yahoo.com/quote/AMZN/
-Apple (AAPL) | US equity | +343.46 | +0.43% | +2.03% | +1.92% | https://finance.yahoo.com/quote/AAPL/
-Bank of America (BAC) | US equity | +51.23 | -0.91% | -5.69% | -11.95% | https://finance.yahoo.com/quote/BAC/
-Broadcom (AVGO) | US equity | +328.75 | -4.52% | -9.07% | -5.17% | https://finance.yahoo.com/quote/AVGO/
-Caterpillar (CAT) | US equity | +730.76 | -0.66% | -8.71% | -8.49% | https://finance.yahoo.com/quote/CAT/
-Costco (COST) | US equity | +989.11 | +1.13% | +4.46% | +10.65% | https://finance.yahoo.com/quote/COST/
-Eli Lilly (LLY) | US equity | +1257.03 | +0.43% | +6.59% | +9.08% | https://finance.yahoo.com/quote/LLY/
-Exxon Mobil (XOM) | US equity | +178.98 | +2.46% | +5.94% | +9.62% | https://finance.yahoo.com/quote/XOM/
-JPMorgan Chase (JPM) | US equity | +339.72 | +1.25% | +2.02% | -2.26% | https://finance.yahoo.com/quote/JPM/
-Meta Platforms (META) | US equity | +709.33 | -3.72% | -1.30% | +4.04% | https://finance.yahoo.com/quote/META/
-Microsoft (MSFT) | US equity | +529.05 | -1.93% | -1.13% | +6.29% | https://finance.yahoo.com/quote/MSFT/
-Nvidia (NVDA) | US equity | +214.13 | -1.43% | -6.61% | -2.38% | https://finance.yahoo.com/quote/NVDA/
-Tesla (TSLA) | US equity | +354.72 | -2.13% | -7.31% | -3.13% | https://finance.yahoo.com/quote/TSLA/
-Walmart (WMT) | US equity | +118.81 | +0.80% | +6.70% | +11.26% | https://finance.yahoo.com/quote/WMT/
-Dow Jones (^DJI) | US equity index | +52002.41 | -0.34% | +0.67% | +0.43% | https://finance.yahoo.com/quote/^DJI/
-Nasdaq Composite (^IXIC) | US equity index | +26140.03 | -2.15% | -4.48% | -1.05% | https://finance.yahoo.com/quote/^IXIC/
-S&P 500 (^GSPC) | US equity index | +7659.44 | -1.09% | -1.95% | +0.28% | https://finance.yahoo.com/quote/^GSPC/
+Coffee futures (KC=F) | Agricultural commodity | 305.60 | +3.66% | +6.50% | +5.18% | https://finance.yahoo.com/quote/KC=F/
+Corn futures (ZC=F) | Agricultural commodity | 474.25 | -0.78% | -1.15% | -10.60% | https://finance.yahoo.com/quote/ZC=F/
+Soybean futures (ZS=F) | Agricultural commodity | 1261.25 | -0.14% | -2.38% | -4.43% | https://finance.yahoo.com/quote/ZS=F/
+Wheat futures (ZW=F) | Agricultural commodity | 660.50 | -1.42% | -1.56% | -9.15% | https://finance.yahoo.com/quote/ZW=F/
+S&P/ASX 200 (^AXJO) | Australian equity index | 8806.70 | +1.00% | +1.03% | +0.85% | https://finance.yahoo.com/quote/^AXJO/
+Fidelity Balanced Fund (FBALX) | Balanced mutual fund | 32.28 | -0.77% | -1.31% | -0.16% | https://finance.yahoo.com/quote/FBALX/
+Vanguard Wellington Fund (VWELX) | Balanced mutual fund | 46.94 | -0.70% | -0.87% | +0.44% | https://finance.yahoo.com/quote/VWELX/
+Investment-grade corporate bond ETF (LQD) | Bond ETF | 103.40 | -0.10% | +0.97% | -1.25% | https://finance.yahoo.com/quote/LQD/
+US Treasury 20+ year ETF (TLT) | Bond ETF | 80.05 | +0.10% | +2.65% | -1.72% | https://finance.yahoo.com/quote/TLT/
+Vanguard Total Bond Market ETF (BND) | Bond ETF | 70.82 | +0.01% | +0.85% | -0.56% | https://finance.yahoo.com/quote/BND/
+iShares 7–10 Year Treasury ETF (IEF) | Bond ETF | 90.42 | +0.08% | +1.14% | -0.57% | https://finance.yahoo.com/quote/IEF/
+iShares Core U.S. Aggregate Bond ETF (AGG) | Bond ETF | 95.38 | -0.03% | +0.84% | -0.64% | https://finance.yahoo.com/quote/AGG/
+US Treasury 10-year note futures (ZN=F) | Bond futures | 105.45 | -0.07% | +0.82% | -0.90% | https://finance.yahoo.com/quote/ZN=F/
+US Treasury bond futures (ZB=F) | Bond futures | 105.41 | -0.03% | +2.21% | -2.49% | https://finance.yahoo.com/quote/ZB=F/
+Fidelity Total Bond Fund (FTBFX) | Bond mutual fund | 9.19 | +0.00% | +0.77% | -0.92% | https://finance.yahoo.com/quote/FTBFX/
+S&P/TSX Composite (^GSPTSE) | Canadian equity index | 36176.60 | +0.11% | +2.93% | +1.93% | https://finance.yahoo.com/quote/^GSPTSE/
+Copper futures (HG=F) | Commodity | 6.53 | +0.30% | -1.68% | -0.84% | https://finance.yahoo.com/quote/HG=F/
+Gold futures (GC=F) | Commodity | 4181.10 | +0.26% | -0.83% | -4.97% | https://finance.yahoo.com/quote/GC=F/
+Natural gas futures (NG=F) | Commodity | 3.12 | -3.71% | -3.23% | +7.41% | https://finance.yahoo.com/quote/NG=F/
+Silver futures (SI=F) | Commodity | 56.99 | +0.28% | -6.06% | -12.94% | https://finance.yahoo.com/quote/SI=F/
+WTI crude oil futures (CL=F) | Commodity | 101.41 | +3.51% | +10.41% | -0.49% | https://finance.yahoo.com/quote/CL=F/
+High-yield corporate bond ETF (HYG) | Credit ETF | 76.86 | -0.35% | -0.48% | -1.93% | https://finance.yahoo.com/quote/HYG/
+Bitcoin (BTC-USD) | Crypto | 81597.14 | +0.12% | -0.20% | -3.33% | https://finance.yahoo.com/quote/BTC-USD/
+Ethereum (ETH-USD) | Crypto | 2432.53 | +0.53% | -0.48% | -9.75% | https://finance.yahoo.com/quote/ETH-USD/
+Solana (SOL-USD) | Crypto | 104.98 | +0.66% | -0.55% | -13.54% | https://finance.yahoo.com/quote/SOL-USD/
+XRP (XRP-USD) | Crypto | 1.31 | -0.09% | -2.29% | -14.35% | https://finance.yahoo.com/quote/XRP-USD/
+Developed markets ex-US equity ETF (EFA) | ETF | 103.55 | -0.12% | +0.15% | -2.35% | https://finance.yahoo.com/quote/EFA/
+Emerging markets equity ETF (EEM) | ETF | 62.85 | -1.74% | -5.91% | -6.07% | https://finance.yahoo.com/quote/EEM/
+Gold ETF (GLD) | ETF | 382.01 | -0.18% | -0.67% | -4.10% | https://finance.yahoo.com/quote/GLD/
+Invesco Nasdaq 100 ETF (QQQ) | ETF | 709.80 | -2.50% | -5.52% | -0.89% | https://finance.yahoo.com/quote/QQQ/
+Russell 2000 small-cap equity ETF (IWM) | ETF | 270.44 | -1.69% | -3.05% | -5.25% | https://finance.yahoo.com/quote/IWM/
+SPDR S&P 500 ETF (SPY) | ETF | 763.25 | -1.11% | -1.97% | +0.33% | https://finance.yahoo.com/quote/SPY/
+Vanguard FTSE Developed Markets ETF (VEA) | ETF | 69.49 | -0.24% | -1.22% | -3.45% | https://finance.yahoo.com/quote/VEA/
+Vanguard FTSE Emerging Markets ETF (VWO) | ETF | 58.03 | -1.29% | -2.89% | -2.95% | https://finance.yahoo.com/quote/VWO/
+Dow Jones E-mini futures (YM=F) | Equity index futures | 52214.00 | -0.41% | +0.55% | +0.79% | https://finance.yahoo.com/quote/YM=F/
+Nasdaq 100 E-mini futures (NQ=F) | Equity index futures | 29391.50 | -2.50% | -5.52% | -0.19% | https://finance.yahoo.com/quote/NQ=F/
+Russell 2000 E-mini futures (RTY=F) | Equity index futures | 2735.50 | -1.66% | -3.07% | -4.88% | https://finance.yahoo.com/quote/RTY=F/
+S&P 500 E-mini futures (ES=F) | Equity index futures | 7704.25 | -1.11% | -1.98% | +0.84% | https://finance.yahoo.com/quote/ES=F/
+Euro Stoxx 50 (^STOXX50E) | European equity index | 6204.23 | +0.58% | +0.50% | -1.88% | https://finance.yahoo.com/quote/^STOXX50E/
+AUD/USD (AUDUSD=X) | FX | 0.69 | +0.44% | -0.51% | -2.34% | https://finance.yahoo.com/quote/AUDUSD=X/
+EUR/GBP (EURGBP=X) | FX | 0.84 | -0.34% | -0.50% | -1.61% | https://finance.yahoo.com/quote/EURGBP=X/
+EUR/USD (EURUSD=X) | FX | 1.12 | +0.43% | +0.27% | -1.97% | https://finance.yahoo.com/quote/EURUSD=X/
+GBP/USD (GBPUSD=X) | FX | 1.33 | +0.43% | +0.67% | -0.21% | https://finance.yahoo.com/quote/GBPUSD=X/
+NZD/USD (NZDUSD=X) | FX | 0.57 | +0.59% | +0.70% | -1.29% | https://finance.yahoo.com/quote/NZDUSD=X/
+US Dollar Index (DX-Y.NYB) | FX | 101.84 | -0.16% | -0.36% | +1.62% | https://finance.yahoo.com/quote/DX-Y.NYB/
+USD/CAD (USDCAD=X) | FX | 1.41 | -0.40% | -0.86% | +1.05% | https://finance.yahoo.com/quote/USDCAD=X/
+USD/CHF (USDCHF=X) | FX | 0.82 | -0.96% | -0.93% | -0.21% | https://finance.yahoo.com/quote/USDCHF=X/
+USD/CNY (USDCNY=X) | FX | 6.69 | -0.07% | -0.09% | -0.32% | https://finance.yahoo.com/quote/USDCNY=X/
+USD/INR (USDINR=X) | FX | 94.96 | +0.46% | -1.88% | -0.88% | https://finance.yahoo.com/quote/USDINR=X/
+USD/JPY (USDJPY=X) | FX | 157.99 | +0.02% | -0.05% | +1.26% | https://finance.yahoo.com/quote/USDJPY=X/
+CAC 40 (^FCHI) | French equity index | 7956.70 | +0.28% | +1.97% | -2.81% | https://finance.yahoo.com/quote/^FCHI/
+DAX 40 (^GDAXI) | German equity index | 25622.61 | +0.95% | +2.13% | -0.37% | https://finance.yahoo.com/quote/^GDAXI/
+Hang Seng (^HSI) | Hong Kong equity index | 24186.83 | +0.52% | -0.10% | -2.13% | https://finance.yahoo.com/quote/^HSI/
+VIX volatility index (^VIX) | Implied volatility | 19.99 | +21.45% | +34.70% | +29.47% | https://finance.yahoo.com/quote/^VIX/
+Nifty 50 (^NSEI) | Indian equity index | 23146.15 | +0.65% | +2.78% | -0.31% | https://finance.yahoo.com/quote/^NSEI/
+Nikkei 225 (^N225) | Japanese equity index | 65324.29 | +1.39% | -5.38% | +2.05% | https://finance.yahoo.com/quote/^N225/
+Fidelity 500 Index Fund (FXAIX) | Mutual fund | 266.21 | -1.09% | -1.94% | +0.35% | https://finance.yahoo.com/quote/FXAIX/
+Vanguard 500 Index Fund Admiral Shares (VFIAX) | Mutual fund | 707.08 | -1.09% | -1.94% | +0.35% | https://finance.yahoo.com/quote/VFIAX/
+Vanguard Total Stock Market Index Fund Admiral Shares (VTSAX) | Mutual fund | 182.09 | -1.16% | -2.07% | -0.08% | https://finance.yahoo.com/quote/VTSAX/
+US 10-year Treasury yield (^TNX) | Rates | 5.10 | +0.18% | -2.78% | +3.05% | https://finance.yahoo.com/quote/^TNX/
+Energy Select Sector SPDR ETF (XLE) | Sector ETF | 68.24 | +2.52% | +4.86% | +6.46% | https://finance.yahoo.com/quote/XLE/
+Technology Select Sector SPDR ETF (XLK) | Sector ETF | 183.47 | -3.02% | -7.70% | -2.33% | https://finance.yahoo.com/quote/XLK/
+KOSPI (^KS11) | South Korean equity index | 5668.05 | +2.05% | -14.46% | -17.97% | https://finance.yahoo.com/quote/^KS11/
+FTSE 100 (^FTSE) | UK equity index | 10881.90 | +0.38% | +3.13% | +0.61% | https://finance.yahoo.com/quote/^FTSE/
+Alphabet (GOOGL) | US equity | 340.59 | -2.47% | -3.15% | -1.94% | https://finance.yahoo.com/quote/GOOGL/
+Amazon (AMZN) | US equity | 250.00 | -1.87% | -4.74% | -0.47% | https://finance.yahoo.com/quote/AMZN/
+Apple (AAPL) | US equity | 343.46 | +0.43% | +2.03% | +1.92% | https://finance.yahoo.com/quote/AAPL/
+Bank of America (BAC) | US equity | 51.23 | -0.91% | -5.69% | -11.95% | https://finance.yahoo.com/quote/BAC/
+Broadcom (AVGO) | US equity | 328.75 | -4.52% | -9.07% | -5.17% | https://finance.yahoo.com/quote/AVGO/
+Caterpillar (CAT) | US equity | 730.76 | -0.66% | -8.71% | -8.49% | https://finance.yahoo.com/quote/CAT/
+Costco (COST) | US equity | 989.11 | +1.13% | +4.46% | +10.65% | https://finance.yahoo.com/quote/COST/
+Eli Lilly (LLY) | US equity | 1257.03 | +0.43% | +6.59% | +9.08% | https://finance.yahoo.com/quote/LLY/
+Exxon Mobil (XOM) | US equity | 178.98 | +2.46% | +5.94% | +9.62% | https://finance.yahoo.com/quote/XOM/
+JPMorgan Chase (JPM) | US equity | 339.72 | +1.25% | +2.02% | -2.26% | https://finance.yahoo.com/quote/JPM/
+Meta Platforms (META) | US equity | 709.33 | -3.72% | -1.30% | +4.04% | https://finance.yahoo.com/quote/META/
+Microsoft (MSFT) | US equity | 529.05 | -1.93% | -1.13% | +6.29% | https://finance.yahoo.com/quote/MSFT/
+Nvidia (NVDA) | US equity | 214.13 | -1.43% | -6.61% | -2.38% | https://finance.yahoo.com/quote/NVDA/
+Tesla (TSLA) | US equity | 354.72 | -2.13% | -7.31% | -3.13% | https://finance.yahoo.com/quote/TSLA/
+Walmart (WMT) | US equity | 118.81 | +0.80% | +6.70% | +11.26% | https://finance.yahoo.com/quote/WMT/
+Dow Jones (^DJI) | US equity index | 52002.41 | -0.34% | +0.67% | +0.43% | https://finance.yahoo.com/quote/^DJI/
+Nasdaq Composite (^IXIC) | US equity index | 26140.03 | -2.15% | -4.48% | -1.05% | https://finance.yahoo.com/quote/^IXIC/
+S&P 500 (^GSPC) | US equity index | 7659.44 | -1.09% | -1.95% | +0.28% | https://finance.yahoo.com/quote/^GSPC/
 
 NIVEAU 7 — DÉCISION, INVALIDATION ET AUDIT
 Plan de surveillance :
@@ -316,19 +321,19 @@ ENGAGEMENT POUR L'AUDIT DU SOIR
 AUDIT CRITIQUE DES ANALYSES PRÉCÉDENTES
 - Prévisions historiques enregistrées : 202; prévisions arrivées à échéance : 19; encore en attente : 183.
 - Référence évaluée : règle de momentum simple fondée sur le rendement des cinq dernières séances. C'est un point de comparaison expérimental, pas une recommandation de trading.
-- Horizon 1 séance : 5/19 directions correctes (26.3 %); mouvement absolu moyen observé : 0.687 %.
+- Horizon 1 séance : 5/19 directions correctes (26.3 %); mouvement absolu moyen observé : 0.695 %.
 - Horizon 5 séances : aucun échantillon arrivé à échéance; performance non évaluable.
 - Conclusion méthodologique : échantillon encore insuffisant pour déclarer cette règle fiable ou modifier automatiquement la méthode.
-- Exemples d'erreurs à examiner : Solana (1 séance(s), prévu baisse, réalisé hausse, +1.40 %); XRP (1 séance(s), prévu baisse, réalisé hausse, +0.63 %); KOSPI (1 séance(s), prévu baisse, réalisé hausse, +2.05 %).
+- Exemples d'erreurs à examiner : Solana (1 séance(s), prévu baisse, réalisé hausse, +1.45 %); XRP (1 séance(s), prévu baisse, réalisé hausse, +0.70 %); KOSPI (1 séance(s), prévu baisse, réalisé hausse, +2.05 %).
 - Source des prix évalués : Yahoo Finance via yfinance (https://finance.yahoo.com/); la qualité et la disponibilité de ces données ne sont pas garanties.
 - Les prévisions originales sont conservées pour empêcher toute réécriture rétrospective. Les changements de méthode devront être justifiés par des échantillons suffisants et des tests hors échantillon.
 
 AUDIT DES PROBABILITÉS DIRECTIONNELLES
 - Des prévisions matinales sont enregistrées, mais aucune n'a encore atteint une observation quotidienne distincte et terminée. Le score de calibration n'est pas encore disponible.
-- Prévisions matinales enregistrées : 12; en attente : 12. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.
+- Prévisions matinales enregistrées : 13; en attente : 13. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.
 
 À PROPOS DES DONNÉES
-Collecte : 17/10/2026 à 06:59 UTC. Données de prix reçues pour 82/82 actifs; 48 actualités collectées.
+Collecte : 17/10/2026 à 07:30 UTC. Données de prix reçues pour 82/82 actifs; 48 actualités collectées.
 Certains flux d’actualités étaient indisponibles (1 flux); la couverture peut être incomplète.
 Certaines séries macroéconomiques n’ont pas pu être récupérées.
 
