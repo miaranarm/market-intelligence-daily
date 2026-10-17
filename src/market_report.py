@@ -626,7 +626,7 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
     """Lead with verifiable market-moving facts, not merely recent or official headlines."""
     # make_report enriches the complete news set once so every later section uses the same verified excerpt.
     candidates = prioritize_news(news, 60)
-    enriched = [dict(item) for item in candidates])
+    enriched = [dict(item) for item in candidates]
     low_value_headlines = (
         "termination of enforcement actions", "enforcement action", "small-scale solar generation",
         "solar generation has quadrupled", "speech by board member",
