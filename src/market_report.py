@@ -624,10 +624,9 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
 
 def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
     """Lead with verifiable market-moving facts, not merely recent or official headlines."""
-    # A wider shortlist plus concurrent enrichment improves source and asset-class coverage.
+    # make_report enriches the complete news set once so every later section uses the same verified excerpt.
     candidates = prioritize_news(news, 60)
-    with ThreadPoolExecutor(max_workers=8) as pool:
-        enriched = list(pool.map(_enrich_news_item, candidates))
+    enriched = [dict(item) for item in candidates])
     low_value_headlines = (
         "termination of enforcement actions", "enforcement action", "small-scale solar generation",
         "solar generation has quadrupled", "speech by board member",
@@ -642,6 +641,7 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
         "fund flows", "capital flows", "industrial production", "trade data", "exports", "imports",
     )
     factual_items = []
+    headline_only_items = []
     for item in enriched:
         summary = re.sub(r"\s+", " ", item.get("summary", "")).strip()
         title = item.get("title", "").casefold()
@@ -660,12 +660,14 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
         searchable = f"{title} {summary}".casefold()
         if any(term in searchable for term in market_terms):
             item["summary"] = _summarize_news_text(summary) if summary else ""
-            factual_items.append(item)
-    priority_news = prioritize_news(factual_items, 10)
+            if len(item["summary"]) >= 100:
+                factual_items.append(item)
+            elif not is_aggregator:
+                headline_only_items.append(item)
+    priority_news = prioritize_news(factual_items, 8)
     lines += ["", "LES ACTUALITÉS QUI COMPTENT"]
     if not priority_news:
-        lines.append("Aucun titre financier pertinent n’a été collecté dans cette exécution; la couverture de l’actualité est insuffisante et ne doit pas être interprétée comme une absence de nouvelles.")
-        return
+        lines.append("Aucune actualité ne disposait d’un résumé factuel suffisamment détaillé et vérifiable lors de cette collecte. Les titres seuls ne sont pas présentés comme des faits.")
     for index, item in enumerate(priority_news, 1):
         fact, impact = _news_fact_and_market_readthrough(item)
         published = item.get("published") or "date non fournie"
@@ -678,6 +680,11 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
             lines.append("   FAITS RAPPORTÉS : le titre indique l’événement ci-dessus; le résumé détaillé de l’éditeur n’a pas pu être vérifié. Aucun chiffre ni détail supplémentaire n’est inféré.")
         lines.append(f"   POUR LES MARCHÉS : {impact}")
         lines.append(f"   Source : {item['url']}")
+    if headline_only_items:
+        lines += ["", "TITRES À VÉRIFIER — RÉSUMÉ FACTUEL INDISPONIBLE"]
+        for item in prioritize_news(headline_only_items, 3):
+            lines.append(f"- {item['title']} — {item.get('source', 'éditeur non précisé')} ({item.get('published', 'date non fournie')}) — {item['url']}")
+        lines.append("Ces titres sont des pistes de recherche, pas des faits suffisamment documentés pour soutenir une conclusion de marché.")
 
 def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
     feed_batches: list[list[dict[str, str]]] = []
@@ -1720,9 +1727,13 @@ def append_funnel_report(
         else:
             lines.append("- Aucune cotation exploitable reçue pour cette catégorie lors de cette exécution.")
         # Match against headlines only; publisher boilerplate can otherwise contaminate unrelated categories.
+        def keyword_present(text_value: str, keyword: str) -> bool:
+            # Whole-token/phrase matching avoids false positives such as "euro" in "European".
+            return re.search(r"(?<![a-z0-9])" + re.escape(keyword.casefold()) + r"(?![a-z0-9])", text_value.casefold()) is not None
         matched_news = [
             n for n in news
-            if any(k in f"{n.get('title', '')} {n.get('summary', '')}".casefold() for k in keywords)
+            if len(re.sub(r"\s+", " ", n.get("summary", "")).strip()) >= 100
+            and any(keyword_present(f"{n.get('title', '')} {n.get('summary', '')}", k) for k in keywords)
         ]
         if matched_news:
             for item in prioritize_news(matched_news, 2):
@@ -1740,7 +1751,7 @@ def append_funnel_report(
         "miss estimates", "operating margin", "cash flow", "capital expenditure", "capex", "investor day",
         "merger", "acquisition", "dividend cut", "layoffs", "sales", "forecast", "outlook", "orders",
         "semiconductor", "bank earnings", "company results")
-    corporate_news = [n for n in news if any(k in n["title"].casefold() for k in corporate_keywords)]
+    corporate_news = [n for n in news if len(n.get("summary", "").strip()) >= 100 and any(re.search(r"(?<![a-z0-9])" + re.escape(k.casefold()) + r"(?![a-z0-9])", f"{n['title']} {n.get('summary', '')}".casefold()) for k in corporate_keywords)]
     if corporate_news:
         proxy_by_theme = {
             "Inflation": ("^TNX", "DX-Y.NYB", "^GSPC", "GC=F"),
@@ -1895,6 +1906,10 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     data, data_errors = fetch_prices()
     rows = [analyse_asset(ticker, frame) for ticker, frame in data.items()]
     news, news_errors = fetch_news()
+    # Enrich all collected stories once. Previously only the opening shortlist was enriched,
+    # while the nine asset classes and microeconomic section reused title-only RSS metadata.
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        news = list(pool.map(_enrich_news_item, news))
     company_fundamentals, fundamentals_errors = fetch_company_fundamentals()
     macro_series, macro_errors = fetch_macro_series_with_fallback()
     rows.sort(key=lambda r: (r.asset_class, r.name))
