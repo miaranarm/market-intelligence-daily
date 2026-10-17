@@ -1873,7 +1873,8 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
     }
     return plain, html_body, snapshot
 
-def send_email(subject: str, report_url: str) -> None:
+def send_email(subject: str, report_url: str, report_text: str) -> None:
+    """Send the complete market briefing in the email; the web link is a secondary archive."""
     required = ("SMTP_USERNAME", "SMTP_APP_PASSWORD", "REPORT_RECIPIENT")
     missing = [key for key in required if not os.environ.get(key)]
     if missing:
@@ -1882,10 +1883,20 @@ def send_email(subject: str, report_url: str) -> None:
     message["Subject"] = subject
     message["From"] = os.environ["SMTP_USERNAME"].strip()
     message["To"] = os.environ["REPORT_RECIPIENT"].strip()
-    message.set_content(f"Le rapport de marché est disponible ici :\n{report_url}\n")
+    message.set_content(
+        f"{report_text}\n\nVERSION WEB ET ARCHIVE DE CETTE ÉDITION :\n{report_url}\n"
+    )
+    escaped_report = html.escape(report_text)
+    linked_report = re.sub(
+        r"(https?://[^\s<]+)",
+        lambda match: f'<a href="{match.group(1)}">{match.group(1)}</a>',
+        escaped_report,
+    )
     message.add_alternative(
-        "<html><body style=\"font-family:Arial,sans-serif\">"
-        f"<p>Le rapport de marché est disponible ici : <a href=\"{html.escape(report_url, quote=True)}\">Ouvrir le rapport</a></p>"
+        "<html><body style=\"font-family:Arial,sans-serif;color:#172033;line-height:1.5\">"
+        "<p><strong>Édition complète du rapport de marché</strong></p>"
+        f"<pre style=\"white-space:pre-wrap;overflow-wrap:anywhere;font-family:Arial,sans-serif;font-size:14px\">{linked_report}</pre>"
+        f"<p>Version web archivée de cette même édition : <a href=\"{html.escape(report_url, quote=True)}\">ouvrir le rapport complet</a></p>"
         "</body></html>",
         subtype="html",
     )
@@ -1914,8 +1925,11 @@ def main() -> int:
         if not archive_path.is_file():
             raise RuntimeError(f"Rapport archivé introuvable pour cette édition : {archive_path}")
         report_url = f"{REPORT_URL}reports/{archive_name}"
-        send_email(subject, report_url)
-        print(f"Report edition link emailed: type={args.report_type}; url={report_url}")
+        saved_report = STATE_DIR / f"latest_{args.report_type}.txt"
+        if not saved_report.is_file():
+            raise RuntimeError(f"Texte du rapport introuvable : {saved_report}")
+        send_email(subject, report_url, saved_report.read_text(encoding="utf-8"))
+        print(f"Complete report emailed: type={args.report_type}; url={report_url}")
         return 0
     plain, html_body, snapshot = make_report(args.report_type)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
@@ -1937,7 +1951,7 @@ def main() -> int:
     subject = f"[Market Intelligence] {args.report_type.upper()} — {snapshot['run_time_madagascar'][:16]}"
     archive_url = f"{REPORT_URL}reports/{archive_name}"
     if not args.no_email:
-        send_email(subject, archive_url)
+        send_email(subject, archive_url, plain)
     print(f"Report generated: {report_path.name}; archive={archive_name}; assets={len(rows)}; type={args.report_type}; email={'disabled' if args.no_email else 'sent'}")
     return 0
 
