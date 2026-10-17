@@ -1,64 +1,61 @@
 Rapport initial — marchés multi-actifs
-Heure Madagascar : 2026-10-17 07:24:31 EAT
-Généré UTC : 2026-10-17 04:24:31 UTC
+Heure Madagascar : 2026-10-17 07:32:01 EAT
+Généré UTC : 2026-10-17 04:32:01 UTC
 
-RÉSUMÉ ET LIMITES
-Données de prix reçues pour 82/82 actifs suivis.
-Le rapport est orienté vers les événements, les mouvements de marché, les scénarios et les actifs à surveiller. Les indicateurs techniques sont conservés et utilisés en interne pour l'analyse, mais ne sont pas affichés. L'analyse fondamentale est alimentée par des titres multi-sources, mais le consensus chiffré et les rapports originaux ne sont pas disponibles pour chaque société. Les probabilités directionnelles sont expérimentales, explicites et non calibrées; elles seront auditées au rapport du soir.
-Les données de marché peuvent être retardées, révisées ou indisponibles. Les variations portent sur la dernière séance reçue, pas nécessairement sur la séance en cours.
+Couverture : 82 actifs avec données reçues sur 82 suivis. Les cours correspondent à la dernière observation disponible.
 
 
-ACTUALITÉS PRIORITAIRES — LES FAITS D'ABORD, L'ANALYSE ENSUITE
-Les titres et extraits viennent des flux collectés. Les agrégateurs servent à découvrir les articles; privilégier la publication originale lorsqu'elle est identifiable. L'analyse distingue les faits des effets possibles et ne traite pas une coïncidence comme une causalité.
-Titres retenus : 12 sur 48 actualités uniques collectées.
-- ACTUALITÉ : China's central bank to further open its financial markets to foreigners, chief says - Reuters — Reuters — Fri, 16 Oct 2026 15:59:00 GMT
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : China's central bank to further open its financial markets to foreigners, chief says Reuters
-  - SOURCE À OUVRIR : https://news.google.com/rss/articles/CBMixgFBVV95cUxQUms0WEVOUTlsZUpVQjNfaVZjQkV2aF9HOFhZbTQtblFHNldVUTk2N3hqeml0aDc2MG9uSzRtTzdPRC1YNXFReU5RSWV2STM3cXhWcVhLTFVONlM5UHBqOXRfeVhmZXlBZHRrVlhHQUlaWGRMeG1FYnJqNloxbEc1NmFmbjZNLUNYdThhOC1pTFFfMXF1a19tN3VKb01RMGt6bXV5UHBMNXd2cXlOQlNtaXJELW14RHBzb3o2b1RBWDhKck1Sdmc?oc=5
-  - ANALYSE : Banques centrales. Actifs potentiellement concernés : obligations, devises, indices/futures, actions, crypto, ETF et fonds. Lire le communiqué original et comparer le ton ainsi que la trajectoire des taux aux attentes déjà intégrées dans les prix. Un ton plus restrictif peut soutenir la devise et les rendements, mais peser sur les actifs sensibles aux taux; un ton plus accommodant peut inverser ces effets. La réaction dépend de la surprise, pas seulement de la décision.
-- ACTUALITÉ : Crude oil futures brace for volatility amid geopolitical uncertainties - Business Standard — Business Standard — Sun, 11 Oct 2026 09:48:54 GMT
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : Crude oil futures brace for volatility amid geopolitical uncertainties Business Standard
-  - SOURCE À OUVRIR : https://news.google.com/rss/articles/CBMi3AFBVV95cUxOZDdKZEZqNWUzYVlNYjBHZ3FSYXh4LS16Qy1YYWpoNEVMd09Zb1JZZWtWVG1qQzBpRjlBYjRsbjBtcVlsOHhCcE1OYWVmTHI0Zy1qT29YWEptMUdmank4QUtWcHVGaUxGZWhfd3RxSXVNZjc5elpPRzRuNTNIa3N5c0Mxckk5YVlBeGxoVlIyTGtTSzcyQ2p4dkNUamJtT05rWERCbVlpR25lMWEydUliWWdFN09ZVHgzNTVLY2U5dzZsN2FSa1l2ZHF5UFJsN2xONnFqd095THV0UUZl0gHiAUFVX3lxTE9YZGVWN3dmVUFHV3ZNdk80UDF0WlVkMzFuZ1VwM0FiUFRwd3UtdURwc1ZvaUpXSUZReEZSUW1QcW1GTGZDYlBLRzdNSlFPelZmclAwMzUxbXV2RDJVWm5RQmE1QThXVkhscXFZVllaX0ltdVdsUjA4ZVI2VXg0b3BBbl9ybDV0VjIwXy1pWllORnVjbnFMZy1TQTlJclZJT3FxWkozNUl3ZlZraXhwb3hMQk9lWDhoaXpPWXNHZC0tU0UzN0lNQ1dXOGRhMzNXQnI2ajZfVVBYTlZoUjhUc3ZlWEE?oc=5
-  - ANALYSE : Énergie et matières premières. Actifs potentiellement concernés : matières premières, devises des producteurs/importateurs, actions, indices, obligations, ETF et fonds. Distinguer variation de l'offre, de la demande, des stocks et prime géopolitique. Un choc d'offre peut soutenir les prix de l'énergie et raviver les risques inflationnistes; un ralentissement de la demande peut peser sur les matières premières cycliques. Vérifier les données d'origine et la réaction effective des contrats à terme.
-- ACTUALITÉ : Thailand launches new crypto ETF rules allowing Bitcoin and Ether trading on its stock exchange. - Pluang — Pluang — Sat, 17 Oct 2026 01:23:53 GMT
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : Thailand launches new crypto ETF rules allowing Bitcoin and Ether trading on its stock exchange. Pluang
-  - SOURCE À OUVRIR : https://news.google.com/rss/articles/CBMioAFBVV95cUxQMXdmalRPeldjamNBWEt6bXg3YnlKUWQ4R1FmV1NYOGRkLUVfcHRLam1Fc0VYY05pVVdjWHlkRDhvdFRZb0VrZlp3MjNMWXZPSjBObVRoS3FKOEtDU3RXRC1QRTVraER4cl91YTBtMWFjSlp4OWlLd0oteGhheFV3emdvYWtxVHFVc3VGZ1NzTENZTUFSalVWNHhINXBBQjFv?oc=5
-  - ANALYSE : Cryptoactifs et réglementation. Actifs potentiellement concernés : cryptomonnaies, ETF concernés, actions liées et appétit pour le risque. Vérifier si la nouvelle porte sur la réglementation, les flux, la liquidité, la sécurité ou les conditions macroéconomiques. L'effet peut être spécifique à l'actif ou se transmettre au sentiment de risque; une corrélation avec les actions ne doit pas être supposée constante.
-- ACTUALITÉ : Major earnings reports are due next week, but strong results may not be enough to quell market fears - CNBC — CNBC — Fri, 16 Oct 2026 19:39:38 GMT
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : Major earnings reports are due next week, but strong results may not be enough to quell market fears CNBC
-  - SOURCE À OUVRIR : https://news.google.com/rss/articles/CBMiigFBVV95cUxNMDB5eUJodTlUZTZQNzNYdFhCVWFOWUdRZk5ENkFRNll3OEE0RjJkb0tMUzZRMkJYNktERG5pN1ZmR1JTUW1FczQ0UmQwSGRza2xUeUsyTndRajd0aVU3dXRTaE1nVkFKalpJZm9yMVVNWUJpYi1vUGp2VEJwQl85dmNzY0ExV015MGc?oc=5
-  - ANALYSE : Résultats d'entreprises. Actifs potentiellement concernés : actions concernées, secteurs, indices/futures, ETF et fonds. Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.
-- ACTUALITÉ : Federal Reserve Board announces termination of enforcement actions with Gardner Bancshares, Inc. and Small Business Bank — Federal Reserve — communiqués officiels — Fri, 16 Oct 2026 15:00:00 GMT
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : Federal Reserve Board announces termination of enforcement actions with Gardner Bancshares, Inc. and Small Business Bank
-  - SOURCE À OUVRIR : https://www.federalreserve.gov/newsevents/pressreleases/enforcement20261016a.htm
-  - ANALYSE : Banques centrales. Actifs potentiellement concernés : obligations, devises, indices/futures, actions, crypto, ETF et fonds. Lire le communiqué original et comparer le ton ainsi que la trajectoire des taux aux attentes déjà intégrées dans les prix. Un ton plus restrictif peut soutenir la devise et les rendements, mais peser sur les actifs sensibles aux taux; un ton plus accommodant peut inverser ces effets. La réaction dépend de la surprise, pas seulement de la décision.
-- ACTUALITÉ : Central Banks Brace for Higher Rates Amid Global AI Investment Boom - Global Banking & Finance Review — Global Banking & Finance Review — Fri, 16 Oct 2026 13:54:27 GMT
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : Central Banks Brace for Higher Rates Amid Global AI Investment Boom Global Banking & Finance Review
-  - SOURCE À OUVRIR : https://news.google.com/rss/articles/CBMiowFBVV95cUxQWVNoQmFvWXREajJtN29sdVVOX1V1X3ppaFh3NklacVFudktDR2ZOd2I3S1E2dnY1OE5aRVJIWEN1Vlk0OWwtNURCOXFYUEl4ZUM4Q2t0bWVDbl81YUdSMlcyeUJSMURPZk9FQ1dfMzNQeXdtSGR0WGVtMTAydlFlQVpyU19oekw0b3VDWUFDY1IyS0NMbE9DS1Z0bURpTURJY0ZJ?oc=5
-  - ANALYSE : Banques centrales. Actifs potentiellement concernés : obligations, devises, indices/futures, actions, crypto, ETF et fonds. Lire le communiqué original et comparer le ton ainsi que la trajectoire des taux aux attentes déjà intégrées dans les prix. Un ton plus restrictif peut soutenir la devise et les rendements, mais peser sur les actifs sensibles aux taux; un ton plus accommodant peut inverser ces effets. La réaction dépend de la surprise, pas seulement de la décision.
-- ACTUALITÉ : David Roberts CV and questionnaire for the Treasury Select Committee — Bank of England — actualités et stabilité financière — Thu, 15 Oct 2026 10:52:41 +0100
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : Published for the Treasury Select Committee
-  - SOURCE À OUVRIR : https://www.bankofengland.co.uk/news/2026/october/david-roberts-tsc-reappointment
-  - ANALYSE : À qualifier. Actifs potentiellement concernés : catégories à confirmer selon le sujet. Le titre seul ne permet pas de déduire un impact fiable. Ouvrir la source originale, vérifier les faits, la date, les chiffres et le consensus éventuel, puis observer la réaction des actifs concernés. Aucune direction n'est attribuée automatiquement.
-- ACTUALITÉ : FOREX-Dollar retreats from 18-month high as Treasury yields dip; Fed hike bets ease - Devdiscourse — Devdiscourse — Thu, 15 Oct 2026 06:12:16 GMT
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : FOREX-Dollar retreats from 18-month high as Treasury yields dip; Fed hike bets ease Devdiscourse
-  - SOURCE À OUVRIR : https://news.google.com/rss/articles/CBMi3gFBVV95cUxPMHU3M1ZFbVJEMlJqb2lUQW9PZzREX29jUVRKNTVrWURlU0JzVFJYUlRhUFhTRWR0TUg0eFZvb3E5azVDam5vdjFHN0wtNHFRZmEzbnRLTFV5S0tHa0dLd204YUxMcWtXaVFndWtWUmJmWmF1Uk1yZWVGTDNud2VnZ0dCbTdGdWdIN243RUUyaS1LWFhsaWtDdk5ZX2RlZDBpejJmM0U2TmVNekw0WUZQNGc4ZkxLYUJNY1pYNk9RcUZyRmpMU3lmYnRZdlgyX1pxVm5XNmN3UnZfdVlfTHfSAd4BQVVfeXFMTzB1NzNWRW1SRDJSam9pVEFvT2c0RF9vY1FUSjU1a1lEZVNCc1RSWFJUYVBYU0VkdE1INHhWb29xOWs1Q2pub3YxRzdMLTRxUWZhM250S0xVeUtLR2tHS3dtOGFMTHFrV2lRZ3VrVlJiZlphdVJNcmVlRkwzbndlZ2dHQm03RnVnSDduN0VFMmktS1hYbGlrQ3ZOWV9kZWQwaXoyZjNFNk5lTXpMNFlGUDRnOGZMS2FCTWNaWDZPUXFGckZqTFN5ZmJ0WXZYMl9acVZuVzZjd1J2X3VZX0x3?oc=5
-  - ANALYSE : Banques centrales. Actifs potentiellement concernés : obligations, devises, indices/futures, actions, crypto, ETF et fonds. Lire le communiqué original et comparer le ton ainsi que la trajectoire des taux aux attentes déjà intégrées dans les prix. Un ton plus restrictif peut soutenir la devise et les rendements, mais peser sur les actifs sensibles aux taux; un ton plus accommodant peut inverser ces effets. La réaction dépend de la surprise, pas seulement de la décision.
-- ACTUALITÉ : Jim Cramer explains why even strong bank earnings couldn't save their stocks - CNBC — CNBC — Wed, 14 Oct 2026 22:48:06 GMT
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : Jim Cramer explains why even strong bank earnings couldn't save their stocks CNBC
-  - SOURCE À OUVRIR : https://news.google.com/rss/articles/CBMiggFBVV95cUxNVC1ZS3NWT1VGX0IwOVJVX1JLVHc2TjBlakVJU0dxbTQ5WW9jUWxseVNIVXlmd05oRWFWZGRVVzA5dnc1cFRNd2RqbFcxc1NKV3RvZHMtNzd1NGh6UnZvc0Y3c3VwdlBmb3o4TFNDdS0wbGdfSzYtQzNud3lpb2dvSjBn0gGHAUFVX3lxTE9LeVNkZFY4dXo5NjJWNUFfWTg4Y0Y1SDhiS0ZxeVN1aGVnN3V5TXZMSV81aUtHaVBPSmRwNTA1dy1FQTdTVEg5dFA1RzR3Yy1YV2NWaWZUSkV0RWpJdWdqRlVUSEZRbFJ6SmlTOHdyaERoT1ZRb0tCajgyVVVQMUhrbTM1TGJTVQ?oc=5
-  - ANALYSE : Résultats d'entreprises. Actifs potentiellement concernés : actions concernées, secteurs, indices/futures, ETF et fonds. Comparer bénéfices, chiffre d'affaires et perspectives aux attentes, et distinguer le résultat publié des prévisions de direction. Les effets sur les indices et ETF dépendent du poids de l'entreprise et de la réaction après publication; les obligations et devises ne sont généralement touchées qu'indirectement.
-- ACTUALITÉ : Today's Crypto News: Bitcoin, Ether and Altcoin Insights - Investing News Network — Investing News Network — Wed, 14 Oct 2026 21:05:00 GMT
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : Today's Crypto News: Bitcoin, Ether and Altcoin Insights Investing News Network
-  - SOURCE À OUVRIR : https://news.google.com/rss/articles/CBMiZEFVX3lxTE9PU3pBdGY0NWJMSWFUTFRDUGx3RklNQlNENWdlQjBiNG9meUo5andqSHFER0lkNlhEaFVwOXpLYWZseVJ1YVZsU2Q4RzBWT1RoeUhTM19YaFljM2ZHcm5yMHYxTlc?oc=5
-  - ANALYSE : Cryptoactifs et réglementation. Actifs potentiellement concernés : cryptomonnaies, ETF concernés, actions liées et appétit pour le risque. Vérifier si la nouvelle porte sur la réglementation, les flux, la liquidité, la sécurité ou les conditions macroéconomiques. L'effet peut être spécifique à l'actif ou se transmettre au sentiment de risque; une corrélation avec les actions ne doit pas être supposée constante.
-- ACTUALITÉ : Turbulent Oil Market: Geopolitics, Hurricane and Persistently High Diesel Prices - Sunsirs — Sunsirs — Wed, 14 Oct 2026 03:23:42 GMT
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : Turbulent Oil Market: Geopolitics, Hurricane and Persistently High Diesel Prices Sunsirs
-  - SOURCE À OUVRIR : https://news.google.com/rss/articles/CBMiXkFVX3lxTE5Ta3l6d3RhYWFpclZHNW9vWlFRV3hsR1ZweTF4dmNYMFpwX29MR0RCd00tRzdZOXhGYmdpZ0xKV3V6ZzZxQzNwb0tWdjBzbjNDbFR5VUxvall2M0JpZ3c?oc=5
-  - ANALYSE : À qualifier. Actifs potentiellement concernés : catégories à confirmer selon le sujet. Le titre seul ne permet pas de déduire un impact fiable. Ouvrir la source originale, vérifier les faits, la date, les chiffres et le consensus éventuel, puis observer la réaction des actifs concernés. Aucune direction n'est attribuée automatiquement.
-- ACTUALITÉ : Rising bond yields, softer labour data buy central banks time - RBC — RBC — Wed, 14 Oct 2026 00:40:57 GMT
-  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : Rising bond yields, softer labour data buy central banks time RBC
-  - SOURCE À OUVRIR : https://news.google.com/rss/articles/CBMi3AFBVV95cUxQX0twUTJIZHRYeTMtRXBKU3JKWExlVkFhMDM4QjJTOWhETmtVYlNOdmVQOUVtd0M5VzdYOFdJVVM2UXFaSVl6TWhzSDJMRkhGTnFuMUF3RFZrR1dXTFpzWDJya2Ruc1VKWTZYbDdJc3JuRUYxUUVIMmljSWx3NldzRk1LV1hORTMwejkyLVM0YkFXS0F2aGJjVzV3c19vYldJdGJPXzI0VG1DRmJBQU1sTWdEMHZHbTI0LXBUM3FBdGowQlkxZ05LRkN3cmFScWoxZVU0WkE3RzloS0tR?oc=5
-  - ANALYSE : Banques centrales. Actifs potentiellement concernés : obligations, devises, indices/futures, actions, crypto, ETF et fonds. Lire le communiqué original et comparer le ton ainsi que la trajectoire des taux aux attentes déjà intégrées dans les prix. Un ton plus restrictif peut soutenir la devise et les rendements, mais peser sur les actifs sensibles aux taux; un ton plus accommodant peut inverser ces effets. La réaction dépend de la surprise, pas seulement de la décision.
+LES ACTUALITÉS QUI COMPTENT
+1. China's central bank to further open its financial markets to foreigners, chief says - Reuters
+   Reuters · Fri, 16 Oct 2026 15:59:00 GMT
+   CE QUI S’EST PASSÉ : China's central bank to further open its financial markets to foreigners, chief says Reuters
+   POUR LES MARCHÉS : Les rendements modifient le coût du crédit et les valorisations. Une hausse pénalise généralement les obligations déjà émises et les actions à valorisation élevée; une détente peut les soutenir. Le prochain test est l’écart entre les données d’inflation/activité et les attentes de taux.
+   Source : https://news.google.com/rss/articles/CBMixgFBVV95cUxQUms0WEVOUTlsZUpVQjNfaVZjQkV2aF9HOFhZbTQtblFHNldVUTk2N3hqeml0aDc2MG9uSzRtTzdPRC1YNXFReU5RSWV2STM3cXhWcVhLTFVONlM5UHBqOXRfeVhmZXlBZHRrVlhHQUlaWGRMeG1FYnJqNloxbEc1NmFmbjZNLUNYdThhOC1pTFFfMXF1a19tN3VKb01RMGt6bXV5UHBMNXd2cXlOQlNtaXJELW14RHBzb3o2b1RBWDhKck1Sdmc?oc=5
+2. US Treasury yield peak still ahead as Fed likely to tighten again, PIMCO's Ivascyn says - Reuters
+   Reuters · Tue, 13 Oct 2026 16:28:58 GMT
+   CE QUI S’EST PASSÉ : US Treasury yield peak still ahead as Fed likely to tighten again, PIMCO's Ivascyn says Reuters
+   POUR LES MARCHÉS : Les rendements modifient le coût du crédit et les valorisations. Une hausse pénalise généralement les obligations déjà émises et les actions à valorisation élevée; une détente peut les soutenir. Le prochain test est l’écart entre les données d’inflation/activité et les attentes de taux.
+   Source : https://news.google.com/rss/articles/CBMiugFBVV95cUxQckVkLTFFNXNKUmlRWTVjWE1tOWZ5OXYxU3NFSWU3V0w0dkk3WEVsamFRVWY5Y0FlNVgzV1dZQlJtNWoyY1ByVlVWT0dBNEp6QnlRVG9HTXpKTENiMXlNT0gtYXRnbHFHRk5TUFREaWZmUEk2WElGUDJfY3d3dHc2ZEh5QUdoQlMzZVBKcUlXamtqTmlsQ1kxZXI2MTV6dGVDU1p3QXQwWVJjN1dkVTc3NXlBRm96SVRkQVE?oc=5
+3. Crude oil futures brace for volatility amid geopolitical uncertainties - Business Standard
+   Business Standard · Sun, 11 Oct 2026 09:48:54 GMT
+   CE QUI S’EST PASSÉ : Crude oil futures brace for volatility amid geopolitical uncertainties Business Standard
+   POUR LES MARCHÉS : Le pétrole transmet le choc aux anticipations d’inflation, aux coûts de transport et aux marges. Les producteurs peuvent en bénéficier; les compagnies aériennes, consommateurs et pays importateurs sont plus exposés. Vérifier si le mouvement vient d’une rupture d’offre durable ou d’une prime géopolitique.
+   Source : https://news.google.com/rss/articles/CBMi3AFBVV95cUxOZDdKZEZqNWUzYVlNYjBHZ3FSYXh4LS16Qy1YYWpoNEVMd09Zb1JZZWtWVG1qQzBpRjlBYjRsbjBtcVlsOHhCcE1OYWVmTHI0Zy1qT29YWEptMUdmank4QUtWcHVGaUxGZWhfd3RxSXVNZjc5elpPRzRuNTNIa3N5c0Mxckk5YVlBeGxoVlIyTGtTSzcyQ2p4dkNUamJtT05rWERCbVlpR25lMWEydUliWWdFN09ZVHgzNTVLY2U5dzZsN2FSa1l2ZHF5UFJsN2xONnFqd095THV0UUZl0gHiAUFVX3lxTE9YZGVWN3dmVUFHV3ZNdk80UDF0WlVkMzFuZ1VwM0FiUFRwd3UtdURwc1ZvaUpXSUZReEZSUW1QcW1GTGZDYlBLRzdNSlFPelZmclAwMzUxbXV2RDJVWm5RQmE1QThXVkhscXFZVllaX0ltdVdsUjA4ZVI2VXg0b3BBbl9ybDV0VjIwXy1pWllORnVjbnFMZy1TQTlJclZJT3FxWkozNUl3ZlZraXhwb3hMQk9lWDhoaXpPWXNHZC0tU0UzN0lNQ1dXOGRhMzNXQnI2ajZfVVBYTlZoUjhUc3ZlWEE?oc=5
+4. Thailand launches new crypto ETF rules allowing Bitcoin and Ether trading on its stock exchange. - Pluang
+   Pluang · Sat, 17 Oct 2026 01:23:53 GMT
+   CE QUI S’EST PASSÉ : Thailand launches new crypto ETF rules allowing Bitcoin and Ether trading on its stock exchange. Pluang
+   POUR LES MARCHÉS : Distinguer les facteurs propres au secteur (réglementation, ETF, liquidations, sécurité) du mouvement général d’appétit pour le risque. Vérifier les flux d’ETF et l’évolution simultanée du dollar, des rendements et des actifs risqués avant d’attribuer une cause.
+   Source : https://news.google.com/rss/articles/CBMioAFBVV95cUxQMXdmalRPeldjamNBWEt6bXg3YnlKUWQ4R1FmV1NYOGRkLUVfcHRLam1Fc0VYY05pVVdjWHlkRDhvdFRZb0VrZlp3MjNMWXZPSjBObVRoS3FKOEtDU3RXRC1QRTVraER4cl91YTBtMWFjSlp4OWlLd0oteGhheFV3emdvYWtxVHFVc3VGZ1NzTENZTUFSalVWNHhINXBBQjFv?oc=5
+5. Major earnings reports are due next week, but strong results may not be enough to quell market fears - CNBC
+   CNBC · Fri, 16 Oct 2026 19:39:38 GMT
+   CE QUI S’EST PASSÉ : Major earnings reports are due next week, but strong results may not be enough to quell market fears CNBC
+   POUR LES MARCHÉS : Pour l’action concernée, comparer chiffre d’affaires, bénéfice, marges et prévisions de direction aux attentes, puis regarder la réaction du cours. Une publication en hausse peut faire baisser le titre si les attentes étaient plus élevées; l’effet sur l’indice dépend du poids de l’entreprise.
+   Source : https://news.google.com/rss/articles/CBMiigFBVV95cUxNMDB5eUJodTlUZTZQNzNYdFhCVWFOWUdRZk5ENkFRNll3OEE0RjJkb0tMUzZRMkJYNktERG5pN1ZmR1JTUW1FczQ0UmQwSGRza2xUeUsyTndRajd0aVU3dXRTaE1nVkFKalpJZm9yMVVNWUJpYi1vUGp2VEJwQl85dmNzY0ExV015MGc?oc=5
+6. Federal Reserve Board announces termination of enforcement actions with Gardner Bancshares, Inc. and Small Business Bank
+   Federal Reserve — communiqués officiels · Fri, 16 Oct 2026 15:00:00 GMT
+   CE QUI S’EST PASSÉ : Federal Reserve Board announces termination of enforcement actions with Gardner Bancshares, Inc. and Small Business Bank
+   POUR LES MARCHÉS : Les rendements modifient le coût du crédit et les valorisations. Une hausse pénalise généralement les obligations déjà émises et les actions à valorisation élevée; une détente peut les soutenir. Le prochain test est l’écart entre les données d’inflation/activité et les attentes de taux.
+   Source : https://www.federalreserve.gov/newsevents/pressreleases/enforcement20261016a.htm
+7. Central Banks Brace for Higher Rates Amid Global AI Investment Boom - Global Banking & Finance Review
+   Global Banking & Finance Review · Fri, 16 Oct 2026 13:54:27 GMT
+   CE QUI S’EST PASSÉ : Central Banks Brace for Higher Rates Amid Global AI Investment Boom Global Banking & Finance Review
+   POUR LES MARCHÉS : Le marché arbitre entre la croissance attendue des revenus liés à l’IA et le coût du financement des infrastructures. À suivre : prévisions de ventes, dépenses d’investissement, dette des opérateurs de centres de données et réaction des semi-conducteurs.
+   Source : https://news.google.com/rss/articles/CBMiowFBVV95cUxQWVNoQmFvWXREajJtN29sdVVOX1V1X3ppaFh3NklacVFudktDR2ZOd2I3S1E2dnY1OE5aRVJIWEN1Vlk0OWwtNURCOXFYUEl4ZUM4Q2t0bWVDbl81YUdSMlcyeUJSMURPZk9FQ1dfMzNQeXdtSGR0WGVtMTAydlFlQVpyU19oekw0b3VDWUFDY1IyS0NMbE9DS1Z0bURpTURJY0ZJ?oc=5
+8. David Roberts CV and questionnaire for the Treasury Select Committee
+   Bank of England — actualités et stabilité financière · Thu, 15 Oct 2026 10:52:41 +0100
+   CE QUI S’EST PASSÉ : Published for the Treasury Select Committee
+   POUR LES MARCHÉS : La portée de cette nouvelle dépend de ses détails et de la surprise par rapport aux attentes. Identifier les entreprises ou pays concernés, puis vérifier la réaction des prix et les prochaines données qui confirmeraient ou invalideraient l’interprétation.
+   Source : https://www.bankofengland.co.uk/news/2026/october/david-roberts-tsc-reappointment
+9. Jim Cramer explains why even strong bank earnings couldn't save their stocks - CNBC
+   CNBC · Wed, 14 Oct 2026 22:48:06 GMT
+   CE QUI S’EST PASSÉ : Jim Cramer explains why even strong bank earnings couldn't save their stocks CNBC
+   POUR LES MARCHÉS : Pour l’action concernée, comparer chiffre d’affaires, bénéfice, marges et prévisions de direction aux attentes, puis regarder la réaction du cours. Une publication en hausse peut faire baisser le titre si les attentes étaient plus élevées; l’effet sur l’indice dépend du poids de l’entreprise.
+   Source : https://news.google.com/rss/articles/CBMiggFBVV95cUxNVC1ZS3NWT1VGX0IwOVJVX1JLVHc2TjBlakVJU0dxbTQ5WW9jUWxseVNIVXlmd05oRWFWZGRVVzA5dnc1cFRNd2RqbFcxc1NKV3RvZHMtNzd1NGh6UnZvc0Y3c3VwdlBmb3o4TFNDdS0wbGdfSzYtQzNud3lpb2dvSjBn0gGHAUFVX3lxTE9LeVNkZFY4dXo5NjJWNUFfWTg4Y0Y1SDhiS0ZxeVN1aGVnN3V5TXZMSV81aUtHaVBPSmRwNTA1dy1FQTdTVEg5dFA1RzR3Yy1YV2NWaWZUSkV0RWpJdWdqRlVUSEZRbFJ6SmlTOHdyaERoT1ZRb0tCajgyVVVQMUhrbTM1TGJTVQ?oc=5
+10. Today's Crypto News: Bitcoin, Ether and Altcoin Insights - Investing News Network
+   Investing News Network · Wed, 14 Oct 2026 21:05:00 GMT
+   CE QUI S’EST PASSÉ : Today's Crypto News: Bitcoin, Ether and Altcoin Insights Investing News Network
+   POUR LES MARCHÉS : Distinguer les facteurs propres au secteur (réglementation, ETF, liquidations, sécurité) du mouvement général d’appétit pour le risque. Vérifier les flux d’ETF et l’évolution simultanée du dollar, des rendements et des actifs risqués avant d’attribuer une cause.
+   Source : https://news.google.com/rss/articles/CBMiZEFVX3lxTE9PU3pBdGY0NWJMSWFUTFRDUGx3RklNQlNENWdlQjBiNG9meUo5andqSHFER0lkNlhEaFVwOXpLYWZseVJ1YVZsU2Q4RzBWT1RoeUhTM19YaFljM2ZHcm5yMHYxTlc?oc=5
 
 INDICATEURS MACROÉCONOMIQUES STRUCTURÉS — FRED ET SOURCE OFFICIELLE DE REPLI
 La source et la date de chaque observation sont indiquées. Les fréquences et délais de publication diffèrent; les valeurs ne sont pas nécessairement du jour.
@@ -79,9 +76,10 @@ Lecture régionale : les signaux ci-dessous sont limités aux publications et in
 - États-Unis et Canada :
   - Federal Reserve Board announces termination of enforcement actions with Gardner Bancshares, Inc. and Small Business Bank — Federal Reserve — communiqués officiels (Fri, 16 Oct 2026 15:00:00 GMT) — https://www.federalreserve.gov/newsevents/pressreleases/enforcement20261016a.htm
   - U.S. small-scale solar generation has quadrupled in the last decade — US Energy Information Administration — énergie (Fri, 16 Oct 2026  09:00:00 EST) — https://www.eia.gov/todayinenergy/detail.php?id=68324
-  - FOREX-Dollar retreats from 18-month high as Treasury yields dip; Fed hike bets ease - Devdiscourse — Devdiscourse (Thu, 15 Oct 2026 06:12:16 GMT) — https://news.google.com/rss/articles/CBMi3gFBVV95cUxPMHU3M1ZFbVJEMlJqb2lUQW9PZzREX29jUVRKNTVrWURlU0JzVFJYUlRhUFhTRWR0TUg0eFZvb3E5azVDam5vdjFHN0wtNHFRZmEzbnRLTFV5S0tHa0dLd204YUxMcWtXaVFndWtWUmJmWmF1Uk1yZWVGTDNud2VnZ0dCbTdGdWdIN243RUUyaS1LWFhsaWtDdk5ZX2RlZDBpejJmM0U2TmVNekw0WUZQNGc4ZkxLYUJNY1pYNk9RcUZyRmpMU3lmYnRZdlgyX1pxVm5XNmN3UnZfdVlfTHfSAd4BQVVfeXFMTzB1NzNWRW1SRDJSam9pVEFvT2c0RF9vY1FUSjU1a1lEZVNCc1RSWFJUYVBYU0VkdE1INHhWb29xOWs1Q2pub3YxRzdMLTRxUWZhM250S0xVeUtLR2tHS3dtOGFMTHFrV2lRZ3VrVlJiZlphdVJNcmVlRkwzbndlZ2dHQm03RnVnSDduN0VFMmktS1hYbGlrQ3ZOWV9kZWQwaXoyZjNFNk5lTXpMNFlGUDRnOGZMS2FCTWNaWDZPUXFGckZqTFN5ZmJ0WXZYMl9acVZuVzZjd1J2X3VZX0x3?oc=5
+  - Yields on Treasurys, European Government Bonds Edge Higher - WSJ — WSJ (Fri, 16 Oct 2026 18:21:00 GMT) — https://news.google.com/rss/articles/CBMiggFBVV95cUxQaTh2LXo3TUR2cXpfSTI2QlNFNGQwVlNtM0FMQW9EZ1ctdGZmSXd1WFpnTnN2a3VKTHdHdmNaLXlEd21pdnJWdEZOZ0MxV2dnZ29LZ1RoZXlRS2x5V2JLazF1a1puX2NjM1h0ai1fdXRFal9hTDZLMDNBSEk2SHJnc1BR?oc=5
 - Zone euro et Royaume-Uni :
   - European majors set for Q3 earnings growth despite darkening view on consumer cyclicals - Yahoo Finance UK — Yahoo Finance UK (Fri, 16 Oct 2026 10:08:15 GMT) — https://news.google.com/rss/articles/CBMihwFBVV95cUxPczhJQ09kVVl1aXBBVGpDMk5zcVJwbk9xUnctZVpZS2pZaWxHU2N6NS13SURVLWZFX0Zab1Y4QWgxNXNiX0tKb1FrYjJiZUFTQzdOLVFRZkxRSE9xWlRoN0plZXFVbW5SSFMzak5mbWlXYmlfcHJGQ0dzT1dwaE5vdnNBLXZaLTA?oc=5
+  - Yields on Treasurys, European Government Bonds Edge Higher - WSJ — WSJ (Fri, 16 Oct 2026 18:21:00 GMT) — https://news.google.com/rss/articles/CBMiggFBVV95cUxQaTh2LXo3TUR2cXpfSTI2QlNFNGQwVlNtM0FMQW9EZ1ctdGZmSXd1WFpnTnN2a3VKTHdHdmNaLXlEd21pdnJWdEZOZ0MxV2dnZ29LZ1RoZXlRS2x5V2JLazF1a1puX2NjM1h0ai1fdXRFal9hTDZLMDNBSEk2SHJnc1BR?oc=5
   - Philip R. Lane: The AI opportunity for Europe — Banque centrale européenne — communiqués (Tue, 13 Oct 2026 20:30:00 +0200) — https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261013~9db9bf4fd6.en.html
 - Chine et Asie-Pacifique :
   - China's central bank to further open its financial markets to foreigners, chief says - Reuters — Reuters (Fri, 16 Oct 2026 15:59:00 GMT) — https://news.google.com/rss/articles/CBMixgFBVV95cUxQUms0WEVOUTlsZUpVQjNfaVZjQkV2aF9HOFhZbTQtblFHNldVUTk2N3hqeml0aDc2MG9uSzRtTzdPRC1YNXFReU5RSWV2STM3cXhWcVhLTFVONlM5UHBqOXRfeVhmZXlBZHRrVlhHQUlaWGRMeG1FYnJqNloxbEc1NmFmbjZNLUNYdThhOC1pTFFfMXF1a19tN3VKb01RMGt6bXV5UHBMNXd2cXlOQlNtaXJELW14RHBzb3o2b1RBWDhKck1Sdmc?oc=5
@@ -92,12 +90,12 @@ Lecture régionale : les signaux ci-dessous sont limités aux publications et in
 NIVEAU 3 — GRANDES FORCES ET INTERACTIONS ENTRE LES MARCHÉS
 - Les grands indices US ont reculé sur cinq séances : momentum récent négatif, sans que cela suffise à établir une prévision directionnelle. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
 - Le VIX a fortement progressé sur la dernière séance disponible : surveiller une hausse de l'aversion au risque. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
-- Bitcoin : variation de la dernière séance disponible -0.88%; la crypto cote en continu, contrairement à la plupart des marchés traditionnels. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
+- Bitcoin : variation de la dernière séance disponible -0.90%; la crypto cote en continu, contrairement à la plupart des marchés traditionnels. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
 - Actions US vs taux longs US : S&P 500 -1.09 %; US 10-year Treasury yield +0.18 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
 - Technologie vs marché large : Nasdaq Composite -2.15 %; S&P 500 -1.09 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
 - Or vs dollar : Gold futures +0.26 %; US Dollar Index -0.16 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
 - Pétrole vs dollar : WTI crude oil futures +3.51 %; US Dollar Index -0.16 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
-- Bitcoin vs technologie : Bitcoin -0.88 %; Nasdaq Composite -2.15 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
+- Bitcoin vs technologie : Bitcoin -0.90 %; Nasdaq Composite -2.15 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
 
 NIVEAU 4 — CLASSES D'ACTIFS : OÙ SE CONCENTRE LE RISQUE ?
 La classification ci-dessous repose sur les actifs reçus. Les fonds communs sont inclus lorsque leur cotation de valeur liquidative est disponible; une donnée absente est signalée, jamais inventée.
@@ -124,8 +122,8 @@ La classification ci-dessous repose sur les actifs reçus. Les fonds communs son
   - Sur cinq séances : 1/5 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 - Credit ETF : 1 instrument(s); variation moyenne non pondérée -0.35%.
   - Sur cinq séances : 0/1 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- Crypto : 4 instrument(s); variation moyenne non pondérée -1.08%.
-  - Meilleure variation : Ethereum (-0.69%); plus faible : XRP (-2.03%).
+- Crypto : 4 instrument(s); variation moyenne non pondérée -1.10%.
+  - Meilleure variation : Ethereum (-0.71%); plus faible : XRP (-2.02%).
   - Sur cinq séances : 0/4 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 - ETF : 8 instrument(s); variation moyenne non pondérée -1.11%.
   - Meilleure variation : Developed markets ex-US equity ETF (-0.12%); plus faible : Invesco Nasdaq 100 ETF (-2.50%).
@@ -212,9 +210,9 @@ Instruments à examiner en priorité (sélection par amplitude; pas une recomman
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
 - KOSPI (^KS11) — classe : South Korean equity index; dernier prix +5668.05; dernière séance +2.05%; 5 séances -14.46%; 1 mois -17.97%. Source cours : https://finance.yahoo.com/quote/^KS11/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
-- XRP (XRP-USD) — classe : Crypto; dernier prix +1.31; dernière séance -2.03%; 5 séances -7.32%; 1 mois -16.72%. Source cours : https://finance.yahoo.com/quote/XRP-USD/
+- XRP (XRP-USD) — classe : Crypto; dernier prix +1.31; dernière séance -2.02%; 5 séances -7.31%; 1 mois -16.72%. Source cours : https://finance.yahoo.com/quote/XRP-USD/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
-- Solana (SOL-USD) — classe : Crypto; dernier prix +104.57; dernière séance -0.72%; 5 séances -6.00%; 1 mois -14.29%. Source cours : https://finance.yahoo.com/quote/SOL-USD/
+- Solana (SOL-USD) — classe : Crypto; dernier prix +104.53; dernière séance -0.76%; 5 séances -6.03%; 1 mois -14.33%. Source cours : https://finance.yahoo.com/quote/SOL-USD/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
 - Silver futures (SI=F) — classe : Commodity; dernier prix +56.99; dernière séance +0.28%; 5 séances -6.06%; 1 mois -12.94%. Source cours : https://finance.yahoo.com/quote/SI=F/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
@@ -250,10 +248,10 @@ Natural gas futures (NG=F) | Commodity | +3.12 | -3.71% | -3.23% | +7.41% | http
 Silver futures (SI=F) | Commodity | +56.99 | +0.28% | -6.06% | -12.94% | https://finance.yahoo.com/quote/SI=F/
 WTI crude oil futures (CL=F) | Commodity | +101.41 | +3.51% | +10.41% | -0.49% | https://finance.yahoo.com/quote/CL=F/
 High-yield corporate bond ETF (HYG) | Credit ETF | +76.86 | -0.35% | -0.48% | -1.93% | https://finance.yahoo.com/quote/HYG/
-Bitcoin (BTC-USD) | Crypto | +81417.41 | -0.88% | -2.70% | -3.11% | https://finance.yahoo.com/quote/BTC-USD/
-Ethereum (ETH-USD) | Crypto | +2423.61 | -0.69% | -4.38% | -9.92% | https://finance.yahoo.com/quote/ETH-USD/
-Solana (SOL-USD) | Crypto | +104.57 | -0.72% | -6.00% | -14.29% | https://finance.yahoo.com/quote/SOL-USD/
-XRP (XRP-USD) | Crypto | +1.31 | -2.03% | -7.32% | -16.72% | https://finance.yahoo.com/quote/XRP-USD/
+Bitcoin (BTC-USD) | Crypto | +81402.21 | -0.90% | -2.72% | -3.13% | https://finance.yahoo.com/quote/BTC-USD/
+Ethereum (ETH-USD) | Crypto | +2423.04 | -0.71% | -4.41% | -9.94% | https://finance.yahoo.com/quote/ETH-USD/
+Solana (SOL-USD) | Crypto | +104.53 | -0.76% | -6.03% | -14.33% | https://finance.yahoo.com/quote/SOL-USD/
+XRP (XRP-USD) | Crypto | +1.31 | -2.02% | -7.31% | -16.72% | https://finance.yahoo.com/quote/XRP-USD/
 Developed markets ex-US equity ETF (EFA) | ETF | +103.55 | -0.12% | +0.15% | -2.35% | https://finance.yahoo.com/quote/EFA/
 Emerging markets equity ETF (EEM) | ETF | +62.85 | -1.74% | -5.91% | -6.07% | https://finance.yahoo.com/quote/EEM/
 Gold ETF (GLD) | ETF | +382.01 | -0.18% | -0.67% | -4.10% | https://finance.yahoo.com/quote/GLD/
@@ -323,33 +321,21 @@ ENGAGEMENT POUR L'AUDIT DU SOIR
 - Les probabilités et les observations de cette édition doivent rester inchangées dans l'historique; le rapport du soir comparera ces hypothèses aux mouvements effectivement observés.
 
 AUDIT CRITIQUE DES ANALYSES PRÉCÉDENTES
-- Prévisions historiques enregistrées : 196; prévisions arrivées à échéance : 16; encore en attente : 180.
+- Prévisions historiques enregistrées : 202; prévisions arrivées à échéance : 19; encore en attente : 183.
 - Référence évaluée : règle de momentum simple fondée sur le rendement des cinq dernières séances. C'est un point de comparaison expérimental, pas une recommandation de trading.
-- Horizon 1 séance : 5/16 directions correctes (31.2 %); mouvement absolu moyen observé : 0.784 %.
+- Horizon 1 séance : 5/19 directions correctes (26.3 %); mouvement absolu moyen observé : 0.691 %.
 - Horizon 5 séances : aucun échantillon arrivé à échéance; performance non évaluable.
 - Conclusion méthodologique : échantillon encore insuffisant pour déclarer cette règle fiable ou modifier automatiquement la méthode.
-- Exemples d'erreurs à examiner : Solana (1 séance(s), prévu baisse, réalisé hausse, +1.06 %); XRP (1 séance(s), prévu baisse, réalisé hausse, +0.41 %); KOSPI (1 séance(s), prévu baisse, réalisé hausse, +2.05 %).
+- Exemples d'erreurs à examiner : Solana (1 séance(s), prévu baisse, réalisé hausse, +1.23 %); XRP (1 séance(s), prévu baisse, réalisé hausse, +0.52 %); KOSPI (1 séance(s), prévu baisse, réalisé hausse, +2.05 %).
 - Source des prix évalués : Yahoo Finance via yfinance (https://finance.yahoo.com/); la qualité et la disponibilité de ces données ne sont pas garanties.
 - Les prévisions originales sont conservées pour empêcher toute réécriture rétrospective. Les changements de méthode devront être justifiés par des échantillons suffisants et des tests hors échantillon.
 
 AUDIT DES PROBABILITÉS DIRECTIONNELLES
 - Des prévisions matinales sont enregistrées, mais aucune n'a encore atteint une observation quotidienne distincte et terminée. Le score de calibration n'est pas encore disponible.
-- Prévisions matinales enregistrées : 2; en attente : 2. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.
+- Prévisions matinales enregistrées : 3; en attente : 3. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.
 
-QUALITÉ ET SOURCES
-- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).
-- Séries macroéconomiques : FRED en priorité; repli vers l’API publique officielle BLS pour CPI, chômage et emploi si FRED est indisponible. Les dates et sources sont indiquées; fréquences et délais diffèrent.
-- Actualités : flux officiels Fed, BEA, Census Bureau, BCE, EIA, Banque d'Angleterre et Banque du Japon. Les publications BLS emploi/CPI/PPI sont repérées par des recherches ciblées Google News vers les archives BLS; une recherche ciblée DOL complète les demandes d'allocations chômage. Les recherches FMI/Banque mondiale sont aussi des outils de découverte, pas des preuves indépendantes : ouvrir et vérifier la publication institutionnelle originale avant de retenir un chiffre.
-- Heure de collecte : 2026-10-17T04:24:31+00:00.
-- Erreurs prix : 0; erreurs flux actualités : 0; erreurs données fondamentales SEC : 0; erreurs de collecte macro (FRED puis repli BLS) : 7.
-
-ERREURS DE COLLECTE MACRO (FRED / REPLI BLS)
-- FRED CPIAUCSL: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)
-- FRED UNRATE: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)
-- FRED PAYEMS: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)
-- FRED FEDFUNDS: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)
-- FRED DGS10: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)
-- FRED DGS2: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)
-- FRED T10YIE: ReadTimeout: HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=12)
+À PROPOS DES DONNÉES
+Collecte : 17/10/2026 à 04:32 UTC. Données de prix reçues pour 82/82 actifs; 48 actualités collectées.
+Certaines séries macroéconomiques n’ont pas pu être récupérées.
 
 Avertissement : contenu informatif et expérimental, pas un conseil d'investissement. Vérifier les données et les actualités avant toute décision.
