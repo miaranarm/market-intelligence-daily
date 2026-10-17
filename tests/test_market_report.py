@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
 
 
@@ -58,12 +58,27 @@ class FredMacroSeriesTests(unittest.TestCase):
         self.assertEqual(rows["CPIAUCSL"]["date"], "2026-09-01")
         self.assertEqual(rows["CPIAUCSL"]["yoy_pct"], 3.12)
         self.assertEqual(rows["UNRATE"]["value"], 4.3)
+        self.assertEqual(rows["CPIAUCSL"]["previous_date"], "2025-09-01")
+        self.assertEqual(rows["CPIAUCSL"]["change"], 10.0)
         self.assertEqual(rows["DGS10"]["date"], "2026-10-01")
+        self.assertAlmostEqual(rows["DGS10"]["change"], 0.1)
         self.assertEqual(set(rows), set(FRED_SERIES))
 
     def test_fred_csv_missing_date_column_fails_clearly(self):
         with self.assertRaisesRegex(ValueError, "date"):
             _parse_fred_csv("CPIAUCSL\n330.0\n")
+
+    def test_macro_rendering_explains_changes_in_correct_units(self):
+        lines = []
+        append_macro_series(lines, [
+            {"id": "DGS10", "name": "Treasury 10 ans", "unit": "% annuel", "date": "2026-10-16",
+             "value": 4.2, "previous_date": "2026-10-15", "change": 0.1, "source": "https://example.com"},
+            {"id": "PAYEMS", "name": "Emploi", "unit": "milliers", "date": "2026-09-01",
+             "value": 159000, "previous_date": "2026-08-01", "change": 120, "source": "https://example.com"},
+        ])
+        rendered = "\\n".join(lines)
+        self.assertIn("+0.100 point de pourcentage", rendered)
+        self.assertIn("+120.000 milliers d'emplois", rendered)
 
     def test_fred_series_are_official_series_pages_and_csv_endpoint(self):
         from src.market_report import FRED_CSV_URL
@@ -121,6 +136,8 @@ class FredMacroSeriesTests(unittest.TestCase):
         by_id = {x["id"]: x for x in rows}
         self.assertEqual(set(by_id), {"CPIAUCSL", "UNRATE", "PAYEMS"})
         self.assertEqual(by_id["CPIAUCSL"]["yoy_pct"], 3.23)
+        self.assertEqual(by_id["CPIAUCSL"]["change"], 10.0)
+        self.assertEqual(by_id["CPIAUCSL"]["previous_date"], "2025-09-01")
         self.assertEqual(by_id["UNRATE"]["value"], 4.2)
         self.assertEqual(by_id["PAYEMS"]["value"], 159000.0)
         self.assertEqual(by_id["CPIAUCSL"]["provider"], "BLS — source officielle de repli")
