@@ -1669,24 +1669,28 @@ def append_funnel_report(
             lines.append(f"- {label} : {a.name} {a.daily_pct:+.2f} %; {b.name} {b.daily_pct:+.2f} %; mouvements de {relationship}. Une seule séance ne suffit pas à prouver une relation causale.")
         else:
             lines.append(f"- {label} : comparaison indisponible faute de données synchronisées suffisantes.")
-    lines += ["", "NIVEAU 4 — CLASSES D'ACTIFS : OÙ SE CONCENTRE LE RISQUE ?",
-              "La classification ci-dessous repose sur les actifs reçus. Les fonds communs sont inclus lorsque leur cotation de valeur liquidative est disponible; une donnée absente est signalée, jamais inventée."]
-    classes: dict[str, list[AssetRow]] = {}
-    for row in rows:
-        classes.setdefault(row.asset_class, []).append(row)
-    for cls, members in sorted(classes.items()):
-        daily = [x for x in members if x.daily_pct is not None]
-        weekly = [x for x in members if x.five_day_pct is not None]
-        best = max(daily, key=lambda x: x.daily_pct) if daily else None
-        worst = min(daily, key=lambda x: x.daily_pct) if daily else None
-        avg = sum(x.daily_pct for x in daily) / len(daily) if daily else None
-        lines.append(f"- {cls} : {len(members)} instrument(s); variation moyenne non pondérée {fmt(avg, '%')}.")
-        # A one-instrument category has no meaningful leader/laggard comparison.
-        if best and worst and len(daily) >= 2:
-            lines.append(f"  - Meilleure variation : {best.name} ({fmt(best.daily_pct, '%')}); plus faible : {worst.name} ({fmt(worst.daily_pct, '%')}).")
-        if weekly:
-            positive = sum(1 for x in weekly if (x.five_day_pct or 0) > 0)
-            lines.append(f"  - Sur cinq séances : {positive}/{len(weekly)} instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.")
+    lines += ["", "NIVEAU 4 — CLASSES D'ACTIFS : SYNTHÈSE TRANSVERSALE",
+              "Synthèse courte des tendances; les neuf rubriques suivantes détaillent les instruments et les actualités réellement documentées."]
+    broad_groups = [
+        ("Indices boursiers", lambda r: "equity index" in r.asset_class.casefold() and "futures" not in r.asset_class.casefold()),
+        ("Futures sur indices", lambda r: "equity index futures" in r.asset_class.casefold()),
+        ("Actions", lambda r: r.asset_class.casefold() in {"us equity", "equity"}),
+        ("Matières premières", lambda r: "commodity" in r.asset_class.casefold()),
+        ("Devises", lambda r: r.asset_class.casefold() == "fx"),
+        ("Crypto-actifs", lambda r: r.asset_class.casefold() == "crypto"),
+        ("Obligations et crédit", lambda r: any(x in r.asset_class.casefold() for x in ("rates", "bond", "credit"))),
+        ("ETF", lambda r: "etf" in r.asset_class.casefold()),
+        ("Fonds", lambda r: "mutual fund" in r.asset_class.casefold() or ("fund" in r.name.casefold() and "etf" not in r.asset_class.casefold())),
+    ]
+    for label, matcher in broad_groups:
+        members = [r for r in rows if matcher(r)]
+        daily = [r.daily_pct for r in members if r.daily_pct is not None]
+        weekly = [r.five_day_pct for r in members if r.five_day_pct is not None]
+        daily_avg = sum(daily) / len(daily) if daily else None
+        weekly_avg = sum(weekly) / len(weekly) if weekly else None
+        advancing = sum(value > 0 for value in weekly)
+        breadth = f"{advancing}/{len(weekly)} en hausse sur cinq séances" if weekly else "largeur hebdomadaire indisponible"
+        lines.append(f"- {label} : {len(members)} instrument(s); moyenne séance {fmt(daily_avg, '%')}; moyenne cinq séances {fmt(weekly_avg, '%')}; {breadth}.")
     lines += ["", "LES 9 CATÉGORIES — ANALYSE PAR UNIVERS D’INVESTISSEMENT",
               "Chaque rubrique combine les instruments effectivement reçus et les nouvelles qui peuvent les affecter. Les mouvements sont descriptifs; ils ne prouvent pas à eux seuls une cause ni ne constituent un signal d’achat/vente."]
     category_specs = [
