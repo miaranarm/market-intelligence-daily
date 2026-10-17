@@ -136,6 +136,18 @@ class NewsFeedSummaryTests(unittest.TestCase):
         self.assertIn("12 basis points", summary)
         self.assertLessEqual(len(summary), 500)
 
+    def test_extractive_summary_drops_publisher_navigation_chrome(self):
+        source = (
+            "The administration extended the waiver through April 2027 to ease a diesel supply shortage. "
+            "Livestream Menu Make It select USA INTL Livestream Search quotes, news & videos "
+            "Livestream Watchlist SIGN IN Create free account."
+        )
+        summary = _summarize_news_text(source, max_chars=500)
+        self.assertIn("April 2027", summary)
+        self.assertNotIn("Livestream", summary)
+        self.assertNotIn("Watchlist", summary)
+        self.assertNotIn("Create free account", summary)
+
     @patch("src.market_report.requests.get")
     def test_enrichment_extracts_factual_publisher_paragraphs(self, get_mock):
         class FakeResponse:
