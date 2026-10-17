@@ -544,7 +544,7 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
         return any(term in candidate.casefold() for term in specific_terms)
 
     if is_useful_summary(summary):
-        result["summary"] = summary[:1200]
+        result["summary"] = _summarize_news_text(summary)
         return result
     url = result.get("url", "")
     if not url.startswith(("https://", "http://")):
