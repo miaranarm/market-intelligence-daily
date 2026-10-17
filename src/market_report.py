@@ -271,7 +271,7 @@ def analyse_asset(ticker: str, frame: pd.DataFrame) -> AssetRow:
         data_timestamp=last_date, note=note
     )
 
-def _is_recent_news_item(published: str, now: datetime | None = None, max_age_days: int = 10) -> bool:
+def _is_recent_news_item(published: str, now: datetime | None = None, max_age_days: int = 3) -> bool:
     """Reject dated headlines older than the freshness window; keep undated/unparseable items transparently."""
     if not published:
         return True
@@ -424,21 +424,74 @@ def _news_fact_and_market_readthrough(item: dict[str, str]) -> tuple[str, str]:
     return fact, impact
 
 
+def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
+    """Recover a publisher's real description when an RSS discovery feed gives only a headline."""
+    result = dict(item)
+    title = re.sub(r"\\s+", " ", result.get("title", "")).strip()
+    summary = re.sub(r"\\s+", " ", result.get("summary", "")).strip()
+    # Google News discovery feeds often put the headline and publisher name in
+    # description; that is not a useful article summary.
+    normalized_title = re.sub(r"[^a-z0-9]+", " ", title.casefold()).strip()
+    normalized_summary = re.sub(r"[^a-z0-9]+", " ", summary.casefold()).strip()
+    if summary and normalized_summary.startswith(normalized_title):
+        remainder = normalized_summary[len(normalized_title):].strip()
+        if len(remainder) < 100:
+            summary = ""
+    if len(summary) >= 100:
+        result["summary"] = summary[:1200]
+        return result
+    url = result.get("url", "")
+    if not url.startswith(("https://", "http://")):
+        result["summary"] = ""
+        return result
+    try:
+        response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=7, allow_redirects=True)
+        response.raise_for_status()
+        page = response.text[:1_500_000]
+        candidates = re.findall(
+            r'<meta[^>]+(?:name|property)=["\\'](?:description|og:description|twitter:description|article:description)["\\'][^>]+content=["\\']([^"\\']+)["\\']',
+            page, flags=re.IGNORECASE
+        )
+        if not candidates:
+            candidates = re.findall(
+                r'<meta[^>]+content=["\\']([^"\\']+)["\\'][^>]+(?:name|property)=["\\'](?:description|og:description|twitter:description|article:description)["\\']',
+                page, flags=re.IGNORECASE
+            )
+        for candidate in candidates:
+            candidate = html.unescape(re.sub(r"\\s+", " ", candidate)).strip()
+            normalized = re.sub(r"[^a-z0-9]+", " ", candidate.casefold()).strip()
+            if len(candidate) >= 100 and not normalized.startswith(normalized_title):
+                result["summary"] = candidate[:1200]
+                # Keep the publisher URL after redirects when it is a real article page.
+                final_url = getattr(response, "url", "")
+                if final_url and "news.google.com/rss/articles" not in final_url:
+                    result["url"] = final_url
+                return result
+    except Exception:
+        pass
+    result["summary"] = summary
+    return result
+
+
 def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
-    """Lead with actual reported events and concise, fact-grounded market consequences."""
+    """Lead with recent reported events and distinguish article facts from interpretation."""
     priority_news = prioritize_news(news, 10)
     lines += ["", "LES ACTUALITÉS QUI COMPTENT"]
     if not priority_news:
-        lines.append("Aucune actualité exploitable n’a été récupérée. Les conclusions de marché doivent être considérées comme incomplètes.")
+        lines.append("Aucune actualité exploitable des trois derniers jours n’a été récupérée. Les conclusions de marché doivent être considérées comme incomplètes.")
         return
-    for index, item in enumerate(priority_news, 1):
+    for index, raw_item in enumerate(priority_news, 1):
+        item = _enrich_news_item(raw_item)
         fact, impact = _news_fact_and_market_readthrough(item)
         published = item.get("published") or "date non fournie"
         source = item.get("source") or "éditeur non précisé"
         lines.append(f"{index}. {item['title']}")
         lines.append(f"   {source} · {published}")
-        lines.append(f"   CE QUI S’EST PASSÉ : {fact}")
-        lines.append(f"   POUR LES MARCHÉS : {impact}")
+        if fact and fact.casefold() != item["title"].casefold():
+            lines.append(f"   FAITS RAPPORTÉS : {fact}")
+        else:
+            lines.append("   FAITS RAPPORTÉS : résumé de l’éditeur indisponible; le titre seul ne permet pas de confirmer les chiffres ou les détails.")
+        lines.append(f"   LECTURE MARCHÉ : {impact}")
         lines.append(f"   Source : {item['url']}")
 
 def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
