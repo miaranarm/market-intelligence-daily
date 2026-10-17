@@ -521,15 +521,17 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
     for item in enriched:
         summary = re.sub(r"\s+", " ", item.get("summary", "")).strip()
         title = item.get("title", "").casefold()
-        if len(summary) < 100 or any(phrase in title for phrase in low_value_headlines):
+        if not title or any(phrase in title for phrase in low_value_headlines):
             continue
-        combined = f"{title} {summary.casefold()}"
-        if any(term in combined for term in market_terms):
+        # Keep a clearly relevant, dated headline even when a publisher blocks its
+        # article description. Never invent missing figures: label the limitation.
+        if any(term in title for term in market_terms):
+            item["summary"] = summary if len(summary) >= 100 else ""
             factual_items.append(item)
     priority_news = prioritize_news(factual_items, 10)
     lines += ["", "LES ACTUALITÉS QUI COMPTENT"]
     if not priority_news:
-        lines.append("Aucun résumé factuel suffisamment détaillé et directement pertinent pour les marchés n’a pu être vérifié dans les flux disponibles. Les titres seuls ne sont pas présentés comme des faits; cette rubrique est incomplète.")
+        lines.append("Aucun titre financier pertinent n’a été collecté dans cette exécution; la couverture de l’actualité est insuffisante et ne doit pas être interprétée comme une absence de nouvelles.")
         return
     for index, item in enumerate(priority_news, 1):
         fact, impact = _news_fact_and_market_readthrough(item)
@@ -537,7 +539,10 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
         source = item.get("source") or "éditeur non précisé"
         lines.append(f"{index}. {item['title']}")
         lines.append(f"   {source} · {published}")
-        lines.append(f"   FAITS RAPPORTÉS : {fact}")
+        if item.get("summary"):
+            lines.append(f"   FAITS RAPPORTÉS : {fact}")
+        else:
+            lines.append("   FAITS RAPPORTÉS : le titre indique l’événement ci-dessus; le résumé détaillé de l’éditeur n’a pas pu être vérifié. Aucun chiffre ni détail supplémentaire n’est inféré.")
         lines.append(f"   POUR LES MARCHÉS : {impact}")
         lines.append(f"   Source : {item['url']}")
 
