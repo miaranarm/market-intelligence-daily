@@ -123,6 +123,12 @@ class PriorityNewsRenderingTests(unittest.TestCase):
 
 
 class NewsFeedSummaryTests(unittest.TestCase):
+    def test_google_news_url_is_detected_until_resolved_to_publisher(self):
+        self.assertTrue(mr._is_google_news_url("https://news.google.com/rss/articles/example"))
+        self.assertTrue(mr._is_google_news_url("https://news.google.com"))
+        self.assertFalse(mr._is_google_news_url("https://www.reuters.com/world/markets/story"))
+        self.assertFalse(mr._is_google_news_url("https://www.cnbc.com/2026/10/17/story.html"))
+
     def test_extractive_summary_prioritizes_concrete_facts_and_skips_boilerplate(self):
         source = (
             "The central bank said it will publish further information in due course. "
