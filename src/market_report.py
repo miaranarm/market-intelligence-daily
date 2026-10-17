@@ -486,7 +486,7 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
             lines.append(f"   FAITS RAPPORTÉS : {fact}")
         else:
             lines.append("   FAITS RAPPORTÉS : résumé de l’éditeur indisponible; le titre seul ne permet pas de confirmer les chiffres ou les détails.")
-        lines.append(f"   LECTURE MARCHÉ : {impact}")
+        lines.append(f"   POUR LES MARCHÉS : {impact}")
         lines.append(f"   Source : {item['url']}")
 
 def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
