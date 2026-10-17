@@ -1,0 +1,2867 @@
+diff --git a/.github/workflows/generate-market-report.yml b/.github/workflows/generate-market-report.yml
+index fbc2a3a..952c0f5 100644
+--- a/.github/workflows/generate-market-report.yml
++++ b/.github/workflows/generate-market-report.yml
+@@ -1,11 +1,16 @@
+ name: Generate market report
+ 
+ on:
+-  # Madagascar (UTC+3): 05:30, 13:30, 21:00
++  # Madagascar (UTC+3). Les marchés sont fermés le week-end : trois rapports par jour ouvré,
++  # puis un seul rapport hebdomadaire le dimanche soir, avant la réouverture des marchés.
++  #   morning : 05:30 (lun-ven)   update : 13:30 (lun-ven)
++  #   audit   : 00:30 le lendemain (mar-sam), après la clôture américaine
++  #   weekly  : dimanche 18:00
+   schedule:
+-    - cron: "30 2 * * *"
+-    - cron: "30 10 * * *"
+-    - cron: "0 18 * * *"
++    - cron: "30 2 * * 1-5"
++    - cron: "30 10 * * 1-5"
++    - cron: "30 21 * * 1-5"
++    - cron: "0 15 * * 0"
+   workflow_dispatch:
+     inputs:
+       report_type:
+@@ -17,6 +22,7 @@ on:
+           - morning
+           - update
+           - audit
++          - weekly
+   # ChatGPT can trigger a run by posting a command on the control issue.
+   # Only comments authored by the repository owner with an exact command are accepted.
+   issue_comment:
+@@ -32,7 +38,7 @@ concurrency:
+ 
+ jobs:
+   report:
+-    if: ${{ github.event_name != 'issue_comment' || (github.event.comment.user.login == 'miaranarm' && !github.event.issue.pull_request && contains(fromJSON('["/run-market-report morning","/run-market-report update","/run-market-report audit"]'), github.event.comment.body)) }}
++    if: ${{ github.event_name != 'issue_comment' || (github.event.comment.user.login == 'miaranarm' && !github.event.issue.pull_request && contains(fromJSON('["/run-market-report morning","/run-market-report update","/run-market-report audit","/run-market-report weekly"]'), github.event.comment.body)) }}
+     runs-on: ubuntu-latest
+     timeout-minutes: 25
+     steps:
+@@ -53,7 +59,7 @@ jobs:
+ 
+       - name: Validate Python syntax and self-audit tests
+         run: |
+-          python -m py_compile src/market_report.py
++          python -m py_compile src/*.py
+           python -m unittest discover -s tests -v
+ 
+       - name: Determine report type
+@@ -71,13 +77,15 @@ jobs:
+               "/run-market-report morning") type="morning" ;;
+               "/run-market-report update") type="update" ;;
+               "/run-market-report audit") type="audit" ;;
++              "/run-market-report weekly") type="weekly" ;;
+               *) echo "Unsupported command"; exit 1 ;;
+             esac
+           elif [[ "$EVENT_NAME" == "schedule" ]]; then
+             case "$SCHEDULE" in
+-              "30 2 * * *") type="morning" ;;
+-              "30 10 * * *") type="update" ;;
+-              "0 18 * * *") type="audit" ;;
++              "30 2 * * 1-5") type="morning" ;;
++              "30 10 * * 1-5") type="update" ;;
++              "30 21 * * 1-5") type="audit" ;;
++              "0 15 * * 0") type="weekly" ;;
+               *) echo "Unsupported schedule"; exit 1 ;;
+             esac
+           else
+@@ -91,11 +99,18 @@ jobs:
+           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+           SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
+           REPORT_RECIPIENT: ${{ secrets.REPORT_RECIPIENT }}
++          # Facultatif : sans ces secrets, le rapport est produit sans rédaction assistée / sans calendrier FRED.
++          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
++          LLM_MODEL: ${{ vars.LLM_MODEL }}
++          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+           REPORT_TYPE: ${{ steps.report_type.outputs.value }}
+         run: python src/market_report.py --report-type "$REPORT_TYPE" --no-email
+ 
+       - name: Commit report history
+         env:
++          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
++          LLM_MODEL: ${{ vars.LLM_MODEL }}
++          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+           REPORT_TYPE: ${{ steps.report_type.outputs.value }}
+         run: |
+           set -euo pipefail
+diff --git a/.github/workflows/quality-check.yml b/.github/workflows/quality-check.yml
+index bea8b8e..864859d 100644
+--- a/.github/workflows/quality-check.yml
++++ b/.github/workflows/quality-check.yml
+@@ -25,6 +25,6 @@ jobs:
+       - name: Install dependencies
+         run: python -m pip install --upgrade pip && pip install -r requirements.txt
+       - name: Validate syntax
+-        run: python -m py_compile src/market_report.py
++        run: python -m py_compile src/*.py
+       - name: Run tests
+         run: python -m unittest discover -s tests -v
+diff --git a/CONSIGNE_CHATGPT.md b/CONSIGNE_CHATGPT.md
+new file mode 100644
+index 0000000..ebd4a76
+--- /dev/null
++++ b/CONSIGNE_CHATGPT.md
+@@ -0,0 +1,81 @@
++# Consigne pour ChatGPT — Market Intelligence Daily
++
++À coller dans les instructions du GPT (ou en tête d'une conversation) qui travaille sur le dépôt `miaranarm/market-intelligence-daily`.
++
++---
++
++## Rôle
++
++Tu es l'éditeur-analyste du rapport quotidien multi-actifs « Market Intelligence Daily ». Ton lecteur est un ancien banquier, indépendant, qui lit le rapport en environ 30 minutes. Il veut de la précision, de la sobriété et de la franchise sur ce qui est incertain. Tu écris en français.
++
++Le dépôt calcule déjà les prix, les indicateurs, les probabilités expérimentales et l'audit. **Tu n'es pas la source des chiffres.** Ton travail est (1) d'entretenir le calendrier, (2) de relire et améliorer le texte et le code sans casser les garde-fous, (3) quand on te le demande, de rédiger un commentaire à partir des données du rapport.
++
++## Les neuf catégories (toutes obligatoires)
++
++Indices boursiers, futures sur indices, actions, matières premières, devises, crypto-monnaies, obligations, ETF, fonds. Ne te limite jamais au forex. Chaque rapport traite les neuf, même brièvement ; si une catégorie n'a pas de données, dis-le en une phrase.
++
++## Structure du rapport
++
++1. **Titre-diagnostic** : une phrase qui dit ce qui s'est passé et pourquoi cela compte (pas un titre générique).
++2. **L'essentiel** : 5 à 7 points, chacun avec un chiffre et une conclusion.
++3. **Régime de marché** : diagnostic, probabilités (toujours marquées « expérimentales, non calibrées »), interactions entre marchés, tableau macro.
++4. **Agenda** : événements des 14 prochains jours (21 le dimanche), heures converties en heure de Madagascar.
++5. **Faits marquants** : 6 à 8 nouvelles, chacune avec sa source, ce que dit le texte, puis la lecture de marché.
++6. **Les neuf univers** : tableau des instruments, puis lecture (ce qui s'est passé, ce que cela implique, ce qu'on surveille).
++7. **Scénarios et liste de surveillance** : A (principal), B (alternatif), C (choc). Chaque scénario dit ce qui le confirmerait ou l'invaliderait, avec des niveaux observables.
++8. **Fiabilité de nos analyses** : résultats de l'audit contre les références naïves.
++9. **Données, sources et limites.**
++
++Budget de lecture : environ 30 minutes (220 mots par minute, annexe exclue), soit 6 000 à 6 600 mots. Ne remplis jamais pour atteindre ce chiffre : un jour calme donne un rapport plus court.
++
++## Règles sur les sources et les chiffres
++
++- Utilise uniquement les faits fournis (JSON de faits, fichiers du dépôt, pages officielles consultées). N'invente aucun chiffre, aucune date, aucune citation, aucun consensus.
++- Ne calcule pas de nouveaux chiffres dans le commentaire : cite les nombres tels qu'ils sont donnés, sans séparateur de milliers, avec la virgule décimale.
++- Distingue toujours le **fait** (« le S&P 500 recule de 1,09 % ») de l'**interprétation** (commence par « Interprétation : » et utilise le conditionnel). Une corrélation sur une séance n'est pas une cause.
++- Nomme la source de chaque actualité. Préfère les sources officielles (banques centrales, BLS, BEA, SEC) aux agrégateurs ; traite Google Actualités comme une piste à vérifier, pas comme une preuve.
++- Une information trouvée sans source vérifiable est écrite « non vérifié » ou omise.
++- Ne donne jamais de conseil d'achat ou de vente, de niveau d'entrée, de stop ou d'objectif de cours.
++- Ne modifie jamais les probabilités et ne les présente jamais comme fiables tant que l'audit n'a pas 30 séances distinctes.
++
++## Format du calendrier (`data/calendar_manual.json`)
++
++À mettre à jour **chaque dimanche** pour les 3 semaines suivantes. Une entrée par événement :
++
++```json
++{
++  "date": "2026-10-28", "time_utc": "18:00",
++  "title": "Décision de politique monétaire de la Réserve fédérale (FOMC)",
++  "region": "États-Unis", "importance": "élevée",
++  "categories": ["devises", "obligations", "indices", "futures", "matieres", "crypto", "etf"],
++  "currencies": ["USD"],
++  "status": "confirmé",
++  "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
++  "note": "Communiqué à 14:00 heure de New York, conférence de presse à 18:30 UTC."
++}
++```
++
++- Heures en **UTC** ; si l'heure est inconnue, `null` (le rapport affichera « heure ? »).
++- `importance` : `élevée`, `moyenne` ou `faible`.
++- `categories` : parmi `indices`, `futures`, `actions`, `matieres`, `devises`, `crypto`, `obligations`, `etf`, `fonds`.
++- `status` : **« confirmé » uniquement si la date vient du site officiel de l'institution** (et `source` est alors une URL officielle). Sinon « à confirmer », avec la provenance exacte dans `source`.
++- Ne jamais deviner une date. Si tu ne trouves pas la date officielle, ne crée pas l'entrée ou laisse-la « à confirmer ».
++- Événements à couvrir en priorité : décisions de la Fed, de la BCE, de la Banque d'Angleterre et de la Banque du Japon ; emploi et inflation américains ; PIB ; PMI préliminaires ; données chinoises ; résultats des grandes entreprises du portefeuille.
++
++## Mode week-end
++
++- Samedi : aucun rapport de cours (marchés fermés). Seule la crypto cote.
++- **Dimanche 18:00 (Madagascar)** : rapport `weekly` « Perspectives de la semaine » : la semaine écoulée (plus fortes hausses et baisses sur cinq séances), l'agenda des 21 prochains jours, les scénarios conditionnels pour la réouverture, le risque de gap, la liste de surveillance.
++- Si l'utilisateur te demande une analyse un samedi ou un dimanche, commence par dire que les marchés sont fermés et que les cours datent de la dernière séance.
++
++## Quand tu modifies le dépôt
++
++1. Ne touche pas aux garde-fous : plafond de 60 % des probabilités, une seule prévision par date de base, comparaison aux références naïves, contrôle numérique de la rédaction assistée.
++2. Toute modification de la règle de probabilité incrémente `METHOD_VERSION` dans `src/market_report.py`.
++3. Lance les tests (`python -m unittest discover -s tests`) avant de proposer un changement ; ajoute un test pour tout nouveau comportement.
++4. N'écris jamais d'adresse e-mail, de clé ou de mot de passe dans le dépôt (il est public) : tout passe par les secrets GitHub.
++5. Dis explicitement ce que tu n'as pas pu vérifier.
++
++## Style
++
++Sobre, précis, sans superlatifs ni exclamations. Phrases courtes. Chaque paragraphe apporte un fait, une lecture ou une condition de confirmation. Pas de jargon inutile, mais pas de simplification qui trahit : le lecteur connaît la finance.
+diff --git a/README.md b/README.md
+index 844bf7f..97b7944 100644
+--- a/README.md
++++ b/README.md
+@@ -18,7 +18,8 @@ Public repository for a multi-asset market-intelligence system with three planne
+ - [x] Explicit directional scenario probabilities added using a transparent cross-asset heuristic; probabilities are explicitly marked experimental and not statistically calibrated.
+ - [x] Morning/update/evening reports use the same funnel hierarchy; the evening report includes the self-audit ledger.
+ - [x] Manual live report run completed successfully; report generation, history commit, Pages deployment and email-link delivery have succeeded in repeated runs.
+-- [x] Scheduled workflow configured for 05:30, 13:30 and 21:00 Madagascar time (UTC+3); continue monitoring scheduled runs for reliability.
++- [x] Scheduled workflow: see « Report schedule » below (weekdays only, plus one weekly report on Sunday).
++- [x] Report v2: one editorial reading report (about 30 minutes with the optional writing layer), nine asset categories, weekly agenda, weekend mode, audit against naive benchmarks. See « Report v2 ».
+ 
+ **Current validation:** The public Pages URL has been opened successfully. Multiple manual report workflows have completed end to end, including tests, report generation, history commit and email-link delivery. The scheduled delivery cycle should continue to be monitored. The prototype collects market prices and headlines, adds a limited SEC XBRL fundamentals sample for selected US issuers, keeps technical/quantitative indicators out of the reader-facing report, emails a single link after the report page is committed, and saves snapshots for later audit. Because this repository is public, the tracked snapshots under `data/` are also public. Technical indicators (such as RSI and moving averages) must not appear in the reader-facing report. The system does not yet provide a complete company-by-company fundamental model or statistically calibrated directional probabilities. Its current probability estimates are an explicitly labeled heuristic that must be audited against future outcomes.
+ 
+@@ -39,7 +40,7 @@ Use the Gmail account that will send the emails. Do not use your normal Gmail pa
+ | --- | --- |
+ | `SMTP_USERNAME` | Gmail address used to send the messages |
+ | `SMTP_APP_PASSWORD` | Google App Password (spaces may be omitted) |
+-| `REPORT_RECIPIENT` | `miaranarandriamanalina@gmail.com` |
++| `REPORT_RECIPIENT` | adresse du destinataire (à garder uniquement dans ce secret, jamais dans le dépôt public) |
+ 
+ Never commit credentials to a file, paste them into an issue, or put them in workflow YAML. Do not share the App Password in ChatGPT.
+ 
+@@ -59,15 +60,34 @@ If it fails, the workflow log should identify missing secrets or an SMTP authent
+ 
+ The initial watchlist spans major equity indices, volatility, US Treasury yields, FX, commodities, crypto, ETFs and selected large-cap US stocks. Technical and quantitative measures (including RSI, moving averages and realized volatility) are for internal analysis and scenario comparison only; they are not displayed in the reader-facing report. The report should emphasize what happened, why it may matter, cross-asset effects, relevant news, scenarios, and assets to monitor. Price changes may be shown as market observations, not as standalone trading signals. Data are subject to provider availability, delays and quality limits; missing data and collection errors are listed in each report. The report-generation workflow supports both scheduled and manual runs; scheduled emails depend on valid repository secrets and a working public report URL.
+ 
+-## Planned report schedule
++## Report schedule
+ 
+-Target delivery times in Madagascar time (Indian/Antananarivo, UTC+3):
++Heures de Madagascar (Indian/Antananarivo, UTC+3). Les marchés sont fermés le week-end : plus de rapports de cours périmés le samedi et le dimanche.
+ 
+-- **05:30** — initial decision-oriented report: macro, fundamentals, cross-asset effects, scenarios, estimated probabilities when validated, and watchlist. Technical analysis is used internally and not displayed.
+-- **13:30** — changes since the morning report and any evidence-based revisions, without repeating unchanged material.
+-- **21:00** — audit of earlier forecasts, outcomes, probability calibration and lessons.
++| Rapport | Quand | Contenu |
++|---|---|---|
++| `morning` | 05:30, lundi à vendredi | Lecture complète : essentiel, régime, agenda, faits marquants, 9 univers, scénarios, audit |
++| `update` | 13:30, lundi à vendredi | Même structure, avec une partie « Depuis le rapport précédent » |
++| `audit` | 00:30 (mardi à samedi), après la clôture américaine | Bilan de la séance et audit des prévisions |
++| `weekly` | dimanche 18:00, avant la réouverture | Semaine écoulée, 21 jours d'agenda, scénarios de la semaine |
+ 
+-GitHub Actions schedules can start late. We will schedule the jobs early enough to leave time for analysis and email delivery, record actual timestamps, and report delays transparently. Exact delivery times cannot be guaranteed.
++GitHub Actions peut démarrer en retard ; aucun horaire n'est garanti.
++
++## Report v2
++
++**Structure.** Chaque rapport ouvre sur un titre-diagnostic et « L'essentiel », puis : régime de marché (avec tableau macro), agenda, faits marquants, **les neuf univers** (indices, futures sur indices, actions, matières premières, devises, crypto-monnaies, obligations, ETF, fonds), scénarios et liste de surveillance, fiabilité de nos analyses, données et sources. Le détail brut des anciennes versions est conservé dans une annexe repliable, hors temps de lecture. Le plan de lecture affiche les minutes par partie.
++
++**Temps de lecture.** Il est calculé (220 mots par minute, annexe exclue) et affiché. Sans rédaction assistée, un rapport tient environ 15 à 20 minutes ; avec elle, environ 25 à 30. Le rapport n'est jamais rallongé artificiellement : un jour calme donne un rapport plus court.
++
++**Rédaction assistée (facultative).** Ajouter le secret `ANTHROPIC_API_KEY` (et, si souhaité, la variable `LLM_MODEL`). Un modèle de langage commente alors les données déjà collectées. Garde-fous appliqués par le code : seules les données du rapport lui sont transmises, les probabilités sont en lecture seule, tout paragraphe contenant un nombre absent des données ou ressemblant à un conseil d'achat/vente est écarté, et en cas d'échec le rapport est produit sans cette couche.
++
++**Calendrier.** `data/calendar_manual.json` est tenu à la main (voir `CONSIGNE_CHATGPT.md`). Chaque événement a un statut « confirmé » (date issue du site officiel de l'institution) ou « à confirmer ». Avec le secret `FRED_API_KEY` (gratuit), les dates officielles des publications américaines (emploi, inflation, PIB…) sont ajoutées automatiquement.
++
++**Courriel.** Un message court (titre, essentiel, bouton vers le rapport complet) avec la version texte intégrale en alternative.
++
++**Audit.** Une seule prévision par date de base compte (les relances du jour sont ignorées) ; la zone « central » dépend de la volatilité ; chaque résultat est comparé à « toujours hausse », à la persistance et à la climatologie ; la version de la règle (`method_version`) est enregistrée. Aucune conclusion avant 30 séances distinctes.
++
++**Aperçu hors ligne.** `python tools/preview_from_snapshot.py morning apercu.html` produit un rapport à partir du dernier instantané enregistré, sans accès réseau (les mini-graphiques de 30 jours n'apparaissent que lors des exécutions réelles).
+ 
+ ## Research and quality controls
+ 
+diff --git a/data/calendar_manual.json b/data/calendar_manual.json
+new file mode 100644
+index 0000000..fe1800e
+--- /dev/null
++++ b/data/calendar_manual.json
+@@ -0,0 +1,86 @@
++{
++  "_lisez_moi": "Calendrier tenu à la main. Une entrée = un événement. Heures en UTC (time_utc, ou null si inconnue). status : « confirmé » seulement si la date vient du site officiel de l'institution ; sinon « à confirmer ». Ne jamais inventer une date : une entrée douteuse reste « à confirmer » avec sa source. Mettre à jour chaque dimanche (voir CONSIGNE_CHATGPT.md).",
++  "mis_a_jour": "2026-10-17",
++  "events": [
++    {
++      "date": "2026-10-19", "time_utc": "02:00",
++      "title": "Chine : PIB du 3e trimestre et données d'activité (production industrielle, ventes au détail)",
++      "region": "Chine", "importance": "élevée",
++      "categories": ["devises", "matieres", "indices", "actions"],
++      "currencies": ["AUD", "NZD", "CNY"],
++      "status": "à confirmer",
++      "source": "Analyse « Daily Market Analyse » du 17/10/2026, non vérifiée à la source officielle",
++      "note": "Heure indicative; vérifier sur le site du Bureau national de la statistique de Chine."
++    },
++    {
++      "date": "2026-10-23", "time_utc": null,
++      "title": "Indices PMI préliminaires d'octobre : États-Unis, zone euro, Royaume-Uni",
++      "region": "États-Unis / Europe", "importance": "élevée",
++      "categories": ["devises", "indices", "obligations"],
++      "currencies": ["USD", "EUR", "GBP"],
++      "status": "à confirmer",
++      "source": "Analyse « Daily Market Analyse » du 17/10/2026, non vérifiée à la source officielle",
++      "note": "Les horaires exacts varient selon la zone; vérifier sur le calendrier de l'éditeur des PMI."
++    },
++    {
++      "date": "2026-10-28", "time_utc": "18:00",
++      "title": "Décision de politique monétaire de la Réserve fédérale (FOMC)",
++      "region": "États-Unis", "importance": "élevée",
++      "categories": ["devises", "obligations", "indices", "futures", "matieres", "crypto", "etf"],
++      "currencies": ["USD"],
++      "status": "confirmé",
++      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
++      "note": "Réunion des 27 et 28 octobre; communiqué à 14:00 heure de New York (18:00 UTC), conférence de presse à 18:30 UTC."
++    },
++    {
++      "date": "2026-10-29", "time_utc": "13:15",
++      "title": "Décision de politique monétaire de la Banque centrale européenne",
++      "region": "Zone euro", "importance": "élevée",
++      "categories": ["devises", "obligations", "indices", "futures", "etf"],
++      "currencies": ["EUR"],
++      "status": "confirmé",
++      "source": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
++      "note": "Réunion des 28 et 29 octobre; décision à 14:15 heure de Francfort (13:15 UTC), conférence de presse à 13:45 UTC."
++    },
++    {
++      "date": "2026-10-30", "time_utc": "03:00",
++      "title": "Banque du Japon : décision de politique monétaire et rapport trimestriel de perspectives",
++      "region": "Japon", "importance": "élevée",
++      "categories": ["devises", "obligations", "indices", "futures"],
++      "currencies": ["JPY"],
++      "status": "confirmé",
++      "source": "https://www.boj.or.jp/en/mopo/mpmsche_minu/index.htm",
++      "note": "Réunion des 29 et 30 octobre; la date est confirmée, l'heure (autour de midi à Tokyo) est approximative."
++    },
++    {
++      "date": "2026-11-05", "time_utc": "12:00",
++      "title": "Banque d'Angleterre : décision de politique monétaire",
++      "region": "Royaume-Uni", "importance": "élevée",
++      "categories": ["devises", "obligations", "indices"],
++      "currencies": ["GBP"],
++      "status": "à confirmer",
++      "source": "Analyse « Daily Market Analyse » du 17/10/2026 (citant Reuters), non vérifiée sur le site de la Banque d'Angleterre",
++      "note": "Heure indicative."
++    },
++    {
++      "date": "2026-12-09", "time_utc": "19:00",
++      "title": "Décision de politique monétaire de la Réserve fédérale (FOMC) avec projections économiques",
++      "region": "États-Unis", "importance": "élevée",
++      "categories": ["devises", "obligations", "indices", "futures", "matieres", "crypto", "etf"],
++      "currencies": ["USD"],
++      "status": "confirmé",
++      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
++      "note": "Réunion des 8 et 9 décembre; communiqué à 14:00 heure de New York (19:00 UTC)."
++    },
++    {
++      "date": "2026-12-17", "time_utc": "13:15",
++      "title": "Décision de politique monétaire de la Banque centrale européenne avec projections",
++      "region": "Zone euro", "importance": "élevée",
++      "categories": ["devises", "obligations", "indices", "futures", "etf"],
++      "currencies": ["EUR"],
++      "status": "confirmé",
++      "source": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
++      "note": "Réunion des 16 et 17 décembre; décision à 14:15 heure de Francfort (13:15 UTC)."
++    }
++  ]
++}
+diff --git a/src/calendar_events.py b/src/calendar_events.py
+new file mode 100644
+index 0000000..2ac9ef9
+--- /dev/null
++++ b/src/calendar_events.py
+@@ -0,0 +1,132 @@
++"""Calendrier des événements de la semaine : fichier tenu à la main + dates FRED optionnelles.
++
++Principe : ne jamais inventer une date. Chaque événement porte un statut « confirmé » ou
++« à confirmer » et sa source ; le rapport affiche ce statut tel quel.
++"""
++from __future__ import annotations
++
++import json
++import os
++from datetime import date, datetime, timedelta, timezone
++from pathlib import Path
++from typing import Any
++from zoneinfo import ZoneInfo
++
++import requests
++
++TZ = ZoneInfo("Indian/Antananarivo")
++ROOT = Path(__file__).resolve().parents[1]
++MANUAL_CALENDAR = ROOT / "data" / "calendar_manual.json"
++IMPORTANCE_ORDER = {"élevée": 0, "moyenne": 1, "faible": 2}
++WEEKDAYS_FR = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
++MONTHS_FR = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août",
++             "septembre", "octobre", "novembre", "décembre"]
++
++# Publications FRED jugées importantes pour les marchés (nom exact de la « release » FRED).
++FRED_RELEASES_OF_INTEREST = {
++    "Employment Situation": ("Emploi américain : rapport mensuel (payrolls, chômage)", "élevée", ["devises", "obligations", "indices", "futures"]),
++    "Consumer Price Index": ("États-Unis : indice des prix à la consommation (CPI)", "élevée", ["devises", "obligations", "indices", "matieres"]),
++    "Producer Price Index": ("États-Unis : indice des prix à la production (PPI)", "moyenne", ["obligations", "devises"]),
++    "Gross Domestic Product": ("États-Unis : produit intérieur brut (PIB)", "élevée", ["devises", "obligations", "indices"]),
++    "Personal Income and Outlays": ("États-Unis : revenus et dépenses des ménages (inflation PCE)", "élevée", ["obligations", "devises", "indices"]),
++    "Advance Monthly Sales for Retail and Food Services": ("États-Unis : ventes au détail", "moyenne", ["indices", "devises", "actions"]),
++    "Job Openings and Labor Turnover Survey": ("États-Unis : offres d'emploi (JOLTS)", "moyenne", ["obligations", "devises"]),
++    "Industrial Production and Capacity Utilization": ("États-Unis : production industrielle", "moyenne", ["indices", "matieres"]),
++}
++
++
++def load_manual_events(path: Path = MANUAL_CALENDAR) -> list[dict[str, Any]]:
++    try:
++        payload = json.loads(path.read_text(encoding="utf-8"))
++    except (OSError, json.JSONDecodeError):
++        return []
++    events = payload.get("events", []) if isinstance(payload, dict) else []
++    return [e for e in events if isinstance(e, dict) and e.get("date") and e.get("title")]
++
++
++def fetch_fred_release_events(start: date, end: date, api_key: str | None = None) -> tuple[list[dict[str, Any]], list[str]]:
++    """Dates de publication FRED (nécessite une clé gratuite FRED_API_KEY). Échec non bloquant."""
++    api_key = api_key or os.environ.get("FRED_API_KEY", "").strip()
++    if not api_key:
++        return [], []
++    try:
++        response = requests.get(
++            "https://api.stlouisfed.org/fred/releases/dates",
++            params={
++                "api_key": api_key, "file_type": "json",
++                "realtime_start": start.isoformat(), "realtime_end": end.isoformat(),
++                "include_release_dates_with_no_data": "true", "limit": 1000,
++                "order_by": "release_date", "sort_order": "asc",
++            },
++            timeout=20,
++        )
++        response.raise_for_status()
++        rows = response.json().get("release_dates", [])
++    except Exception as exc:  # noqa: BLE001 - échec réseau ou clé invalide : on continue sans
++        return [], [f"FRED calendrier: {type(exc).__name__}: {str(exc)[:120]}"]
++    events: list[dict[str, Any]] = []
++    for row in rows:
++        name = str(row.get("release_name", ""))
++        meta = FRED_RELEASES_OF_INTEREST.get(name)
++        day = str(row.get("date", ""))
++        if not meta or not day:
++            continue
++        title, importance, categories = meta
++        events.append({
++            "date": day, "time_utc": None, "title": title, "region": "États-Unis",
++            "importance": importance, "categories": categories, "currencies": ["USD"],
++            "status": "confirmé", "source": "https://fred.stlouisfed.org/releases/calendar",
++            "note": "Date issue du calendrier officiel des publications relayé par FRED; l'heure n'est pas fournie.",
++        })
++    return events, []
++
++
++def _localize(event: dict[str, Any]) -> dict[str, Any]:
++    """Ajoute la date et l'heure locales (Madagascar) ainsi que le statut normalisé."""
++    out = dict(event)
++    out["status"] = event.get("status") if event.get("status") in ("confirmé", "à confirmer") else "à confirmer"
++    out["importance"] = event.get("importance") if event.get("importance") in IMPORTANCE_ORDER else "moyenne"
++    try:
++        day = date.fromisoformat(str(event["date"]))
++    except ValueError:
++        return {}
++    local_day, local_time = day, None
++    time_utc = event.get("time_utc")
++    if time_utc:
++        try:
++            hh, mm = [int(x) for x in str(time_utc).split(":")[:2]]
++            moment = datetime(day.year, day.month, day.day, hh, mm, tzinfo=timezone.utc).astimezone(TZ)
++            local_day, local_time = moment.date(), f"{moment:%H:%M}"
++        except ValueError:
++            pass
++    out["local_date"] = local_day
++    out["local_time"] = local_time
++    return out
++
++
++def upcoming_events(events: list[dict[str, Any]], today: date, days: int = 7) -> list[dict[str, Any]]:
++    """Événements dont la date locale tombe entre aujourd'hui et aujourd'hui + days (inclus)."""
++    horizon = today + timedelta(days=days)
++    seen: set[tuple[str, str]] = set()
++    selected: list[dict[str, Any]] = []
++    for raw in events:
++        event = _localize(raw)
++        if not event or not (today <= event["local_date"] <= horizon):
++            continue
++        key = (str(event["local_date"]), str(event["title"]).casefold()[:40])
++        if key in seen:
++            continue
++        seen.add(key)
++        selected.append(event)
++    selected.sort(key=lambda e: (e["local_date"], e["local_time"] or "99:99", IMPORTANCE_ORDER.get(e["importance"], 1)))
++    return selected
++
++
++def collect_calendar(today: date, days: int = 7) -> tuple[list[dict[str, Any]], list[str]]:
++    manual = load_manual_events()
++    fred, errors = fetch_fred_release_events(today, today + timedelta(days=days))
++    return upcoming_events(manual + fred, today, days), errors
++
++
++def format_day(day: date) -> str:
++    return f"{WEEKDAYS_FR[day.weekday()]} {day.day} {MONTHS_FR[day.month - 1]}"
+diff --git a/src/editorial.py b/src/editorial.py
+new file mode 100644
+index 0000000..0f88bc5
+--- /dev/null
++++ b/src/editorial.py
+@@ -0,0 +1,893 @@
++"""Composition éditoriale du rapport : construit un modèle structuré (sections et blocs).
++
++Le modèle est ensuite rendu en HTML (render_report.py) et en texte brut (courriel, archive).
++Ce module ne fait aucun accès réseau et n'importe rien de market_report.py : toutes les
++données arrivent par le dictionnaire `ctx`, ce qui le rend entièrement testable hors ligne.
++"""
++from __future__ import annotations
++
++import math
++import re
++from datetime import date
++from typing import Any, Callable
++
++try:  # import en tant que paquet (tests : src.editorial)
++    from . import calendar_events
++except ImportError:  # exécution en script (python src/market_report.py)
++    import calendar_events  # type: ignore[no-redef]
++
++NBSP = "\u00a0"
++NNBSP = "\u202f"
++WORDS_PER_MINUTE = 220  # lecture silencieuse d'un texte d'analyse en français
++TABLE_WORD_WEIGHT = 0.35  # un tableau se parcourt plus qu'il ne se lit
++
++KIND_LABELS = {
++    "morning": "Rapport du matin",
++    "update": "Point de la mi-journée",
++    "audit": "Bilan de la séance",
++    "weekly": "Perspectives de la semaine",
++}
++
++CATEGORIES: list[dict[str, Any]] = [
++    {"key": "indices", "label": "Indices boursiers",
++     "intro": "Les grands indices donnent la température du marché actions : direction, leadership entre régions et niveau de nervosité mesuré par le VIX.",
++     "match": lambda r: r.ticker == "^VIX" or ("equity index" in r.asset_class.casefold() and "futures" not in r.asset_class.casefold()),
++     "keywords": ("stock market", "equity index", "indices", "index", "market selloff", "market rally", "global shares", "global stocks")},
++    {"key": "futures", "label": "Futures sur indices",
++     "intro": "Les contrats à terme cotent presque en continu : ils signalent l'humeur à l'ouverture suivante, avant que les indices au comptant ne réagissent.",
++     "match": lambda r: "equity index futures" in r.asset_class.casefold(),
++     "keywords": ("equity index futures", "nasdaq futures", "s&p 500 futures", "dow futures", "index futures", "futures point to", "stock futures")},
++    {"key": "actions", "label": "Actions",
++     "intro": "Les valeurs individuelles révèlent ce que les indices moyennent : leadership sectoriel, dispersion et réaction aux résultats d'entreprise.",
++     "match": lambda r: r.asset_class.casefold() in {"us equity", "european equity", "asian equity", "equity"},
++     "keywords": ("earnings", "quarterly results", "revenue", "profit warning", "guidance", "shares of", "stock rises", "stock falls", "semiconductor", "capital expenditure", "company reports")},
++    {"key": "matieres", "label": "Matières premières",
++     "intro": "Énergie, métaux et produits agricoles transmettent les chocs d'offre, la demande industrielle et les anticipations d'inflation.",
++     "match": lambda r: "commodity" in r.asset_class.casefold(),
++     "keywords": ("oil", "crude", "brent", "gold", "silver", "copper", "natural gas", "opec", "commodity", "commodities", "supply disruption", "agriculture", "coffee")},
++    {"key": "devises", "label": "Devises",
++     "intro": "Le change arbitre entre écarts de taux, croissance relative et demande de valeurs refuges ; le dollar en est le pivot.",
++     "match": lambda r: r.asset_class.casefold() == "fx",
++     "keywords": ("forex", "currency", "currencies", "dollar", "euro", "yen", "exchange rate", "fx market", "fed rate", "central bank decision", "interest-rate decision")},
++    {"key": "crypto", "label": "Crypto-monnaies",
++     "intro": "Les actifs numériques cotent jour et nuit, week-end compris : ils servent souvent de baromètre d'appétit pour le risque entre deux séances boursières.",
++     "match": lambda r: r.asset_class.casefold() == "crypto",
++     "keywords": ("bitcoin", "ethereum", "crypto", "digital asset", "cryptoasset", "spot bitcoin etf")},
++    {"key": "obligations", "label": "Obligations",
++     "intro": "Les taux d'intérêt fixent le prix de l'argent : leur niveau, leur pente et leurs variations conditionnent la valorisation de tous les autres actifs.",
++     "match": lambda r: r.asset_class.casefold() in {"rates", "bond futures"},
++     "keywords": ("bond", "bonds", "treasury yield", "bond yield", "credit spread", "credit market", "debt issuance", "fixed income")},
++    {"key": "etf", "label": "ETF",
++     "intro": "Les fonds indiciels cotés permettent de lire les rotations : grandes contre petites capitalisations, technologie contre énergie, crédit contre emprunts d'État.",
++     "match": lambda r: "etf" in r.asset_class.casefold(),
++     "keywords": ("etf", "exchange-traded fund", "fund flows", "inflows into etfs", "outflows from etfs", "passive investing")},
++    {"key": "fonds", "label": "Fonds d'investissement",
++     "intro": "Les fonds communs ne publient qu'une valeur liquidative par jour : leur variation reflète la clôture, pas la séance en cours.",
++     "match": lambda r: "mutual fund" in r.asset_class.casefold(),
++     "keywords": ("mutual fund", "investment fund", "fund manager", "mutual fund flows", "fund asset allocation", "portfolio flows")},
++]
++CATEGORY_LABELS = {c["key"]: c["label"] for c in CATEGORIES}
++
++CURRENCY_TICKERS = {"USD": "DX-Y.NYB", "EUR": "EURUSD=X", "JPY": "USDJPY=X", "GBP": "GBPUSD=X",
++                    "AUD": "AUDUSD=X", "NZD": "NZDUSD=X", "CAD": "USDCAD=X", "CHF": "USDCHF=X",
++                    "CNY": "USDCNY=X", "INR": "USDINR=X"}
++
++
++# ----------------------------------------------------------------------------- formatage
++def fr_num(value: float | None, digits: int = 2, signed: bool = False) -> str:
++    if value is None or not isinstance(value, (int, float)) or not math.isfinite(value):
++        return "n.d."
++    body = f"{abs(value):,.{digits}f}".replace(",", NNBSP).replace(".", ",")
++    if value < 0 and float(body.replace(NNBSP, "").replace(",", ".")) != 0:
++        return "−" + body
++    return ("+" + body) if signed and value > 0 else body
++
++
++def fr_pct(value: float | None, digits: int = 2, signed: bool = True) -> str:
++    text = fr_num(value, digits, signed)
++    return text if text == "n.d." else text + NBSP + "%"
++
++
++def fmt_level(row: Any) -> str:
++    price = getattr(row, "price", None)
++    if price is None:
++        return "n.d."
++    if str(row.asset_class).casefold() == "rates":
++        return fr_num(price, 3) + NBSP + "%"
++    return fr_num(price, 4 if abs(price) < 10 else 2)
++
++
++def fr_pp(value: float, signed: bool = False) -> str:
++    """Points de pourcentage, avec accord (le pluriel commence à 2)."""
++    return f"{fr_num(value, 2, signed)} {'point' if abs(value) < 2 else 'points'} de pourcentage"
++
++
++def fr_bp(value: float) -> str:
++    return f"{fr_num(value, 1, True)} {'point' if abs(value) < 2 else 'points'} de base"
++
++
++def fr_text(text: str) -> str:
++    """Met au format français les pourcentages à virgule décimale anglaise (« -1.95 % » devient « −1,95 % »)."""
++    def fix(m: re.Match[str]) -> str:
++        sign = "−" if m.group(1) == "-" else m.group(1)
++        return f"{sign}{m.group(2)},{m.group(3)}{NBSP}%"
++    return re.sub(r"(?<![\w.])([+-]?)(\d+)\.(\d+)\s?%", fix, text)
++
++
++def plural(n: int, one: str, many: str) -> str:
++    return one if n in (0, 1) else many
++
++
++def _present(values: list[Any]) -> list[float]:
++    return [float(v) for v in values if isinstance(v, (int, float)) and math.isfinite(v)]
++
++
++def _avg(values: list[Any]) -> float | None:
++    vals = _present(values)
++    return sum(vals) / len(vals) if vals else None
++
++
++def _by_ticker(rows: list[Any]) -> dict[str, Any]:
++    return {r.ticker: r for r in rows}
++
++
++def _move(row: Any, attr: str = "daily_pct") -> str:
++    return fr_pct(getattr(row, attr, None)) if row is not None else "n.d."
++
++
++def _direction_word(pct: float | None) -> str:
++    if pct is None:
++        return "est indisponible"
++    if pct >= 1:
++        return "progresse nettement"
++    if pct >= 0.2:
++        return "progresse"
++    if pct <= -1:
++        return "recule nettement"
++    if pct <= -0.2:
++        return "recule"
++    return "est quasi stable"
++
++
++def _sigma_daily(row: Any) -> float | None:
++    vol = getattr(row, "annualized_vol_pct", None)
++    return float(vol) / math.sqrt(252) if isinstance(vol, (int, float)) and vol > 0 else None
++
++
++def _zscore(row: Any) -> float | None:
++    sigma = _sigma_daily(row)
++    daily = getattr(row, "daily_pct", None)
++    if sigma and daily is not None:
++        return daily / sigma
++    return None
++
++
++def _yield_bps(row: Any) -> float | None:
++    """Variation quotidienne d'un rendement exprimée en points de base."""
++    if row is None or row.price is None or row.daily_pct is None:
++        return None
++    return row.price * row.daily_pct  # price en %, daily_pct en % du niveau : (p*d/100)*100 pb
++
++
++def _first_sentence(text: str) -> str:
++    return text.strip()
++
++
++# ----------------------------------------------------------------------------- analyses par univers
++def _breadth_paragraph(rows: list[Any], noun: str = "instruments", suivi: str = "suivis") -> str:
++    n = len(rows)
++    daily = [r for r in rows if r.daily_pct is not None]
++    if not daily:
++        return f"Aucune variation de séance exploitable n'a été reçue pour ces {noun}."
++    up = sum(r.daily_pct > 0 for r in daily)
++    down = sum(r.daily_pct < 0 for r in daily)
++    ordered = sorted(daily, key=lambda r: r.daily_pct, reverse=True)
++    five = [r for r in rows if r.five_day_pct is not None]
++    month = [r for r in rows if r.one_month_pct is not None]
++    text = (f"Sur les {n} {noun} {suivi}, {up} progressent et {down} reculent sur la dernière séance ; "
++            f"la variation moyenne, non pondérée, ressort à {fr_pct(_avg([r.daily_pct for r in daily]))}.")
++    if len(ordered) >= 2:
++        text += (f" {ordered[0].name} mène le groupe ({fr_pct(ordered[0].daily_pct)}) et "
++                 f"{ordered[-1].name} ferme la marche ({fr_pct(ordered[-1].daily_pct)}).")
++    if five:
++        text += f" Sur cinq séances, {sum(r.five_day_pct > 0 for r in five)} sur {len(five)} sont en hausse"
++        text += (f" ; sur un mois, {sum(r.one_month_pct > 0 for r in month)} sur {len(month)}." if month else ".")
++    return text
++
++
++def _vix_reading(vix: Any) -> str:
++    if vix is None or vix.price is None:
++        return ""
++    level = vix.price
++    if level < 15:
++        zone = "zone de calme : les investisseurs paient peu pour se protéger"
++    elif level < 20:
++        zone = "zone normale"
++    elif level < 30:
++        zone = "zone de tension : la demande de protection augmente"
++    else:
++        zone = "zone de stress : les marchés paient cher la protection"
++    return f"Le VIX, indice de volatilité implicite du S&P 500, s'établit à {fr_num(level, 2)} ({_move(vix)} sur la séance) : {zone}."
++
++
++def _analyse_indices(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -> list[str]:
++    paragraphs = [_breadth_paragraph([r for r in rows if r.ticker != "^VIX"], "indices")]
++    sp, nq, dj = by.get("^GSPC"), by.get("^IXIC"), by.get("^DJI")
++    if sp and nq:
++        text = (f"Aux États-Unis, le S&P 500 {_direction_word(sp.daily_pct)} sur la séance ({_move(sp)}) et {_move(sp, 'five_day_pct')} sur cinq séances ; "
++                f"le Nasdaq Composite affiche {_move(nq)} puis {_move(nq, 'five_day_pct')}")
++        text += f", le Dow Jones {_move(dj)} puis {_move(dj, 'five_day_pct')}." if dj else "."
++        if sp.five_day_pct is not None and nq.five_day_pct is not None:
++            gap = nq.five_day_pct - sp.five_day_pct
++            if abs(gap) >= 0.5:
++                text += (f" L'écart de {fr_pp(abs(gap))} en faveur du Nasdaq montre que la technologie tire le marché."
++                         if gap > 0 else
++                         f" Le Nasdaq fait moins bien que le S&P 500 de {fr_pp(abs(gap))} sur cinq séances : la technologie pèse sur l'ensemble.")
++        paragraphs.append(text)
++    others = [r for r in rows if r.ticker not in {"^GSPC", "^IXIC", "^DJI", "^VIX"} and r.daily_pct is not None]
++    if others and sp and sp.daily_pct is not None:
++        europe = [r for r in others if r.ticker in {"^STOXX50E", "^FTSE", "^GDAXI", "^FCHI"}]
++        asia = [r for r in others if r.ticker in {"^N225", "^HSI", "^AXJO", "^KS11", "^NSEI"}]
++        parts = []
++        if europe:
++            parts.append(f"les indices européens {fr_pct(_avg([r.daily_pct for r in europe]))} en moyenne")
++        if asia:
++            parts.append(f"les indices asiatiques et océaniens {fr_pct(_avg([r.daily_pct for r in asia]))}")
++        if parts:
++            paragraphs.append("Ailleurs dans le monde, " + " et ".join(parts) + f", contre {_move(sp)} pour le S&P 500. "
++                              "Les fuseaux horaires diffèrent : les séances asiatiques précèdent les séances américaines et n'en intègrent pas encore les mouvements.")
++    vix = _vix_reading(by.get("^VIX"))
++    if vix:
++        paragraphs.append(vix)
++    return paragraphs
++
++
++def _analyse_futures(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -> list[str]:
++    paragraphs = [_breadth_paragraph(rows, "contrats")]
++    pairs = [("ES=F", "^GSPC", "S&P 500"), ("NQ=F", "^IXIC", "Nasdaq"), ("YM=F", "^DJI", "Dow Jones")]
++    notes = []
++    for fut, cash, label in pairs:
++        f, c = by.get(fut), by.get(cash)
++        if f and c and f.daily_pct is not None and c.daily_pct is not None:
++            gap = f.daily_pct - c.daily_pct
++            notes.append(f"{label} : contrat {fr_pct(f.daily_pct)} contre {fr_pct(c.daily_pct)} pour l'indice")
++            if abs(gap) >= 0.3:
++                notes[-1] += f" (écart de {fr_pp(abs(gap))}, {'les contrats anticipent un meilleur départ' if gap > 0 else 'les contrats annoncent un départ plus faible'})"
++    if notes:
++        paragraphs.append("Comparaison avec le marché au comptant : " + " ; ".join(notes) + ". "
++                          "Un écart peut venir de l'heure de clôture ou d'un mouvement survenu après la fin de la séance : il se lit à l'ouverture, pas avant.")
++    return paragraphs
++
++
++def _analyse_actions(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -> list[str]:
++    paragraphs = [_breadth_paragraph(rows, "valeurs", "suivies")]
++    groups = {"américaines": [r for r in rows if r.asset_class == "US equity"],
++              "européennes": [r for r in rows if r.asset_class == "European equity"],
++              "asiatiques": [r for r in rows if r.asset_class == "Asian equity"]}
++    parts = [f"{label} {fr_pct(_avg([r.daily_pct for r in g]))} ({len(g)} {plural(len(g), 'valeur', 'valeurs')})"
++             for label, g in groups.items() if g and _avg([r.daily_pct for r in g]) is not None]
++    if len(parts) >= 2:
++        paragraphs.append("Par région, la variation moyenne de séance est de : " + " ; ".join(parts) + ". "
++                          "L'échantillon est restreint (une trentaine de valeurs phares) : il illustre la tendance des grandes capitalisations, pas celle de tout le marché.")
++    movers = sorted([r for r in rows if _zscore(r) is not None], key=lambda r: abs(_zscore(r)), reverse=True)[:3]
++    if movers:
++        paragraphs.append("Les mouvements les plus inhabituels par rapport à la volatilité propre de chaque titre : " +
++                          " ; ".join(f"{r.name} ({fr_pct(r.daily_pct)}, soit {fr_num(_zscore(r), 1, True)} écart-type)" for r in movers) + ".")
++    for item in (ctx.get("fundamentals") or [])[:8]:
++        bits = []
++        if item.get("revenue_yoy_pct") is not None:
++            bits.append(f"chiffre d'affaires {fr_pct(item['revenue_yoy_pct'], 1)} sur un an")
++        if item.get("eps_yoy_pct") is not None:
++            bits.append(f"bénéfice par action dilué {fr_pct(item['eps_yoy_pct'], 1)}")
++        if item.get("operating_margin_pct") is not None:
++            bits.append(f"marge opérationnelle de {fr_pct(item['operating_margin_pct'], 1, False)}")
++        if bits:
++            paragraphs.append(f"{item['name']}, dernier trimestre publié à la SEC (clôturé le {item.get('period', 'date inconnue')}) : " + ", ".join(bits) +
++                              ". Ce sont des chiffres publiés, pas des surprises par rapport au consensus.")
++    return paragraphs
++
++
++def _analyse_matieres(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -> list[str]:
++    paragraphs = [_breadth_paragraph(rows, "matières premières", "suivies")]
++    wti, brent = by.get("CL=F"), by.get("BZ=F")
++    if wti and brent and wti.price and brent.price:
++        paragraphs.append(f"Énergie : le Brent cote {fr_num(brent.price, 2)} dollars ({_move(brent)}) et le WTI {fr_num(wti.price, 2)} dollars ({_move(wti)}) ; "
++                          f"l'écart Brent–WTI est de {fr_num(brent.price - wti.price, 2)} dollars le baril. Un écart qui s'élargit signale une tension propre au marché mondial plutôt qu'américain.")
++    elif wti:
++        paragraphs.append(f"Énergie : le WTI {_direction_word(wti.daily_pct)} ({_move(wti)}) à {fr_num(wti.price, 2)} dollars.")
++    gold, silver, copper = by.get("GC=F"), by.get("SI=F"), by.get("HG=F")
++    metals = []
++    if gold and silver and gold.price and silver.price:
++        metals.append(f"le rapport or/argent s'établit à {fr_num(gold.price / silver.price, 1)} (une hausse du ratio traduit une préférence pour le refuge sur le métal industriel)")
++    if gold:
++        metals.append(f"l'or {_direction_word(gold.daily_pct)} ({_move(gold)})")
++    if copper:
++        metals.append(f"le cuivre, baromètre de la demande industrielle, {_direction_word(copper.daily_pct)} ({_move(copper)})")
++    if metals:
++        paragraphs.append("Métaux : " + " ; ".join(metals) + ".")
++    agri = [r for r in rows if "agricultural" in r.asset_class.casefold() and r.daily_pct is not None]
++    if agri:
++        paragraphs.append(f"Produits agricoles : variation moyenne de {fr_pct(_avg([r.daily_pct for r in agri]))} sur la séance pour {len(agri)} contrats (maïs, blé, soja, café).")
++    return paragraphs
++
++
++def _analyse_devises(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -> list[str]:
++    paragraphs = [_breadth_paragraph([r for r in rows if r.ticker != "DX-Y.NYB"], "paires", "suivies")]
++    dxy = by.get("DX-Y.NYB")
++    usd_quoted_second = ["EURUSD=X", "GBPUSD=X", "AUDUSD=X", "NZDUSD=X"]
++    usd_quoted_first = ["USDJPY=X", "USDCAD=X", "USDCHF=X", "USDCNY=X", "USDINR=X"]
++    ups = downs = 0
++    for t in usd_quoted_second:
++        r = by.get(t)
++        if r and r.daily_pct is not None:
++            ups += r.daily_pct < 0
++            downs += r.daily_pct > 0
++    for t in usd_quoted_first:
++        r = by.get(t)
++        if r and r.daily_pct is not None:
++            ups += r.daily_pct > 0
++            downs += r.daily_pct < 0
++    if dxy and dxy.price:
++        text = (f"L'indice du dollar s'établit à {fr_num(dxy.price, 2)} ({_move(dxy)} sur la séance, {_move(dxy, 'five_day_pct')} sur cinq séances).")
++        if ups + downs:
++            text += f" Face aux {ups + downs} devises mesurées contre lui, le dollar progresse contre {ups} et recule contre {downs} : "
++            text += "mouvement généralisé" if max(ups, downs) >= 0.75 * (ups + downs) else "mouvement partagé, sans tendance nette"
++            text += "."
++        paragraphs.append(text)
++    jpy, eur, gbp = by.get("USDJPY=X"), by.get("EURUSD=X"), by.get("GBPUSD=X")
++    detail = []
++    if eur:
++        detail.append(f"EUR/USD à {fr_num(eur.price, 4)} ({_move(eur)})")
++    if gbp:
++        detail.append(f"GBP/USD à {fr_num(gbp.price, 4)} ({_move(gbp)})")
++    if jpy:
++        detail.append(f"USD/JPY à {fr_num(jpy.price, 2)} ({_move(jpy)})")
++    if detail:
++        paragraphs.append("Principales paires : " + ", ".join(detail) + ". Sur le yen, le risque d'intervention officielle limite l'intérêt de poursuivre un mouvement de hausse du dollar.")
++    return paragraphs
++
++
++def _analyse_crypto(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -> list[str]:
++    paragraphs = [_breadth_paragraph(rows, "crypto-monnaies", "suivies")]
++    btc, eth, nq = by.get("BTC-USD"), by.get("ETH-USD"), by.get("^IXIC")
++    if btc and btc.price:
++        text = f"Le bitcoin cote {fr_num(btc.price, 0)} dollars ({_move(btc)} sur 24 heures, {_move(btc, 'five_day_pct')} sur cinq jours, {_move(btc, 'one_month_pct')} sur un mois)."
++        if eth and eth.five_day_pct is not None and btc.five_day_pct is not None:
++            gap = eth.five_day_pct - btc.five_day_pct
++            text += f" L'ether fait {'mieux' if gap > 0 else 'moins bien'} que le bitcoin de {fr_pp(abs(gap))} sur cinq jours, signe d'un appétit pour le risque {'plus' if gap > 0 else 'moins'} marqué au sein du secteur."
++        paragraphs.append(text)
++    if btc and nq and btc.daily_pct is not None and nq.daily_pct is not None:
++        same = (btc.daily_pct > 0) == (nq.daily_pct > 0)
++        paragraphs.append(f"Le bitcoin ({_move(btc)}) et le Nasdaq ({_move(nq)}) vont {'dans le même sens' if same else 'en sens opposés'} sur la dernière séance. "
++                          "Les horaires ne se recouvrent pas (24 heures sur 24 contre une séance), et une seule séance ne suffit pas à conclure à une corrélation.")
++    return paragraphs
++
++
++def _analyse_obligations(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -> list[str]:
++    paragraphs = []
++    curve = [(by.get(t), label) for t, label in (("^IRX", "3 mois"), ("^FVX", "5 ans"), ("^TNX", "10 ans"), ("^TYX", "30 ans")) if by.get(t) and by[t].price]
++    if curve:
++        parts = []
++        for row, label in curve:
++            bps = _yield_bps(row)
++            parts.append(f"{label} à {fr_num(row.price, 3)} %" + (f" ({fr_bp(bps)})" if bps is not None else ""))
++        paragraphs.append("Courbe des taux américains : " + ", ".join(parts) + ".")
++        irx, tnx, fvx, tyx = by.get("^IRX"), by.get("^TNX"), by.get("^FVX"), by.get("^TYX")
++        slopes = []
++        if irx and tnx and irx.price and tnx.price:
++            slopes.append(f"10 ans moins 3 mois : {fr_num((tnx.price - irx.price) * 100, 0, True)} points de base")
++        if fvx and tyx and fvx.price and tyx.price:
++            slopes.append(f"30 ans moins 5 ans : {fr_num((tyx.price - fvx.price) * 100, 0, True)} points de base")
++        macro = {m["id"]: m for m in ctx.get("macro") or []}
++        if "DGS10" in macro and "DGS2" in macro:
++            slopes.append(f"10 ans moins 2 ans (séries FRED du {macro['DGS10']['date']}) : {fr_num((macro['DGS10']['value'] - macro['DGS2']['value']) * 100, 0, True)} points de base")
++        if slopes:
++            paragraphs.append("Pente de la courbe : " + " ; ".join(slopes) + ". Une pente négative (courbe inversée) a historiquement précédé les ralentissements ; une pente qui se redresse peut refléter des baisses de taux anticipées ou une prime de terme plus élevée : la pente seule ne tranche pas.")
++    futs = [by.get("ZN=F"), by.get("ZB=F")]
++    futs = [f for f in futs if f and f.daily_pct is not None]
++    if futs:
++        paragraphs.append("Contrats à terme sur emprunts du Trésor : " + ", ".join(f"{f.name} {_move(f)}" for f in futs) +
++                          ". Le prix d'une obligation évolue à l'inverse de son rendement : un contrat qui monte correspond à des taux qui baissent.")
++    if not paragraphs:
++        paragraphs.append(_breadth_paragraph(rows, "instruments"))
++    return paragraphs
++
++
++def _relative(by: dict[str, Any], a: str, b: str, attr: str = "five_day_pct") -> tuple[float, Any, Any] | None:
++    ra, rb = by.get(a), by.get(b)
++    if ra and rb and getattr(ra, attr) is not None and getattr(rb, attr) is not None:
++        return getattr(ra, attr) - getattr(rb, attr), ra, rb
++    return None
++
++
++def _analyse_etf(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -> list[str]:
++    paragraphs = [_breadth_paragraph(rows, "ETF")]
++    meanings = [
++        ("IWM", "SPY", "petites capitalisations face aux grandes", "les petites valeurs, plus sensibles aux taux et au crédit, devancent le marché large", "les grandes valeurs, jugées plus défensives, résistent mieux"),
++        ("XLK", "XLE", "technologie face à l'énergie", "la croissance domine les cycliques de l'énergie", "l'énergie fait mieux que la technologie"),
++        ("EEM", "EFA", "émergents face aux pays développés hors États-Unis", "l'appétit pour les marchés émergents progresse", "les marchés développés sont préférés aux émergents"),
++        ("HYG", "IEF", "crédit à haut rendement face aux emprunts d'État", "le crédit risqué fait mieux que les emprunts d'État, signe d'appétit pour le risque", "le crédit risqué sous-performe les emprunts d'État, signe de prudence"),
++        ("GLD", "SPY", "or face aux actions américaines", "le refuge or devance les actions", "les actions devancent le refuge or"),
++    ]
++    lines = []
++    for a, b, label, pos, neg in meanings:
++        rel = _relative(by, a, b)
++        if rel:
++            gap = rel[0]
++            lines.append(f"{label} : {fr_pp(gap, True)} sur cinq séances ({pos if gap > 0 else neg})")
++    if lines:
++        paragraphs.append("Rotations sur cinq séances, lues par différence de performance : " + " ; ".join(lines) + ".")
++    return paragraphs
++
++
++def _analyse_fonds(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -> list[str]:
++    paragraphs = [_breadth_paragraph(rows, "fonds")]
++    paragraphs.append("Un fonds commun est valorisé une fois par jour, après la clôture américaine : sa variation de séance reflète la veille de bourse, et la date indiquée dans le tableau fait foi. "
++                      "Pour juger l'écart entre gestion indicielle et gestion active, comparer sur plusieurs mois plutôt que sur une journée.")
++    vf, spy = by.get("VFIAX"), by.get("SPY")
++    if vf and spy and vf.five_day_pct is not None and spy.five_day_pct is not None:
++        paragraphs.append(f"Contrôle de cohérence : le fonds indiciel VFIAX affiche {_move(vf, 'five_day_pct')} sur cinq séances, l'ETF SPY {_move(spy, 'five_day_pct')} : les deux répliquent le même indice, l'écart doit rester minime.")
++    return paragraphs
++
++
++ANALYSERS: dict[str, Callable[[list[Any], dict[str, Any], dict[str, Any]], list[str]]] = {
++    "indices": _analyse_indices, "futures": _analyse_futures, "actions": _analyse_actions,
++    "matieres": _analyse_matieres, "devises": _analyse_devises, "crypto": _analyse_crypto,
++    "obligations": _analyse_obligations, "etf": _analyse_etf, "fonds": _analyse_fonds,
++}
++
++
++# ----------------------------------------------------------------------------- blocs
++def spark_values(sparks: dict[str, list[float]], ticker: str) -> list[float] | None:
++    values = sparks.get(ticker)
++    return values if values and len(values) >= 5 else None
++
++
++def instrument_table(rows: list[Any], sparks: dict[str, list[float]]) -> dict[str, Any]:
++    table_rows = []
++    for r in sorted(rows, key=lambda x: (x.daily_pct is None, -(x.daily_pct or 0))):
++        def pct_cell(v: float | None) -> dict[str, Any]:
++            return {"t": fr_pct(v), "cls": ("up" if v and v > 0 else "down" if v and v < 0 else "")}
++        table_rows.append([
++            {"t": r.name, "sub": r.ticker}, {"t": fmt_level(r)}, pct_cell(r.daily_pct), pct_cell(r.five_day_pct),
++            pct_cell(r.one_month_pct), {"spark": spark_values(sparks, r.ticker)}, {"t": r.data_timestamp or "n.d."},
++        ])
++    return {"kind": "table", "caption": "Instruments suivis", "numeric": {1, 2, 3, 4},
++            "headers": ["Instrument", "Dernier", "1 séance", "5 séances", "1 mois", "30 jours", "Cours du"], "rows": table_rows}
++
++
++def _event_line(event: dict[str, Any]) -> str:
++    when = calendar_events.format_day(event["local_date"])
++    if event.get("local_time"):
++        when += f" à {event['local_time']} (heure de Madagascar)"
++    return f"{when} : {event['title']} ({event['status']})."
++
++
++def _events_for(ctx: dict[str, Any], key: str, limit: int = 2) -> list[dict[str, Any]]:
++    return [e for e in ctx.get("calendar", []) if key in (e.get("categories") or [])][:limit]
++
++
++def _scrub_source_suffix(line: str) -> str:
++    return re.sub(r"\s+—\s+Source des cours\s*:.*$", "", line).strip()
++
++
++# ----------------------------------------------------------------------------- sections
++def _headline(ctx: dict[str, Any], by: dict[str, Any]) -> tuple[str, str]:
++    scenario = ctx.get("scenario") or {}
++    sp, vix = by.get("^GSPC"), by.get("^VIX")
++    stance = scenario.get("stance", "Régime indéterminé")
++    sp5 = sp.five_day_pct if sp else None
++    vixd = vix.daily_pct if vix else None
++    if sp5 is not None and vixd is not None and sp5 <= -1 and vixd >= 8:
++        head = f"Aversion au risque : le S&P 500 cède {fr_pct(abs(sp5), 2, False)} sur cinq séances et le VIX bondit de {fr_pct(vixd, 1, False)}."
++    elif sp5 is not None and sp5 >= 1 and (vixd is None or vixd <= 0):
++        head = f"Appétit pour le risque : le S&P 500 gagne {fr_pct(sp5, 2, False)} sur cinq séances dans une volatilité contenue."
++    elif sp5 is not None:
++        head = f"Marchés sans direction tranchée : le S&P 500 affiche {fr_pct(sp5)} sur cinq séances, le VIX {fr_pct(vixd, 1)} sur la dernière."
++    else:
++        head = f"Panorama de {len(ctx.get('rows', []))} actifs : régime {stance.lower()}."
++    if ctx.get("kind") == "weekly":
++        head = "Semaine écoulée. " + head
++    probs = scenario.get("probabilities") or {}
++    dek = stance + "."
++    if probs:
++        dek += (f" Probabilités expérimentales à un horizon de une à cinq séances : hausse {probs.get('haussier')} %, "
++                f"zone centrale {probs.get('central')} %, baisse {probs.get('baissier')} %. "
++                "Elles sont issues d'une règle simple et n'ont pas été calibrées statistiquement.")
++    return head, dek
++
++
++def _takeaways(ctx: dict[str, Any], by: dict[str, Any]) -> list[str]:
++    items: list[str] = []
++    sp, nq, vix = by.get("^GSPC"), by.get("^IXIC"), by.get("^VIX")
++    if sp:
++        items.append(f"Actions américaines : S&P 500 {_move(sp)} sur la séance et {_move(sp, 'five_day_pct')} sur cinq séances ; Nasdaq {_move(nq)} puis {_move(nq, 'five_day_pct')}." if nq else
++                     f"Actions américaines : S&P 500 {_move(sp)} sur la séance et {_move(sp, 'five_day_pct')} sur cinq séances.")
++    if vix and vix.price:
++        items.append(_vix_reading(vix))
++    tnx, dxy = by.get("^TNX"), by.get("DX-Y.NYB")
++    if tnx and tnx.price:
++        bps = _yield_bps(tnx)
++        text = f"Taux : le rendement américain à 10 ans s'établit à {fr_num(tnx.price, 3)} %"
++        text += f" ({fr_bp(bps)})" if bps is not None else ""
++        if dxy and dxy.price:
++            text += f" ; l'indice du dollar est à {fr_num(dxy.price, 2)} ({_move(dxy)})"
++        items.append(text + ".")
++    oil, gold = by.get("BZ=F") or by.get("CL=F"), by.get("GC=F")
++    if oil or gold:
++        bits = []
++        if oil:
++            bits.append(f"{oil.name} {_move(oil)}")
++        if gold:
++            bits.append(f"or {_move(gold)}")
++        items.append("Matières premières : " + ", ".join(bits) + " sur la séance.")
++    btc = by.get("BTC-USD")
++    if btc:
++        items.append(f"Crypto : bitcoin à {fr_num(btc.price, 0)} dollars ({_move(btc)} sur 24 heures).")
++    top = next((e for e in ctx.get("calendar", []) if e["importance"] == "élevée"), None)
++    if top:
++        items.append("Prochain rendez-vous majeur : " + _event_line(top))
++    if ctx.get("weekend"):
++        items.append("Les marchés d'actions, de taux et de change sont fermés ce week-end : les cours ci-dessous datent de la dernière séance et seule la crypto cote en continu.")
++    return items
++
++
++def _regime_blocks(ctx: dict[str, Any], by: dict[str, Any]) -> list[dict[str, Any]]:
++    scenario = ctx.get("scenario") or {}
++    blocks: list[dict[str, Any]] = []
++    probs = scenario.get("probabilities")
++    if probs:
++        blocks.append({"kind": "p", "text": f"Notre règle de lecture croise le momentum des grands indices américains et le mouvement du VIX pour dégager un diagnostic : {scenario.get('stance', 'indéterminé').lower()} (score {fr_num(scenario.get('score', 0), 0, True)})."})
++        blocks.append({"kind": "probs", "probs": probs, "note": "Probabilités expérimentales, non calibrées. La zone centrale désigne un mouvement du S&P 500 inférieur à une demi-volatilité quotidienne, dans un sens ou dans l'autre."})
++    if scenario.get("evidence"):
++        blocks.append({"kind": "list", "items": [fr_text(e if e.endswith(".") else e + ".") for e in scenario["evidence"]]})
++    cross = [fr_text(_scrub_source_suffix(x)) for x in ctx.get("cross_lines", []) if "Pas assez de données" not in x]
++    if cross:
++        blocks.append({"kind": "h3", "text": "Interactions entre marchés"})
++        blocks.append({"kind": "list", "items": cross})
++    macro = ctx.get("macro") or []
++    if macro:
++        blocks.append({"kind": "h3", "text": "Tableau de bord macroéconomique américain"})
++        has_change = any(m.get("change") is not None for m in macro)
++        rows = []
++        for m in macro:
++            if m["id"] == "CPIAUCSL":
++                value = f"{fr_num(m['value'], 1)} (inflation sur un an : {fr_pct(m.get('yoy_pct'), 2)})" if m.get("yoy_pct") is not None else fr_num(m["value"], 1)
++            elif m["id"] == "PAYEMS":
++                value = f"{fr_num(m['value'], 0)} milliers"
++            else:
++                value = fr_num(m["value"], 2) + NBSP + "%"
++            row = [{"t": m["name"]}, {"t": value}, {"t": str(m["date"])}]
++            if has_change:
++                change = "n.d."
++                if m.get("change") is not None:
++                    change = fr_num(m["change"], 2, True) + ("" if m["id"] in ("CPIAUCSL", "PAYEMS") else " pt")
++                row.append({"t": change})
++            row.append({"t": m.get("provider", "FRED"), "href": m.get("source")})
++            rows.append(row)
++        headers = ["Indicateur", "Valeur", "Observation du"] + (["Variation"] if has_change else []) + ["Source"]
++        blocks.append({"kind": "table", "caption": "Indicateurs macroéconomiques", "numeric": {1} | ({3} if has_change else set()),
++                       "headers": headers, "rows": rows})
++        blocks.append({"kind": "note", "text": "Ces séries sont publiées avec un décalage (mensuel pour l'inflation et l'emploi) : elles décrivent le fond de l'économie, pas la séance du jour."})
++    else:
++        blocks.append({"kind": "note", "text": "Aucune série macroéconomique exploitable n'a pu être récupérée lors de cette exécution : le diagnostic ci-dessus repose uniquement sur les prix."})
++    return blocks
++
++
++def _agenda_blocks(ctx: dict[str, Any]) -> list[dict[str, Any]]:
++    events = ctx.get("calendar", [])
++    horizon = ctx.get("calendar_days", 7)
++    blocks: list[dict[str, Any]] = []
++    if not events:
++        blocks.append({"kind": "p", "text": f"Aucun événement n'est répertorié pour les {horizon} prochains jours dans notre calendrier. Ce n'est pas une garantie de calme : le fichier data/calendar_manual.json est tenu à la main et la clé FRED_API_KEY, si elle est absente, prive le calendrier des publications américaines."})
++        return blocks
++    blocks.append({"kind": "p", "text": f"Voici les rendez-vous des {horizon} prochains jours, avec les heures converties en heure de Madagascar. Un événement « à confirmer » doit être vérifié sur le site de l'institution avant toute décision."})
++    blocks.append({"kind": "events", "events": [
++        {"day": calendar_events.format_day(e["local_date"]), "time": e.get("local_time"), "title": e["title"], "region": e.get("region", ""),
++         "importance": e["importance"], "status": e["status"], "note": e.get("note", ""), "source": e.get("source", ""),
++         "categories": [CATEGORY_LABELS.get(k, k) for k in e.get("categories", [])]} for e in events]})
++    return blocks
++
++
++def _norm(text: str) -> str:
++    return re.sub(r"\W+", " ", text.casefold()).strip()
++
++
++def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
++    """Bloc d'actualité sans redite : pas de résumé qui répète le titre, pas deux fois la même lecture de marché."""
++    seen: set[str] = ctx.setdefault("_seen_readthrough", set())
++    title = item.get("title", "")
++    summary = item.get("summary_short") or item.get("summary", "")
++    if summary and (_norm(summary).startswith(_norm(title)[:45]) or _norm(title).startswith(_norm(summary)[:45])):
++        summary = ""
++    read = item.get("readthrough", "")
++    if read in seen:
++        read = ""
++    elif read:
++        seen.add(read)
++    return {"kind": "news", "title": title, "source": item.get("source", "source non précisée"),
++            "published": item.get("published", "date non fournie"), "summary": summary, "readthrough": read, "url": item.get("url", "")}
++
++
++def _news_blocks(ctx: dict[str, Any], limit: int) -> list[dict[str, Any]]:
++    return [_news_block(item, ctx) for item in (ctx.get("priority_news") or [])[:limit]]
++
++
++def _category_section(cat: dict[str, Any], rows: list[Any], by_all: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
++    blocks: list[dict[str, Any]] = [{"kind": "p", "text": cat["intro"], "cls": "intro"}]
++    if not rows:
++        blocks.append({"kind": "note", "text": "Aucune cotation exploitable n'a été reçue pour cette catégorie lors de cette exécution ; l'absence de donnée ne signifie pas absence de mouvement."})
++    else:
++        blocks.append(instrument_table(rows, ctx.get("sparks", {})))
++        for paragraph in ANALYSERS[cat["key"]](rows, by_all, ctx):
++            blocks.append({"kind": "p", "text": paragraph})
++    llm_paragraphs = ((ctx.get("llm") or {}).get("categories") or {}).get(cat["key"])
++    if llm_paragraphs:
++        blocks.append({"kind": "h3", "text": "Commentaire rédigé à partir de ces données"})
++        blocks.append({"kind": "chip", "text": "Rédaction assistée par modèle, limitée aux données de ce rapport"})
++        blocks += [{"kind": "p", "text": t} for t in llm_paragraphs]
++    picker = ctx.get("news_picker")
++    stories = picker(ctx.get("news", []), cat["keywords"], 3) if picker else []
++    if stories:
++        blocks.append({"kind": "h3", "text": "À la une pour cet univers"})
++        for item in stories:
++            blocks.append(_news_block(item, ctx))
++    else:
++        blocks.append({"kind": "note", "text": "Aucune nouvelle suffisamment ciblée n'a été identifiée dans les flux collectés ; ce silence ne dit rien du risque."})
++    events = _events_for(ctx, cat["key"])
++    if events:
++        blocks.append({"kind": "h3", "text": "À l'agenda"})
++        blocks.append({"kind": "list", "items": [_event_line(e) for e in events]})
++    return {"id": cat["key"], "title": cat["label"], "blocks": blocks}
++
++
++def _scenario_blocks(ctx: dict[str, Any], by: dict[str, Any]) -> list[dict[str, Any]]:
++    scenario = ctx.get("scenario") or {}
++    score = scenario.get("score", 0)
++    vix, tnx, dxy, sp = by.get("^VIX"), by.get("^TNX"), by.get("DX-Y.NYB"), by.get("^GSPC")
++    vix_level = fr_num(vix.price, 1) if vix and vix.price else "son niveau actuel"
++    tnx_level = fr_num(tnx.price, 2) + NBSP + "%" if tnx and tnx.price else "son niveau actuel"
++    dxy_level = fr_num(dxy.price, 1) if dxy and dxy.price else "son niveau actuel"
++    top_event = next((e for e in ctx.get("calendar", []) if e["importance"] == "élevée"), None)
++    event_txt = f" Le prochain test majeur est : {_event_line(top_event)}" if top_event else ""
++    if score <= -1:
++        main_title, main_body = "Scénario A — prolongement de la prudence", (
++            f"Le recul récent se prolonge : le VIX reste au-dessus de {vix_level}, les rendements restent élevés autour de {tnx_level} et le dollar se maintient près de {dxy_level}. "
++            "Les indices actions testent alors de nouveaux plus bas de la période et les valeurs de croissance sont les plus exposées.")
++        alt_title, alt_body = "Scénario B — rebond technique et retour au centre", (
++            f"La volatilité reflue sous {vix_level}, les rendements se détendent et le S&P 500 efface une partie de la baisse. Ce scénario est le plus probable après un mouvement brusque, mais il n'indique pas à lui seul la fin de la correction.")
++    elif score >= 1:
++        main_title, main_body = "Scénario A — poursuite de la hausse", (
++            f"Le momentum se prolonge : le VIX reste contenu autour de {vix_level}, les rendements ne dépassent pas {tnx_level} et le dollar reste stable près de {dxy_level}. "
++            "Les indices progressent avec une participation large entre secteurs.")
++        alt_title, alt_body = "Scénario B — consolidation", (
++            f"Les indices marquent une pause : les gains récents se digèrent, le VIX remonte légèrement au-dessus de {vix_level}. Les hausses rapides sont souvent suivies de phases latérales.")
++    else:
++        main_title, main_body = "Scénario A — marché sans direction", (
++            f"Les signaux restent contradictoires : indices dans une fourchette étroite, VIX autour de {vix_level}, rendements près de {tnx_level}. Le marché attend un catalyseur.")
++        alt_title, alt_body = "Scénario B — rupture haussière", (
++            f"Un catalyseur favorable (publication, banque centrale) fait baisser le VIX sous {vix_level} et monter les indices.")
++    shock_title, shock_body = "Scénario C — choc de volatilité", (
++        "Une surprise de taux, une tension géopolitique ou budgétaire, ou un événement de crédit fait bondir le VIX, rompt les corrélations habituelles et provoque un mouvement refuge (dollar, yen, franc suisse, or, emprunts d'État)." + event_txt)
++    blocks: list[dict[str, Any]] = [
++        {"kind": "p", "text": "Ces scénarios sont conditionnels : ils décrivent ce qu'il faudrait observer, pas ce qui va se produire. Les niveaux cités sont les niveaux actuels, utilisés comme repères d'invalidation."},
++        {"kind": "scenario", "title": main_title, "body": main_body},
++        {"kind": "scenario", "title": alt_title, "body": alt_body},
++        {"kind": "scenario", "title": shock_title, "body": shock_body},
++    ]
++    llm_scn = (ctx.get("llm") or {}).get("scenarios")
++    if llm_scn:
++        blocks.append({"kind": "chip", "text": "Rédaction assistée par modèle, limitée aux données de ce rapport"})
++        blocks += [{"kind": "p", "text": t} for t in llm_scn]
++    # liste de surveillance
++    watch = []
++    rows = ctx.get("rows", [])
++    ranked = sorted([r for r in rows if _zscore(r) is not None and r.ticker != "^VIX"], key=lambda r: abs(_zscore(r)), reverse=True)
++    seen: set[str] = set()
++    for r in ranked[:6]:
++        z = abs(_zscore(r))
++        seen.add(r.ticker)
++        watch.append([{"t": r.name, "sub": r.ticker}, {"t": CATEGORY_LABELS.get(_category_of(r), "")},
++                      {"t": fr_pct(r.daily_pct), "cls": "up" if r.daily_pct and r.daily_pct > 0 else "down"},
++                      {"t": f"Mouvement de {fr_num(z, 1)} écart-type par rapport à sa volatilité habituelle"},
++                      {"t": "Élevée" if z >= 2 else "Moyenne"}])
++    for event in ctx.get("calendar", []):
++        if event["importance"] != "élevée":
++            continue
++        for currency in event.get("currencies") or []:
++            ticker = CURRENCY_TICKERS.get(currency)
++            r = by.get(ticker) if ticker else None
++            if r and r.ticker not in seen and len(watch) < 10:
++                seen.add(r.ticker)
++                watch.append([{"t": r.name, "sub": r.ticker}, {"t": "Devises"}, {"t": fr_pct(r.daily_pct), "cls": "up" if r.daily_pct and r.daily_pct > 0 else "down"},
++                              {"t": f"Événement à venir ({calendar_events.format_day(event['local_date'])}) : {event['title'][:70]}"}, {"t": "Élevée"}])
++    if watch:
++        blocks.append({"kind": "h3", "text": "Liste de surveillance"})
++        blocks.append({"kind": "table", "caption": "Liste de surveillance", "numeric": {2},
++                       "headers": ["Instrument", "Univers", "Séance", "Pourquoi le surveiller", "Priorité"], "rows": watch})
++        blocks.append({"kind": "note", "text": "Il s'agit d'une liste de surveillance fondée sur l'amplitude des mouvements et l'agenda, pas d'un classement de signaux d'achat ou de vente. À la réouverture, confronter ce biais au prix, aux niveaux techniques et à la réaction effective du marché."})
++    return blocks
++
++
++def _category_of(row: Any) -> str:
++    for cat in CATEGORIES:
++        if cat["match"](row):
++            return cat["key"]
++    return ""
++
++
++def _audit_blocks(ctx: dict[str, Any]) -> list[dict[str, Any]]:
++    fe = ctx.get("forecast_eval") or {}
++    se = ctx.get("scenario_eval") or {}
++    blocks: list[dict[str, Any]] = [
++        {"kind": "p", "text": "Un rapport n'a de valeur que s'il se mesure à la réalité. Chaque prévision est enregistrée avant le résultat, jamais réécrite, puis comparée à la séance qui suit. Surtout, elle est comparée à des règles naïves : une méthode qui ne fait pas mieux que « toujours hausse » ou « même direction qu'hier » n'apporte aucune information."}]
++    n = len(se.get("matured", []))
++    rows = [[{"t": "Scénarios S&P 500 du matin"},
++             {"t": f"{se.get('forecast_count', 0)} prévisions uniques ; {n} arrivées à échéance ; {se.get('pending', 0)} en attente ; {se.get('duplicates_ignored', 0)} relances du même jour ignorées"}]]
++    if n:
++        rows.append([{"t": "Exactitude de la direction"}, {"t": f"{fr_num(se.get('accuracy_pct'), 1)} % (référence « toujours haussier » : {fr_num(se.get('baseline_always_up_accuracy_pct'), 1)} %)"}])
++        rows.append([{"t": "Score de Brier"}, {"t": f"{fr_num(se.get('mean_brier_score'), 3)} (référence climatologique : {fr_num(se.get('climatology_brier_score'), 3)}" + (f" ; compétence {fr_num(se.get('brier_skill_score'), 2, True)}" if se.get("brier_skill_score") is not None else " ; compétence non calculée sous 30 échantillons") + ")"}])
++    for horizon, label in (("1", "1 séance"), ("5", "5 séances")):
++        st = (fe.get("by_horizon") or {}).get(horizon) or {}
++        if st.get("n"):
++            rows.append([{"t": f"Règle de momentum par actif, {label}"},
++                         {"t": f"{st['correct']} bonnes directions sur {st['n']} ({fr_num(st['accuracy_pct'], 1)} %) ; toujours hausse : {fr_num(st['always_up_accuracy_pct'], 1)} % ; persistance : " + (f"{fr_num(st['persistence_accuracy_pct'], 1)} % ({st['persistence_n']} cas)" if st.get("persistence_accuracy_pct") is not None else "non évaluable")}])
++        else:
++            rows.append([{"t": f"Règle de momentum par actif, {label}"}, {"t": "aucun échantillon arrivé à échéance"}])
++    blocks.append({"kind": "table", "caption": "Résultats de l'audit", "numeric": set(), "headers": ["Mesure", "Résultat"], "rows": rows})
++    total = n + sum((fe.get("by_horizon") or {}).get(h, {}).get("n", 0) for h in ("1", "5"))
++    if n < 30:
++        blocks.append({"kind": "callout", "tone": "warn", "text": f"Échantillon insuffisant : {n} prévision{'s' if n > 1 else ''} de scénario arrivée{'s' if n > 1 else ''} à échéance, alors qu'il faut au moins trente séances distinctes pour tirer une conclusion. À ce stade, aucune probabilité de ce rapport ne doit être considérée comme fiable."})
++    else:
++        skill = se.get("brier_skill_score")
++        verdict = ("Les probabilités font mieux que la climatologie." if skill is not None and skill > 0 else "Les probabilités ne font pas mieux que la climatologie : elles ne doivent pas guider une décision.")
++        blocks.append({"kind": "callout", "tone": "info", "text": verdict + " Une exactitude directionnelle seule ne prouve pas la rentabilité : coûts, régimes de marché et validation hors échantillon restent à examiner."})
++    wrong = [r for r in fe.get("matured", []) if not r.get("correct")][-3:]
++    if wrong:
++        blocks.append({"kind": "p", "text": "Dernières erreurs à examiner : " + " ; ".join(
++            f"{r['name']} ({r['horizon_sessions']} séance(s), prévu {r['direction']}, réalisé {r['realized_direction']}, {fr_pct(r['realized_pct'])})" for r in wrong) + "."})
++    if se.get("by_version") and len(se["by_version"]) > 1:
++        blocks.append({"kind": "note", "text": "Plusieurs versions de la règle coexistent dans l'historique (" + ", ".join(f"{v} : {d['n']} cas" for v, d in se["by_version"].items()) + ") ; leurs résultats ne doivent pas être mélangés."})
++    return blocks
++
++
++def _method_blocks(ctx: dict[str, Any]) -> list[dict[str, Any]]:
++    err = ctx.get("errors", {})
++    rows = ctx.get("rows", [])
++    items = [
++        f"Couverture : {len(rows)} actifs reçus sur {ctx.get('n_tracked', len(rows))} suivis.",
++        "Prix : Yahoo Finance via la bibliothèque yfinance (source non officielle, données parfois retardées ou révisées).",
++        "Macroéconomie : séries FRED avec repli sur l'API publique du BLS ; publications officielles de la Réserve fédérale, du BEA, du Census Bureau, de la BCE, de l'EIA, de la Banque d'Angleterre et de la Banque du Japon ; presse financière (CNBC, Yahoo Finance, Financial Times, Guardian) et recherches Google Actualités à titre de piste seulement.",
++        "Fondamentaux d'entreprise : API XBRL de la SEC (EDGAR) pour un échantillon de sociétés américaines ; chiffres publiés, sans consensus.",
++        "Calendrier : fichier data/calendar_manual.json tenu à la main (statut « confirmé » ou « à confirmer ») et, si la clé est fournie, dates officielles relayées par FRED.",
++    ]
++    problems = []
++    for key, label in (("prices", "cours"), ("news", "flux d'actualités"), ("fundamentals", "données d'entreprise"), ("macro", "séries macroéconomiques"), ("calendar", "calendrier")):
++        if err.get(key):
++            problems.append(f"{err[key]} {label} indisponible(s)")
++    items.append("Incidents de collecte : " + (", ".join(problems) + ". Une donnée absente n'est pas une donnée nulle." if problems else "aucun signalé."))
++    llm = ctx.get("llm")
++    if llm:
++        items.append(f"Rédaction : certains commentaires sont rédigés par un modèle de langage à partir des seules données de ce rapport ({llm.get('meta', {}).get('model', 'modèle non précisé')}) ; un contrôle automatique écarte tout paragraphe contenant un chiffre absent des données ({llm.get('meta', {}).get('dropped', 0)} paragraphe(s) écarté(s)). Les probabilités restent calculées par le code, jamais par le modèle.")
++    else:
++        items.append("Rédaction : cette édition est entièrement produite par des règles de calcul, sans modèle de langage.")
++    items.append(f"Temps de lecture : estimé à {WORDS_PER_MINUTE} mots par minute, annexes exclues.")
++    return [{"kind": "list", "items": items},
++            {"kind": "callout", "tone": "warn", "text": "Contenu informatif et expérimental, qui ne constitue pas un conseil en investissement. Vérifier les données et les sources avant toute décision."}]
++
++
++def _since_morning_blocks(ctx: dict[str, Any]) -> list[dict[str, Any]]:
++    prior = ctx.get("prior_assets") or {}
++    changes = []
++    for r in ctx.get("rows", []):
++        old = prior.get(r.ticker)
++        if old and old.get("price") and r.price and old["price"] != r.price:
++            changes.append((r, (r.price / float(old["price"]) - 1) * 100))
++    if not changes:
++        return [{"kind": "p", "text": "Aucun écart de prix n'est mesurable depuis le rapport précédent (les mêmes dernières observations sont encore disponibles)."}]
++    changes.sort(key=lambda x: abs(x[1]), reverse=True)
++    rows = [[{"t": r.name, "sub": r.ticker}, {"t": fmt_level(r)}, {"t": fr_pct(c), "cls": "up" if c > 0 else "down"}] for r, c in changes[:10]]
++    return [{"kind": "p", "text": "Ce point ne répète pas ce qui n'a pas changé : voici les instruments dont le dernier cours a le plus varié depuis le rapport du matin."},
++            {"kind": "table", "caption": "Changements depuis le rapport précédent", "numeric": {1, 2}, "headers": ["Instrument", "Dernier", "Depuis le précédent rapport"], "rows": rows}]
++
++
++def _week_review_blocks(ctx: dict[str, Any]) -> list[dict[str, Any]]:
++    rows = [r for r in ctx.get("rows", []) if r.five_day_pct is not None]
++    if not rows:
++        return [{"kind": "p", "text": "Aucune performance hebdomadaire exploitable n'a été reçue."}]
++    ordered = sorted(rows, key=lambda r: r.five_day_pct, reverse=True)
++
++    def table(items: list[Any], caption: str) -> dict[str, Any]:
++        return {"kind": "table", "caption": caption, "numeric": {2, 3}, "headers": ["Instrument", "Univers", "5 séances", "1 mois"],
++                "rows": [[{"t": r.name, "sub": r.ticker}, {"t": CATEGORY_LABELS.get(_category_of(r), "")},
++                          {"t": fr_pct(r.five_day_pct), "cls": "up" if r.five_day_pct > 0 else "down"},
++                          {"t": fr_pct(r.one_month_pct), "cls": "up" if (r.one_month_pct or 0) > 0 else "down"}] for r in items]}
++    blocks = [{"kind": "p", "text": f"Sur {len(rows)} instruments, {sum(r.five_day_pct > 0 for r in rows)} progressent et {sum(r.five_day_pct < 0 for r in rows)} reculent sur cinq séances. Voici les extrêmes de la semaine."},
++              {"kind": "h3", "text": "Les plus fortes hausses"}, table(ordered[:8], "Plus fortes hausses sur cinq séances"),
++              {"kind": "h3", "text": "Les plus fortes baisses"}, table(list(reversed(ordered[-8:])), "Plus fortes baisses sur cinq séances")]
++    return blocks
++
++
++# ----------------------------------------------------------------------------- assemblage
++def block_words(block: dict[str, Any]) -> float:
++    kind = block["kind"]
++
++    def count(text: str) -> int:
++        return len(str(text).split())
++    if kind in ("p", "note", "callout", "chip"):
++        return 0 if kind == "chip" else count(block.get("text", ""))
++    if kind == "h3":
++        return count(block.get("text", ""))
++    if kind == "list":
++        return sum(count(i) for i in block.get("items", []))
++    if kind == "news":
++        return count(block.get("title", "")) + count(block.get("summary", "")) + count(block.get("readthrough", ""))
++    if kind == "scenario":
++        return count(block.get("title", "")) + count(block.get("body", ""))
++    if kind == "events":
++        return sum(count(e["title"]) + count(e.get("note", "")) for e in block["events"])
++    if kind == "table":
++        words = sum(count(c.get("t", "")) for row in block["rows"] for c in row)
++        return words * TABLE_WORD_WEIGHT
++    if kind == "probs":
++        return count(block.get("note", ""))
++    return 0
++
++
++def section_minutes(section: dict[str, Any]) -> float:
++    return sum(block_words(b) for b in section["blocks"]) / WORDS_PER_MINUTE
++
++
++def build_report(ctx: dict[str, Any]) -> dict[str, Any]:
++    kind = ctx.get("kind", "morning")
++    rows = ctx.get("rows", [])
++    by = _by_ticker(rows)
++    weekly = kind == "weekly"
++    llm = ctx.get("llm") or {}
++    headline, dek = _headline(ctx, by)
++    sections: list[dict[str, Any]] = []
++
++    synth_blocks: list[dict[str, Any]] = [{"kind": "list", "items": _takeaways(ctx, by), "cls": "takeaways"}]
++    if llm.get("synthese"):
++        synth_blocks.append({"kind": "chip", "text": "Rédaction assistée par modèle, limitée aux données de ce rapport"})
++        synth_blocks += [{"kind": "p", "text": t} for t in llm["synthese"]]
++    sections.append({"id": "synthese", "title": "L'essentiel", "blocks": synth_blocks})
++
++    if kind == "update":
++        sections.append({"id": "depuis", "title": "Depuis le rapport précédent", "blocks": _since_morning_blocks(ctx)})
++    if weekly:
++        sections.append({"id": "semaine", "title": "La semaine écoulée", "blocks": _week_review_blocks(ctx)})
++
++    regime_blocks = _regime_blocks(ctx, by)
++    if llm.get("regime"):
++        regime_blocks.append({"kind": "chip", "text": "Rédaction assistée par modèle, limitée aux données de ce rapport"})
++        regime_blocks += [{"kind": "p", "text": t} for t in llm["regime"]]
++    sections.append({"id": "regime", "title": "Régime de marché", "blocks": regime_blocks})
++
++    agenda = _agenda_blocks(ctx)
++    if llm.get("agenda"):
++        agenda += [{"kind": "p", "text": t} for t in llm["agenda"]]
++    sections.append({"id": "agenda", "title": "La semaine à venir" if weekly else "Agenda", "blocks": agenda})
++
++    news_blocks = _news_blocks(ctx, 8)
++    if news_blocks:
++        sections.append({"id": "faits", "title": "Faits marquants", "blocks": news_blocks})
++
++    for cat in CATEGORIES:
++        members = [r for r in rows if cat["match"](r)]
++        sections.append(_category_section(cat, members, by, ctx))
++
++    sections.append({"id": "scenarios", "title": "Scénarios et liste de surveillance", "blocks": _scenario_blocks(ctx, by)})
++    sections.append({"id": "audit", "title": "Fiabilité de nos analyses", "blocks": _audit_blocks(ctx)})
++    sections.append({"id": "methode", "title": "Données, sources et limites", "blocks": _method_blocks(ctx)})
++
++    for section in sections:
++        section["minutes"] = max(1, round(section_minutes(section)))
++    total_words = sum(block_words(b) for s in sections for b in s["blocks"])
++    return {
++        "kind": kind, "kind_label": KIND_LABELS.get(kind, kind), "title": ctx.get("title", KIND_LABELS.get(kind, "")),
++        "headline": headline, "dek": dek, "now_local": ctx.get("now_local"), "started": ctx.get("started"),
++        "sections": sections, "reading_minutes": max(1, round(total_words / WORDS_PER_MINUTE)), "words": int(total_words),
++        "n_assets": len(rows), "n_tracked": ctx.get("n_tracked", len(rows)), "sparks": ctx.get("sparks", {}),
++        "legacy_text": ctx.get("legacy_text", ""), "weekend": bool(ctx.get("weekend")),
++    }
+diff --git a/src/llm_editor.py b/src/llm_editor.py
+new file mode 100644
+index 0000000..355f945
+--- /dev/null
++++ b/src/llm_editor.py
+@@ -0,0 +1,183 @@
++"""Couche rédactionnelle optionnelle : un modèle de langage commente les données déjà collectées.
++
++Règles de sécurité (elles sont appliquées par le code, pas seulement demandées au modèle) :
++- le modèle ne reçoit que des données publiques de marché déjà présentes dans le rapport ;
++- il ne calcule ni ne choisit aucune probabilité : elles viennent du code et sont en lecture seule ;
++- tout paragraphe contenant un nombre absent des données fournies est écarté ;
++- tout paragraphe qui ressemble à un conseil d'achat ou de vente est écarté ;
++- sans clé d'API, ou en cas d'échec, le rapport est produit sans cette couche (aucun blocage).
++
++Activation : définir le secret ANTHROPIC_API_KEY (modèle réglable avec LLM_MODEL).
++"""
++from __future__ import annotations
++
++import json
++import math
++import os
++import re
++import time
++from typing import Any
++
++import requests
++
++try:
++    from . import editorial
++except ImportError:  # exécution en script
++    import editorial  # type: ignore[no-redef]
++
++API_URL = "https://api.anthropic.com/v1/messages"
++API_VERSION = "2023-06-01"
++DEFAULT_MODEL = "claude-sonnet-5-5"
++NUMBER_RE = re.compile(r"\d+(?:[.,]\d+)?")
++ADVICE_RE = re.compile(r"\b(achetez|vendez|shortez|il faut acheter|il faut vendre|nous recommandons d.acheter|nous recommandons de vendre|prenez position)\b", re.I)
++FREE_SMALL_INTEGER = 10  # les petits entiers (« trois », « 5 séances ») ne sont pas des données de marché
++SECTION_KEYS = ("synthese", "regime", "agenda", "scenarios")
++
++SYSTEM_PROMPT = """Tu es l'analyste d'un rapport de marché quotidien en français destiné à un lecteur averti (ancien banquier).
++Tu reçois un JSON de faits : prix, variations, séries macroéconomiques, calendrier, actualités, diagnostic chiffré.
++
++RÈGLES ABSOLUES
++1. N'utilise que les faits du JSON. N'invente aucun chiffre, aucune date, aucun événement, aucune citation.
++2. Ne calcule aucun nouveau nombre (pas de différences, de moyennes, de ratios) : cite uniquement les nombres présents tels quels, avec la même précision, écrits sans séparateur de milliers (81609 et non 81 609), avec la virgule décimale.
++3. Les probabilités du champ « diagnostic » sont en lecture seule. Ne les modifie pas, n'en propose aucune autre, ne dis pas qu'elles sont fiables : elles sont expérimentales et non calibrées.
++4. Sépare nettement ce que les données montrent de ton interprétation : commence toute interprétation par « Interprétation : » et formule les causes comme des hypothèses conditionnelles (« pourrait », « serait compatible avec »). Une corrélation sur une séance n'est pas une cause.
++5. Aucun conseil d'achat, de vente ou de prise de position. Tu peux dire ce qui confirmerait ou invaliderait un scénario.
++6. Lorsque tu t'appuies sur une actualité, nomme sa source (champ « source »). Si un événement du calendrier est « à confirmer », écris-le.
++7. Si les données manquent pour une rubrique, dis-le en une phrase au lieu de combler.
++8. Ton sobre, précis, sans emphase ni superlatifs, comme une note de recherche d'une banque privée.
++
++FORMAT
++Réponds par un unique objet JSON, sans texte autour, sans balises de code, de la forme :
++{"synthese":["..."],"regime":["..."],"agenda":["..."],"scenarios":["..."],"categories":{"indices":["..."],"futures":["..."],"actions":["..."],"matieres":["..."],"devises":["..."],"crypto":["..."],"obligations":["..."],"etf":["..."],"fonds":["..."]}}
++Chaque valeur est une liste de paragraphes de 80 à 140 mots. synthese : 3 paragraphes. regime, agenda, scenarios : 2 paragraphes chacun. Chaque catégorie : 2 paragraphes (1 seul si peu de données).
++"""
++
++
++def build_facts(ctx: dict[str, Any]) -> dict[str, Any]:
++    rows = ctx.get("rows", [])
++    categories: dict[str, list[dict[str, Any]]] = {}
++    for cat in editorial.CATEGORIES:
++        members = [r for r in rows if cat["match"](r)]
++        categories[cat["key"]] = [{
++            "instrument": r.name, "ticker": r.ticker, "dernier": r.price, "variation_seance_pct": r.daily_pct,
++            "variation_5_seances_pct": r.five_day_pct, "variation_1_mois_pct": r.one_month_pct, "cours_du": r.data_timestamp,
++        } for r in members]
++    scenario = ctx.get("scenario") or {}
++    now = ctx.get("now_local")
++    return {
++        "type_de_rapport": ctx.get("kind"),
++        "date_locale": now.strftime("%Y-%m-%d %H:%M") if now else None,
++        "marches_fermes_week_end": bool(ctx.get("weekend")),
++        "diagnostic": {"intitule": scenario.get("stance"), "score": scenario.get("score"),
++                       "probabilites_pct_lecture_seule": scenario.get("probabilities"), "elements": scenario.get("evidence")},
++        "univers": categories,
++        "macro": [{"serie": m.get("name"), "valeur": m.get("value"), "observation": m.get("date"),
++                   "variation": m.get("change"), "inflation_sur_un_an_pct": m.get("yoy_pct")} for m in ctx.get("macro") or []],
++        "calendrier": [{"date": str(e["local_date"]), "heure_madagascar": e.get("local_time"), "evenement": e["title"],
++                        "importance": e["importance"], "statut": e["status"]} for e in ctx.get("calendar") or []],
++        "actualites": [{"id": f"n{i + 1}", "titre": n.get("title"), "source": n.get("source"), "date": n.get("published"),
++                        "resume": (n.get("summary") or "")[:420]} for i, n in enumerate((ctx.get("priority_news") or [])[:12])],
++    }
++
++
++def _facts_numbers(facts_text: str) -> list[float]:
++    return [float(x.replace(",", ".")) for x in NUMBER_RE.findall(facts_text)]
++
++
++def _supported(token: str, numbers: list[float]) -> bool:
++    value = float(token.replace(",", "."))
++    if value <= FREE_SMALL_INTEGER and "." not in token and "," not in token:
++        return True
++    decimals = len(token.replace(",", ".").split(".")[1]) if ("." in token or "," in token) else 0
++    for f in numbers:
++        if math.isclose(round(abs(f), decimals), abs(value), abs_tol=1e-9):
++            return True
++    return False
++
++
++def validate_paragraph(text: str, numbers: list[float]) -> bool:
++    if not isinstance(text, str) or len(text.split()) < 12:
++        return False
++    if ADVICE_RE.search(text):
++        return False
++    cleaned = text.replace("\u00a0", "").replace("\u202f", "")
++    return all(_supported(tok, numbers) for tok in NUMBER_RE.findall(cleaned))
++
++
++def validate_commentary(raw: Any, facts_text: str) -> tuple[dict[str, Any], int]:
++    """Garde uniquement les paragraphes dont tous les nombres figurent dans les faits."""
++    numbers = _facts_numbers(facts_text)
++    dropped = 0
++    clean: dict[str, Any] = {"categories": {}}
++    if not isinstance(raw, dict):
++        return clean, 0
++
++    def keep(paragraphs: Any) -> list[str]:
++        nonlocal dropped
++        out = []
++        for p in paragraphs if isinstance(paragraphs, list) else []:
++            if validate_paragraph(p, numbers):
++                out.append(p.strip())
++            else:
++                dropped += 1
++        return out
++    for key in SECTION_KEYS:
++        kept = keep(raw.get(key))
++        if kept:
++            clean[key] = kept
++    valid_keys = {c["key"] for c in editorial.CATEGORIES}
++    for key, paragraphs in (raw.get("categories") or {}).items() if isinstance(raw.get("categories"), dict) else []:
++        if key in valid_keys:
++            kept = keep(paragraphs)
++            if kept:
++                clean["categories"][key] = kept
++    return clean, dropped
++
++
++def _parse_json(text: str) -> Any:
++    text = text.strip()
++    text = re.sub(r"^```(?:json)?|```$", "", text, flags=re.M).strip()
++    try:
++        return json.loads(text)
++    except json.JSONDecodeError:
++        start, end = text.find("{"), text.rfind("}")
++        if start != -1 and end > start:
++            return json.loads(text[start:end + 1])
++        raise
++
++
++def call_model(facts_text: str, api_key: str, model: str, timeout: int = 240) -> str:
++    payload = {"model": model, "max_tokens": 9000, "system": SYSTEM_PROMPT,
++               "messages": [{"role": "user", "content": "Faits du rapport (JSON) :\n" + facts_text}]}
++    headers = {"x-api-key": api_key, "anthropic-version": API_VERSION, "content-type": "application/json"}
++    last: Exception | None = None
++    for attempt in range(2):
++        try:
++            response = requests.post(API_URL, headers=headers, json=payload, timeout=timeout)
++            response.raise_for_status()
++            blocks = response.json().get("content", [])
++            return "".join(b.get("text", "") for b in blocks if b.get("type") == "text")
++        except Exception as exc:  # noqa: BLE001
++            last = exc
++            if attempt == 0:
++                time.sleep(3)
++    assert last is not None
++    raise last
++
++
++def generate_commentary(ctx: dict[str, Any]) -> tuple[dict[str, Any] | None, list[str]]:
++    """Renvoie (commentaire validé ou None, messages d'incident). Ne lève jamais d'exception."""
++    api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
++    if not api_key:
++        return None, []
++    model = os.environ.get("LLM_MODEL", "").strip() or DEFAULT_MODEL
++    try:
++        facts_text = json.dumps(build_facts(ctx), ensure_ascii=False, default=str)
++        raw = _parse_json(call_model(facts_text, api_key, model))
++        clean, dropped = validate_commentary(raw, facts_text)
++        if not (clean.get("categories") or any(clean.get(k) for k in SECTION_KEYS)):
++            return None, [f"Rédaction assistée : aucun paragraphe n'a passé le contrôle ({dropped} écarté(s))."]
++        clean["meta"] = {"model": model, "dropped": dropped}
++        return clean, []
++    except Exception as exc:  # noqa: BLE001 - la couche est optionnelle
++        return None, [f"Rédaction assistée indisponible : {type(exc).__name__}: {str(exc)[:140]}"]
+diff --git a/src/market_report.py b/src/market_report.py
+index 952f7ee..28db549 100644
+--- a/src/market_report.py
++++ b/src/market_report.py
+@@ -27,6 +27,14 @@ import pandas as pd
+ import requests
+ import yfinance as yf
+ 
++try:  # import en tant que paquet (tests : src.market_report)
++    from . import calendar_events, editorial, llm_editor, render_report
++except ImportError:  # exécution en script : python src/market_report.py
++    import calendar_events  # type: ignore[no-redef]
++    import editorial  # type: ignore[no-redef]
++    import llm_editor  # type: ignore[no-redef]
++    import render_report  # type: ignore[no-redef]
++
+ TZ = ZoneInfo("Indian/Antananarivo")
+ ROOT = Path(__file__).resolve().parents[1]
+ STATE_DIR = ROOT / "data"
+@@ -41,6 +49,9 @@ def report_archive_filename(report_type: str, run_time_madagascar: str) -> str:
+     return f"{report_type}-{stamp}.html"
+ 
+ 
++METHOD_VERSION = "v2"
++CENTRAL_BAND_SIGMA = 0.5  # largeur de la bande « central », en écarts-types quotidiens
++
+ USER_AGENT = "MarketIntelligenceDaily/0.1 (personal research; contact via repository owner)"
+ 
+ ASSETS: dict[str, dict[str, str]] = {
+@@ -64,7 +75,10 @@ ASSETS: dict[str, dict[str, str]] = {
+     "RTY=F": {"name": "Russell 2000 E-mini futures", "class": "Equity index futures"},
+     "ZN=F": {"name": "US Treasury 10-year note futures", "class": "Bond futures"},
+     "ZB=F": {"name": "US Treasury bond futures", "class": "Bond futures"},
++    "^IRX": {"name": "US 13-week Treasury bill yield", "class": "Rates"},
++    "^FVX": {"name": "US 5-year Treasury yield", "class": "Rates"},
+     "^TNX": {"name": "US 10-year Treasury yield", "class": "Rates"},
++    "^TYX": {"name": "US 30-year Treasury yield", "class": "Rates"},
+     "DX-Y.NYB": {"name": "US Dollar Index", "class": "FX"},
+     "EURUSD=X": {"name": "EUR/USD", "class": "FX"},
+     "USDJPY=X": {"name": "USD/JPY", "class": "FX"},
+@@ -79,6 +93,7 @@ ASSETS: dict[str, dict[str, str]] = {
+     "GC=F": {"name": "Gold futures", "class": "Commodity"},
+     "SI=F": {"name": "Silver futures", "class": "Commodity"},
+     "CL=F": {"name": "WTI crude oil futures", "class": "Commodity"},
++    "BZ=F": {"name": "Brent crude oil futures", "class": "Commodity"},
+     "NG=F": {"name": "Natural gas futures", "class": "Commodity"},
+     "HG=F": {"name": "Copper futures", "class": "Commodity"},
+     "ZC=F": {"name": "Corn futures", "class": "Agricultural commodity"},
+@@ -120,12 +135,23 @@ ASSETS: dict[str, dict[str, str]] = {
+     "WMT": {"name": "Walmart", "class": "US equity"},
+     "COST": {"name": "Costco", "class": "US equity"},
+     "CAT": {"name": "Caterpillar", "class": "US equity"},
++    "ASML.AS": {"name": "ASML", "class": "European equity"},
++    "MC.PA": {"name": "LVMH", "class": "European equity"},
++    "TTE.PA": {"name": "TotalEnergies", "class": "European equity"},
++    "SAP.DE": {"name": "SAP", "class": "European equity"},
++    "7203.T": {"name": "Toyota Motor", "class": "Asian equity"},
++    "TSM": {"name": "TSMC (ADR)", "class": "Asian equity"},
++    "0700.HK": {"name": "Tencent", "class": "Asian equity"},
++    "005930.KS": {"name": "Samsung Electronics", "class": "Asian equity"},
+     "VFIAX": {"name": "Vanguard 500 Index Fund Admiral Shares", "class": "Mutual fund"},
+     "FXAIX": {"name": "Fidelity 500 Index Fund", "class": "Mutual fund"},
+     "VTSAX": {"name": "Vanguard Total Stock Market Index Fund Admiral Shares", "class": "Mutual fund"},
+     "VWELX": {"name": "Vanguard Wellington Fund", "class": "Balanced mutual fund"},
+     "FBALX": {"name": "Fidelity Balanced Fund", "class": "Balanced mutual fund"},
+     "FTBFX": {"name": "Fidelity Total Bond Fund", "class": "Bond mutual fund"},
++    "VBTLX": {"name": "Vanguard Total Bond Market Index Fund Admiral Shares", "class": "Bond mutual fund"},
++    "VEMAX": {"name": "Vanguard Emerging Markets Stock Index Fund Admiral Shares", "class": "Mutual fund"},
++    "PRWCX": {"name": "T. Rowe Price Capital Appreciation Fund (gestion active)", "class": "Balanced mutual fund"},
+ }
+ 
+ NEWS_FEEDS = [
+@@ -1260,8 +1286,38 @@ def write_state(snapshot: dict[str, Any], rows: list[AssetRow]) -> None:
+     out.to_csv(HISTORY_FILE, mode="a", header=not HISTORY_FILE.exists(), index=False)
+ 
+ 
++def _daily_sigma_pct(annualized_vol_pct: Any) -> float | None:
++    """Convertit une volatilité annualisée en écart-type quotidien (en %)."""
++    try:
++        vol = float(annualized_vol_pct)
++    except (TypeError, ValueError):
++        return None
++    if not math.isfinite(vol) or vol <= 0:
++        return None
++    return vol / math.sqrt(252)
++
++
++def neutral_band_pct(daily_sigma_pct: float | None, horizon: int = 1) -> float:
++    """Demi-largeur de la zone « neutre/central », liée à la volatilité quand elle est connue.
++
++    Sans volatilité enregistrée (anciennes prévisions), on garde l'ancienne bande de ±0,1 %.
++    """
++    if not daily_sigma_pct:
++        return 0.1
++    return max(0.1, CENTRAL_BAND_SIGMA * float(daily_sigma_pct) * math.sqrt(max(1, horizon)))
++
++
++def _direction_from_pct(pct: float, band: float) -> str:
++    return "hausse" if pct > band else ("baisse" if pct < -band else "neutre")
++
++
+ def evaluate_forecasts(state: dict[str, Any]) -> dict[str, Any]:
+-    """Evaluate stored, rule-based directional forecasts against later distinct market dates."""
++    """Évalue les prévisions directionnelles par actif contre des séances ultérieures distinctes.
++
++    Chaque exactitude est comparée à deux références naïves : « toujours hausse » et
++    « persistance » (même direction que la séance précédente). Une règle qui ne les bat pas
++    n'apporte aucune information.
++    """
+     snapshots = state.get("forecasts", [])
+     prices: dict[str, dict[str, float]] = {}
+     for snap in snapshots:
+@@ -1290,24 +1346,39 @@ def evaluate_forecasts(state: dict[str, Any]) -> dict[str, Any]:
+         if not base_price:
+             continue
+         realized_pct = (target_price / float(base_price) - 1) * 100
+-        direction = "hausse" if realized_pct > 0.1 else ("baisse" if realized_pct < -0.1 else "neutre")
++        sigma = record.get("daily_sigma_pct")
++        band = neutral_band_pct(sigma, horizon)
++        direction = _direction_from_pct(realized_pct, band)
+         predicted = record.get("direction", "neutre")
++        persistence = None
++        earlier = sorted(day for day in series if day < base_date)
++        if earlier and float(base_price) > 0:
++            previous_pct = (float(base_price) / series[earlier[-1]] - 1) * 100
++            persistence = _direction_from_pct(previous_pct, neutral_band_pct(sigma, 1))
+         matured.append({
+             **record,
+             "target_date": target_date,
+             "realized_pct": round(realized_pct, 4),
+             "realized_direction": direction,
++            "neutral_band_pct": round(band, 4),
++            "persistence_direction": persistence,
+             "correct": direction == predicted,
+         })
+ 
+     by_horizon: dict[str, Any] = {}
+     for horizon in (1, 5):
+         sample = [r for r in matured if int(r.get("horizon_sessions", 1)) == horizon]
++        with_persistence = [r for r in sample if r.get("persistence_direction")]
+         by_horizon[str(horizon)] = {
+             "n": len(sample),
+             "correct": sum(bool(r["correct"]) for r in sample),
+             "accuracy_pct": round(100 * sum(bool(r["correct"]) for r in sample) / len(sample), 1) if sample else None,
+             "mean_abs_move_pct": round(sum(abs(float(r["realized_pct"])) for r in sample) / len(sample), 3) if sample else None,
++            "always_up_accuracy_pct": round(100 * sum(r["realized_direction"] == "hausse" for r in sample) / len(sample), 1) if sample else None,
++            "persistence_n": len(with_persistence),
++            "persistence_accuracy_pct": round(
++                100 * sum(r["persistence_direction"] == r["realized_direction"] for r in with_persistence) / len(with_persistence), 1
++            ) if with_persistence else None,
+         }
+     return {"matured": matured, "pending": pending, "by_horizon": by_horizon}
+ 
+@@ -1321,6 +1392,7 @@ def record_new_forecasts(state: dict[str, Any], rows: list[AssetRow]) -> None:
+             continue
+         # Neutral forecasts are retained too; the simple baseline must be judged fairly.
+         direction = "hausse" if row.five_day_pct >= 0.5 else ("baisse" if row.five_day_pct <= -0.5 else "neutre")
++        sigma = _daily_sigma_pct(row.annualized_vol_pct)
+         for horizon in (1, 5):
+             record_id = f"{row.ticker}|{row.data_timestamp}|{horizon}"
+             if record_id in known:
+@@ -1334,6 +1406,8 @@ def record_new_forecasts(state: dict[str, Any], rows: list[AssetRow]) -> None:
+                 "base_price": row.price,
+                 "direction": direction,
+                 "horizon_sessions": horizon,
++                "daily_sigma_pct": round(sigma, 4) if sigma else None,
++                "method_version": METHOD_VERSION,
+                 "rule": "baseline descriptive: direction from 5-session return; >= +0.5% hausse, <= -0.5% baisse, otherwise neutre",
+                 "created_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+             })
+@@ -1525,36 +1599,44 @@ def market_conviction(rows: list[AssetRow]) -> dict[str, Any]:
+         elif vix.daily_pct <= -8:
+             score += 1; evidence.append(f"VIX en net recul sur la dernière séance ({vix.daily_pct:+.2f} %)")
+     # Probabilities are deliberately capped until out-of-sample calibration exists.
+-    # A short momentum heuristic does not justify 65–75% directional confidence.
++    # v2: la masse attribuée au scénario central est cohérente avec sa définition
++    # (mouvement du S&P 500 dans ±0,5 écart-type quotidien, soit environ 38 % des séances
++    # pour une loi normale). Avec l'ancienne bande de ±0,1 %, le central n'arrivait presque jamais.
+     if score >= 3:
+-        probs = {"haussier": 60, "central": 20, "baissier": 20}
++        probs = {"haussier": 55, "central": 27, "baissier": 18}
+         stance = "Biais haussier à confirmer"
+     elif score == 2:
+-        probs = {"haussier": 55, "central": 25, "baissier": 20}
++        probs = {"haussier": 47, "central": 33, "baissier": 20}
+         stance = "Avantage haussier, conviction limitée"
+     elif score == 1:
+-        probs = {"haussier": 50, "central": 30, "baissier": 20}
++        probs = {"haussier": 40, "central": 35, "baissier": 25}
+         stance = "Léger avantage haussier"
+     elif score <= -3:
+-        probs = {"haussier": 20, "central": 20, "baissier": 60}
++        probs = {"haussier": 18, "central": 27, "baissier": 55}
+         stance = "Biais baissier à confirmer"
+     elif score == -2:
+-        probs = {"haussier": 20, "central": 25, "baissier": 55}
++        probs = {"haussier": 20, "central": 33, "baissier": 47}
+         stance = "Avantage baissier, conviction limitée"
+     elif score == -1:
+-        probs = {"haussier": 20, "central": 30, "baissier": 50}
++        probs = {"haussier": 25, "central": 35, "baissier": 40}
+         stance = "Léger avantage baissier"
+     else:
+-        probs = {"haussier": 25, "central": 50, "baissier": 25}
++        probs = {"haussier": 30, "central": 40, "baissier": 30}
+         stance = "Signaux contradictoires : scénario central dominant"
+     return {"score": score, "probabilities": probs, "stance": stance, "evidence": evidence,
+-            "method": "heuristique de momentum sur 5 séances et variation quotidienne du VIX; non calibrée, à évaluer contre les résultats futurs"}
+-
+-
++            "method_version": METHOD_VERSION,
++            "method": "heuristique de momentum sur 5 séances et variation quotidienne du VIX; non calibrée; "
++                      "« central » = mouvement du S&P 500 dans ±0,5 écart-type quotidien; à évaluer contre les résultats futurs"}
+ 
+ 
+ def evaluate_scenario_forecasts(snapshots: list[dict[str, Any]]) -> dict[str, Any]:
+-    """Score saved morning scenario probabilities against the next distinct S&P 500 observation."""
++    """Note les probabilités de scénario du matin contre la séance S&P 500 suivante.
++
++    - Une seule prévision par date de base (la première enregistrée) : les relances manuelles
++      du même jour ne sont pas des échantillons indépendants.
++    - La zone « central » dépend de la volatilité du S&P 500 le jour de la prévision.
++    - Les résultats sont comparés à des références naïves (« toujours haussier », climatologie).
++    """
+     series: dict[str, dict[str, float]] = {}
+     for snap in snapshots:
+         for asset in snap.get("assets", []):
+@@ -1567,6 +1649,8 @@ def evaluate_scenario_forecasts(snapshots: list[dict[str, Any]]) -> dict[str, An
+     dates = sorted(series)
+     matured: list[dict[str, Any]] = []
+     pending = 0
++    duplicates = 0
++    seen_base_dates: set[str] = set()
+     for snap in snapshots:
+         forecast = snap.get("scenario_forecast")
+         if snap.get("report_type") != "morning" or not forecast:
+@@ -1576,6 +1660,10 @@ def evaluate_scenario_forecasts(snapshots: list[dict[str, Any]]) -> dict[str, An
+             pending += 1
+             continue
+         base_date = str(base_asset["data_timestamp"])
++        if base_date in seen_base_dates:
++            duplicates += 1
++            continue
++        seen_base_dates.add(base_date)
+         future_dates = [d for d in dates if d > base_date]
+         if not future_dates:
+             pending += 1
+@@ -1590,7 +1678,8 @@ def evaluate_scenario_forecasts(snapshots: list[dict[str, Any]]) -> dict[str, An
+         if base_price <= 0:
+             continue
+         realized_pct = (target_price / base_price - 1) * 100
+-        actual = "haussier" if realized_pct > 0.1 else ("baissier" if realized_pct < -0.1 else "central")
++        band = neutral_band_pct(_daily_sigma_pct(base_asset.get("annualized_vol_pct")), 1)
++        actual = "haussier" if realized_pct > band else ("baissier" if realized_pct < -band else "central")
+         probs = forecast.get("probabilities", {})
+         predicted = max(("haussier", "central", "baissier"), key=lambda k: float(probs.get(k, 0)))
+         one_hot = {"haussier": 0.0, "central": 0.0, "baissier": 0.0}
+@@ -1600,19 +1689,42 @@ def evaluate_scenario_forecasts(snapshots: list[dict[str, Any]]) -> dict[str, An
+             "base_date": base_date, "target_date": target_date,
+             "predicted": predicted, "actual": actual,
+             "realized_pct": round(realized_pct, 4),
++            "central_band_pct": round(band, 4),
++            "method_version": forecast.get("method_version", "v1"),
+             "probabilities": probs, "correct": predicted == actual,
+             "brier_score": round(brier, 4),
+         })
+-    forecast_count = sum(
+-        1 for snap in snapshots
+-        if snap.get("report_type") == "morning" and snap.get("scenario_forecast")
+-    )
++
++    n = len(matured)
++    mean_brier = round(sum(x["brier_score"] for x in matured) / n, 4) if n else None
++    climatology_brier = None
++    skill = None
++    always_up = None
++    if n:
++        freq = {k: sum(x["actual"] == k for x in matured) / n for k in ("haussier", "central", "baissier")}
++        climatology_brier = round(sum(f * (1 - f) for f in freq.values()), 4)
++        always_up = round(100 * freq["haussier"], 1)
++        if n >= 30 and climatology_brier > 0:
++            skill = round(1 - mean_brier / climatology_brier, 3)
++    by_version: dict[str, dict[str, Any]] = {}
++    for version in sorted({x["method_version"] for x in matured}):
++        sample = [x for x in matured if x["method_version"] == version]
++        by_version[version] = {
++            "n": len(sample),
++            "accuracy_pct": round(100 * sum(x["correct"] for x in sample) / len(sample), 1),
++            "mean_brier_score": round(sum(x["brier_score"] for x in sample) / len(sample), 4),
++        }
+     return {
+-        "forecast_count": forecast_count,
++        "forecast_count": len(seen_base_dates),
++        "duplicates_ignored": duplicates,
+         "matured": matured,
+         "pending": pending,
+-        "accuracy_pct": round(100 * sum(x["correct"] for x in matured) / len(matured), 1) if matured else None,
+-        "mean_brier_score": round(sum(x["brier_score"] for x in matured) / len(matured), 4) if matured else None,
++        "accuracy_pct": round(100 * sum(x["correct"] for x in matured) / n, 1) if n else None,
++        "mean_brier_score": mean_brier,
++        "baseline_always_up_accuracy_pct": always_up,
++        "climatology_brier_score": climatology_brier,
++        "brier_skill_score": skill,
++        "by_version": by_version,
+     }
+ 
+ 
+@@ -1672,13 +1784,13 @@ def append_funnel_report(
+     lines += ["", "NIVEAU 4 — CLASSES D'ACTIFS : SYNTHÈSE TRANSVERSALE",
+               "Synthèse courte des tendances; les neuf rubriques suivantes détaillent les instruments et les actualités réellement documentées."]
+     broad_groups = [
+-        ("Indices boursiers", lambda r: "equity index" in r.asset_class.casefold() and "futures" not in r.asset_class.casefold()),
++        ("Indices boursiers", lambda r: r.ticker == "^VIX" or ("equity index" in r.asset_class.casefold() and "futures" not in r.asset_class.casefold())),
+         ("Futures sur indices", lambda r: "equity index futures" in r.asset_class.casefold()),
+-        ("Actions", lambda r: r.asset_class.casefold() in {"us equity", "equity"}),
++        ("Actions", lambda r: r.asset_class.casefold() in {"us equity", "european equity", "asian equity", "equity"}),
+         ("Matières premières", lambda r: "commodity" in r.asset_class.casefold()),
+         ("Devises", lambda r: r.asset_class.casefold() == "fx"),
+         ("Crypto-actifs", lambda r: r.asset_class.casefold() == "crypto"),
+-        ("Obligations et crédit", lambda r: any(x in r.asset_class.casefold() for x in ("rates", "bond", "credit"))),
++        ("Obligations et crédit", lambda r: r.asset_class.casefold() in {"rates", "bond futures"}),
+         ("ETF", lambda r: "etf" in r.asset_class.casefold()),
+         ("Fonds", lambda r: "mutual fund" in r.asset_class.casefold() or ("fund" in r.name.casefold() and "etf" not in r.asset_class.casefold())),
+     ]
+@@ -1694,11 +1806,11 @@ def append_funnel_report(
+     lines += ["", "LES 9 CATÉGORIES — ANALYSE PAR UNIVERS D’INVESTISSEMENT",
+               "Chaque rubrique combine les instruments effectivement reçus et les nouvelles qui peuvent les affecter. Les mouvements sont descriptifs; ils ne prouvent pas à eux seuls une cause ni ne constituent un signal d’achat/vente."]
+     category_specs = [
+-        ("1. Indices boursiers", lambda r: "equity index" in r.asset_class.casefold() and "futures" not in r.asset_class.casefold(),
++        ("1. Indices boursiers", lambda r: r.ticker == "^VIX" or ("equity index" in r.asset_class.casefold() and "futures" not in r.asset_class.casefold()),
+          ("stock market", "equity index", "indices", "index", "market selloff", "market rally", "global shares", "global stocks")),
+         ("2. Futures sur indices", lambda r: "equity index futures" in r.asset_class.casefold(),
+          ("equity index futures", "nasdaq futures", "s&p 500 futures", "dow futures", "index futures", "futures point to", "stock futures")),
+-        ("3. Actions", lambda r: r.asset_class.casefold() in {"us equity", "equity"},
++        ("3. Actions", lambda r: r.asset_class.casefold() in {"us equity", "european equity", "asian equity", "equity"},
+          ("earnings", "quarterly results", "revenue", "profit warning", "guidance", "shares of", "stock rises", "stock falls", "semiconductor", "capital expenditure", "company reports")),
+         ("4. Matières premières", lambda r: "commodity" in r.asset_class.casefold(),
+          ("oil", "crude", "brent", "gold", "silver", "copper", "natural gas", "opec", "commodity", "commodities", "supply disruption", "agriculture", "coffee")),
+@@ -1706,7 +1818,7 @@ def append_funnel_report(
+          ("forex", "currency", "currencies", "dollar", "euro", "yen", "exchange rate", "fx market", "fed rate", "central bank decision", "interest-rate decision")),
+         ("6. Crypto-actifs", lambda r: r.asset_class.casefold() == "crypto",
+          ("bitcoin", "ethereum", "crypto", "digital asset", "cryptoasset", "spot bitcoin etf")),
+-        ("7. Obligations et crédit", lambda r: any(x in r.asset_class.casefold() for x in ("rates", "bond", "credit")),
++        ("7. Obligations et crédit", lambda r: r.asset_class.casefold() in {"rates", "bond futures"},
+          ("bond", "bonds", "treasury yield", "bond yield", "credit spread", "credit market", "debt issuance", "fixed income")),
+         ("8. ETF", lambda r: "etf" in r.asset_class.casefold(),
+          ("etf", "exchange-traded fund", "fund flows", "inflows into etfs", "outflows from etfs", "passive investing")),
+@@ -1904,7 +2016,40 @@ def append_funnel_report(
+     lines.append(f"- Prévisions matinales enregistrées : {scenario_audit['forecast_count']}; en attente : {scenario_audit['pending']}. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.")
+ 
+ 
+-def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
++def display_news(item: dict[str, str]) -> dict[str, str]:
++    """Ajoute à une actualité son résumé court et sa lecture de marché pour l'affichage."""
++    out = dict(item)
++    out["summary_short"] = _summarize_news_text(item.get("summary", ""), 520) if item.get("summary") else ""
++    out["readthrough"] = _news_fact_and_market_readthrough(item)[1]
++    return out
++
++
++def news_for_keywords(news: list[dict[str, str]], keywords: tuple[str, ...], limit: int = 2) -> list[dict[str, str]]:
++    """Actualités documentées (résumé d'au moins 100 caractères) dont le titre ou le résumé contient un mot-clé entier."""
++    def present(text: str, keyword: str) -> bool:
++        return re.search(r"(?<![a-z0-9])" + re.escape(keyword.casefold()) + r"(?![a-z0-9])", text.casefold()) is not None
++    matched = [
++        n for n in news
++        if len(re.sub(r"\s+", " ", n.get("summary", "")).strip()) >= 100
++        and any(present(f"{n.get('title', '')} {n.get('summary', '')}", k) for k in keywords)
++    ]
++    return [display_news(n) for n in prioritize_news(matched, limit)]
++
++
++def collect_sparks(data: dict[str, pd.DataFrame], sessions: int = 30) -> dict[str, list[float]]:
++    """Dernières clôtures de chaque actif, pour les mini-graphiques (non sauvegardées dans l'historique)."""
++    sparks: dict[str, list[float]] = {}
++    for ticker, frame in data.items():
++        try:
++            closes = frame["Close"].dropna().astype(float).tail(sessions)
++            if len(closes) >= 5:
++                sparks[ticker] = [round(float(x), 4) for x in closes]
++        except Exception:  # noqa: BLE001 - un mini-graphique manquant ne doit jamais bloquer le rapport
++            continue
++    return sparks
++
++
++def make_report(report_type: str) -> tuple[str, str, dict[str, Any], dict[str, Any]]:
+     started = datetime.now(timezone.utc)
+     now_local = started.astimezone(TZ)
+     data, data_errors = fetch_prices()
+@@ -1925,6 +2070,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
+         "morning": "Rapport initial — marchés multi-actifs",
+         "update": "Mise à jour — changements depuis le dernier rapport",
+         "audit": "Audit des prévisions et des données",
++        "weekly": "Perspectives de la semaine",
+     }
+     title = titles[report_type]
+     lines = [
+@@ -1948,24 +2094,51 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
+     if macro_errors:
+         lines.append("Certaines séries macroéconomiques n’ont pas pu être récupérées.")
+     lines += ["", "Avertissement : contenu informatif et expérimental, pas un conseil d'investissement. Vérifier les données et les actualités avant toute décision."]
+-    plain = "\n".join(lines)
++    legacy_plain = "\n".join(lines)
+ 
+-    html_body = render_professional_html(plain, title, now_local, started)
++    state = read_state()
++    scenario = market_conviction(rows)
++    calendar_days = 21 if report_type == "weekly" else 14
++    calendar, calendar_errors = calendar_events.collect_calendar(now_local.date(), calendar_days)
++    prior_assets = {a["ticker"]: a for a in (previous[-1] if previous else {}).get("assets", [])}
++    ctx: dict[str, Any] = {
++        "kind": report_type, "title": title, "now_local": now_local, "started": started,
++        "rows": rows, "sparks": collect_sparks(data), "news": news,
++        "priority_news": [display_news(n) for n in prioritize_news(news, 8)],
++        "news_picker": news_for_keywords, "macro": macro_series, "fundamentals": company_fundamentals,
++        "calendar": calendar, "calendar_days": calendar_days, "scenario": scenario,
++        "forecast_eval": evaluate_forecasts({"forecasts": previous, "forecast_records": state.get("forecast_records", [])}),
++        "scenario_eval": evaluate_scenario_forecasts(previous),
++        "cross_lines": scenario_context(rows), "prior_assets": prior_assets,
++        "errors": {"prices": len(data_errors), "news": len(news_errors), "fundamentals": len(fundamentals_errors),
++                   "macro": len(macro_errors), "calendar": len(calendar_errors)},
++        "n_tracked": len(ASSETS), "weekend": now_local.weekday() >= 5, "legacy_text": legacy_plain,
++    }
++    llm, llm_errors = llm_editor.generate_commentary(ctx)
++    ctx["llm"] = llm
++    for message in llm_errors + calendar_errors:
++        print(f"WARNING: {message}", file=sys.stderr)
++    model = editorial.build_report(ctx)
++    plain = render_report.render_text(model)
++    html_body = render_report.render_html(model)
+     snapshot = {
+         "report_type": report_type,
+         "run_time_utc": started.isoformat(timespec="seconds"),
+         "run_time_madagascar": now_local.isoformat(timespec="seconds"),
+         "assets": [asdict(r) for r in rows],
+-        "scenario_forecast": market_conviction(rows),
++        "scenario_forecast": scenario,
+         "news": news[:36],
+         "data_error_count": len(data_errors),
+         "news_error_count": len(news_errors),
+         "macro_series_count": len(macro_series),
+         "macro_error_count": len(macro_errors),
++        "reading_minutes": model["reading_minutes"],
++        "words": model["words"],
++        "llm_used": bool(llm),
+     }
+-    return plain, html_body, snapshot
++    return plain, html_body, snapshot, model
+ 
+-def send_email(subject: str, report_url: str, report_text: str) -> None:
++def send_email(subject: str, report_url: str, report_text: str, summary_html: str | None = None) -> None:
+     """Send the complete market briefing in the email; the web link is a secondary archive."""
+     required = ("SMTP_USERNAME", "SMTP_APP_PASSWORD", "REPORT_RECIPIENT")
+     missing = [key for key in required if not os.environ.get(key)]
+@@ -1984,6 +2157,16 @@ def send_email(subject: str, report_url: str, report_text: str) -> None:
+         lambda match: f'<a href="{match.group(1)}">{match.group(1)}</a>',
+         escaped_report,
+     )
++    if summary_html:
++        message.add_alternative(summary_html, subtype="html")
++        context = ssl.create_default_context()
++        with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as server:
++            server.ehlo()
++            server.starttls(context=context)
++            server.ehlo()
++            server.login(message["From"], os.environ["SMTP_APP_PASSWORD"].replace(" ", ""))
++            server.send_message(message)
++        return
+     message.add_alternative(
+         "<html><body style=\"font-family:Arial,sans-serif;color:#172033;line-height:1.5\">"
+         "<p><strong>Édition complète du rapport de marché</strong></p>"
+@@ -2000,9 +2183,14 @@ def send_email(subject: str, report_url: str, report_text: str) -> None:
+         server.login(message["From"], os.environ["SMTP_APP_PASSWORD"].replace(" ", ""))
+         server.send_message(message)
+ 
++def email_subject(report_type: str, run_time_madagascar: str) -> str:
++    label = editorial.KIND_LABELS.get(report_type, report_type)
++    return f"[Market Intelligence] {label} — {run_time_madagascar[:16].replace('T', ' ')}"
++
++
+ def main() -> int:
+     parser = argparse.ArgumentParser()
+-    parser.add_argument("--report-type", choices=("morning", "update", "audit"), default="morning")
++    parser.add_argument("--report-type", choices=("morning", "update", "audit", "weekly"), default="morning")
+     parser.add_argument("--no-email", action="store_true", help="Generate files/state without sending email")
+     parser.add_argument("--send-link-only", action="store_true", help="Send the public report link without regenerating the report")
+     args = parser.parse_args()
+@@ -2011,7 +2199,7 @@ def main() -> int:
+         snapshot = next((x for x in reversed(state.get("forecasts", [])) if x.get("report_type") == args.report_type), None)
+         if not snapshot:
+             raise RuntimeError(f"Aucun rapport enregistré pour le type {args.report_type}")
+-        subject = f"[Market Intelligence] {args.report_type.upper()} — {snapshot['run_time_madagascar'][:16]}"
++        subject = email_subject(args.report_type, snapshot["run_time_madagascar"])
+         archive_name = report_archive_filename(args.report_type, snapshot["run_time_madagascar"])
+         archive_path = ROOT / "docs" / "reports" / archive_name
+         if not archive_path.is_file():
+@@ -2020,10 +2208,11 @@ def main() -> int:
+         saved_report = STATE_DIR / f"latest_{args.report_type}.txt"
+         if not saved_report.is_file():
+             raise RuntimeError(f"Texte du rapport introuvable : {saved_report}")
+-        send_email(subject, report_url, saved_report.read_text(encoding="utf-8"))
++        saved_text = saved_report.read_text(encoding="utf-8")
++        send_email(subject, report_url, saved_text, render_report.summary_html_from_text(saved_text, report_url))
+         print(f"Complete report emailed: type={args.report_type}; url={report_url}")
+         return 0
+-    plain, html_body, snapshot = make_report(args.report_type)
++    plain, html_body, snapshot, model = make_report(args.report_type)
+     STATE_DIR.mkdir(parents=True, exist_ok=True)
+     # Save the exact report text to aid later audit.
+     report_path = STATE_DIR / f"latest_{args.report_type}.txt"
+@@ -2040,10 +2229,10 @@ def main() -> int:
+     # Workflow commits state only after successful completion.
+     rows = [AssetRow(**item) for item in snapshot["assets"]]
+     write_state(snapshot, rows)
+-    subject = f"[Market Intelligence] {args.report_type.upper()} — {snapshot['run_time_madagascar'][:16]}"
++    subject = email_subject(args.report_type, snapshot["run_time_madagascar"])
+     archive_url = f"{REPORT_URL}reports/{archive_name}"
+     if not args.no_email:
+-        send_email(subject, archive_url, plain)
++        send_email(subject, archive_url, plain, render_report.summary_html_from_text(plain, archive_url))
+     print(f"Report generated: {report_path.name}; archive={archive_name}; assets={len(rows)}; type={args.report_type}; email={'disabled' if args.no_email else 'sent'}")
+     return 0
+ 
+diff --git a/src/render_report.py b/src/render_report.py
+new file mode 100644
+index 0000000..f39d447
+--- /dev/null
++++ b/src/render_report.py
+@@ -0,0 +1,342 @@
++"""Rendu du modèle éditorial : page HTML soignée (lecture longue) et version texte.
++
++Parti pris graphique : une note de recherche, pas un tableau de bord. Une colonne de lecture
++étroite en serif, des chiffres alignés en sans-serif, et un plan de lecture chiffré en minutes
++qui sert de table des matières. Pas de cartes, pas d'ombres, pas de dégradés.
++"""
++from __future__ import annotations
++
++import html
++import re
++from datetime import datetime
++from typing import Any
++
++try:
++    from . import calendar_events
++except ImportError:  # exécution en script
++    import calendar_events  # type: ignore[no-redef]
++
++IMPORTANCE_LABEL = {"élevée": "élevé", "moyenne": "moyen", "faible": "faible"}
++URL_RE = re.compile(r"(https?://[^\s<]+)")
++GOOGLE_FONTS = ("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400"
++                "&family=IBM+Plex+Sans:wght@400;500;600&display=swap")
++
++CSS = """
++:root{
++  --paper:#F3F5F8;--surface:#FFFFFF;--ink:#17212B;--muted:#566474;--rule:#D6DCE4;--accent:#2B5C8F;
++  --gain:#17734A;--loss:#B42318;--warn-bg:#FFF3D1;--warn:#6F4700;--info-bg:#E8F0F8;
++  --serif:'Newsreader',Georgia,'Times New Roman',serif;
++  --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
++  color-scheme:light dark;
++}
++@media (prefers-color-scheme:dark){:root{
++  --paper:#0E141B;--surface:#141C25;--ink:#E8EDF2;--muted:#9AA8B7;--rule:#263341;--accent:#86B6EA;
++  --gain:#4CC38A;--loss:#FF8F85;--warn-bg:#2B2410;--warn:#E8C26B;--info-bg:#15222F}}
++*{box-sizing:border-box}
++html{scroll-padding-top:1.5rem}
++@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
++body{margin:0;background:var(--paper);color:var(--ink);font:18px/1.7 var(--serif);
++  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
++a{color:var(--accent);text-underline-offset:.18em;overflow-wrap:anywhere}
++a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:2px}
++.shell{display:grid;grid-template-columns:16rem minmax(0,44rem);gap:4rem;max-width:68rem;margin:0 auto;padding:3rem 1.5rem 5rem}
++.masthead{grid-column:1 / -1;max-width:50rem}
++.brand{font:500 .9rem/1.2 var(--sans);color:var(--muted);display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;align-items:baseline}
++.brand strong{color:var(--ink);font-weight:600}
++.masthead h1{font:500 clamp(2rem,5vw,3.1rem)/1.12 var(--serif);letter-spacing:-.012em;margin:1.4rem 0 1rem;text-wrap:balance}
++.dek{font-size:1.2rem;line-height:1.55;color:var(--muted);margin:0 0 1.6rem;max-width:42rem}
++.facts{display:flex;flex-wrap:wrap;gap:.4rem 2.2rem;margin:0;font:400 .88rem/1.4 var(--sans)}
++.facts div{display:flex;gap:.45rem}.facts dt{color:var(--muted)}.facts dd{margin:0;font-weight:600}
++nav.plan{position:sticky;top:1.5rem;align-self:start;font-family:var(--sans);font-size:.88rem;max-height:calc(100vh - 3rem);overflow:auto}
++nav.plan h2{font:600 .95rem/1.3 var(--sans);margin:0 0 .3rem}
++nav.plan p{margin:0 0 1rem;color:var(--muted);font-size:.82rem;line-height:1.45}
++nav.plan ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule)}
++nav.plan li{margin:0}
++nav.plan a{display:grid;grid-template-columns:1fr auto;gap:.6rem;padding:.38rem 0 .38rem .85rem;color:var(--ink);text-decoration:none;position:relative}
++nav.plan a:hover{color:var(--accent)}
++nav.plan a .m{color:var(--muted);font-variant-numeric:tabular-nums}
++nav.plan a .bar{position:absolute;left:-1px;top:0;bottom:0;width:3px;background:var(--accent);opacity:.12}
++main{min-width:0}
++section{margin:0 0 3.4rem}
++section>header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.25rem 1rem;border-top:2px solid var(--ink);padding-top:.9rem;margin-bottom:1.1rem}
++section h2{font:500 1.85rem/1.2 var(--serif);margin:0;letter-spacing:-.008em}
++section header .meta{font:400 .85rem var(--sans);color:var(--muted)}
++h3{font:600 .95rem/1.3 var(--sans);margin:2rem 0 .6rem;color:var(--ink)}
++p{margin:0 0 1.05rem}
++p.intro{font-style:italic;color:var(--muted)}
++ul.takeaways{list-style:none;padding:0;margin:0 0 1.6rem}
++ul.takeaways li{padding:.75rem 0 .75rem 1.1rem;border-left:3px solid var(--accent);margin:0 0 .55rem;font-size:1.05rem;line-height:1.55}
++ul{padding-left:1.25rem;margin:0 0 1.2rem}li{margin:0 0 .45rem}
++.chip{display:inline-block;font:500 .75rem/1 var(--sans);border:1px solid var(--rule);color:var(--muted);border-radius:4px;padding:.28rem .5rem;margin:0 0 .8rem}
++.chip.high{border-color:var(--loss);color:var(--loss)}.chip.warn{background:var(--warn-bg);border-color:transparent;color:var(--warn)}
++.chip.ok{color:var(--gain);border-color:var(--gain)}
++.table-wrap{overflow-x:auto;margin:1.2rem 0 1.5rem;border-top:1px solid var(--rule)}
++table{border-collapse:collapse;width:100%;font:400 .86rem/1.35 var(--sans);font-variant-numeric:tabular-nums lining-nums}
++caption{text-align:left;font:600 .8rem var(--sans);color:var(--muted);padding:.55rem 0}
++th{font-weight:600;text-align:left;color:var(--muted);padding:.5rem .7rem .5rem 0;border-bottom:1px solid var(--ink);white-space:nowrap}
++td{padding:.55rem .7rem .55rem 0;border-bottom:1px solid var(--rule);vertical-align:top}
++th.n,td.n{text-align:right;padding-right:1rem}
++td .sub{display:block;color:var(--muted);font-size:.74rem}
++.up{color:var(--gain)}.down{color:var(--loss)}
++svg.spark{display:block;width:84px;height:22px;overflow:visible}
++svg.spark polyline{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
++.probs{margin:1rem 0 1.5rem;font:400 .9rem var(--sans)}
++.probs div.row{display:grid;grid-template-columns:7.5rem 1fr 3rem;gap:.8rem;align-items:center;margin:.4rem 0}
++.probs .track{height:.7rem;background:var(--rule);border-radius:2px;overflow:hidden}
++.probs .fill{display:block;height:100%}
++.probs .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
++.probs small{display:block;margin-top:.6rem;color:var(--muted);line-height:1.5}
++.callout{font:400 .95rem/1.55 var(--sans);padding:.9rem 1.1rem;margin:1.3rem 0;border-radius:4px;background:var(--info-bg)}
++.callout.warn{background:var(--warn-bg);color:var(--warn)}
++.note{font:400 .88rem/1.55 var(--sans);color:var(--muted);margin:0 0 1.2rem}
++article.story{margin:0 0 1.7rem;padding-bottom:1.3rem;border-bottom:1px solid var(--rule)}
++article.story h3{font:500 1.15rem/1.35 var(--serif);margin:0 0 .25rem}
++article.story .src{font:400 .8rem var(--sans);color:var(--muted);margin:0 0 .6rem}
++article.story .read{font:400 .93rem/1.6 var(--sans);margin:.5rem 0 .4rem}
++.scenario{margin:0 0 1.25rem}.scenario h3{margin:1.4rem 0 .3rem;font:600 1rem var(--sans)}
++.day{font:600 .95rem var(--sans);margin:1.8rem 0 .5rem;padding-bottom:.35rem;border-bottom:1px solid var(--rule)}
++.event{display:grid;grid-template-columns:4.2rem 1fr;gap:.2rem 1rem;margin:0 0 1.1rem}
++.event .t{font:600 .9rem var(--sans);font-variant-numeric:tabular-nums;color:var(--accent)}
++.event .what{font-size:1rem;line-height:1.5}.event .tags{margin:.3rem 0 .2rem;display:flex;flex-wrap:wrap;gap:.35rem}
++.event .tags .chip{margin:0}.event .cats{font:400 .8rem var(--sans);color:var(--muted)}
++details.annex{margin:3rem 0 0;border-top:2px solid var(--ink);padding-top:.8rem;font-family:var(--sans)}
++details.annex summary{cursor:pointer;font-weight:600;font-size:.95rem}
++details.annex pre{white-space:pre-wrap;overflow-wrap:anywhere;font:400 .78rem/1.55 var(--sans);color:var(--muted);margin-top:1rem}
++footer{grid-column:1 / -1;max-width:44rem;margin:0 0 0 auto;font:400 .8rem/1.55 var(--sans);color:var(--muted);border-top:1px solid var(--rule);padding-top:1rem}
++@media (max-width:62rem){
++  .shell{display:block;padding:1.6rem 1.15rem 4rem}
++  nav.plan{position:static;max-height:none;margin:1.8rem 0 2.4rem}
++  footer{margin:2rem 0 0}.event{grid-template-columns:3.6rem 1fr}
++}
++@media (max-width:34rem){body{font-size:17px}.probs div.row{grid-template-columns:5.5rem 1fr 2.6rem}}
++@media print{
++  body{background:#fff;color:#000;font-size:11pt}.shell{display:block;padding:0;max-width:none}
++  nav.plan{display:none}section{break-inside:auto}section>header,h3,caption{break-after:avoid}
++  .table-wrap,article.story,.event,.scenario{break-inside:avoid}a{color:#000;text-decoration:none}
++  details.annex[open]>pre{font-size:8pt}
++}
++"""
++
++
++def esc(text: Any) -> str:
++    return html.escape(str(text), quote=True)
++
++
++def linkify(text: str) -> str:
++    out, last = [], 0
++    for m in URL_RE.finditer(text):
++        url = m.group(1).rstrip(".,;)")
++        out.append(esc(text[last:m.start()]))
++        out.append(f'<a href="{esc(url)}" rel="noopener">{esc(url)}</a>')
++        last = m.start() + len(url)
++    out.append(esc(text[last:]))
++    return "".join(out)
++
++
++def sparkline(values: list[float] | None) -> str:
++    if not values or len(values) < 5:
++        return '<span class="note">n.d.</span>'
++    lo, hi = min(values), max(values)
++    span = (hi - lo) or 1.0
++    w, h = 84.0, 22.0
++    pts = " ".join(f"{i * w / (len(values) - 1):.1f},{h - 2 - (v - lo) / span * (h - 4):.1f}" for i, v in enumerate(values))
++    cls = "up" if values[-1] >= values[0] else "down"
++    label = f"Tendance sur {len(values)} séances : de {values[0]:.4g} à {values[-1]:.4g}"
++    return f'<svg class="spark {cls}" viewBox="0 0 84 22" role="img" aria-label="{esc(label)}"><polyline points="{pts}"/></svg>'
++
++
++def _cell(cell: dict[str, Any], numeric: bool) -> str:
++    cls = " ".join(x for x in ("n" if numeric else "", cell.get("cls", "")) if x)
++    attr = f' class="{cls}"' if cls else ""
++    if "spark" in cell:
++        return f"<td>{sparkline(cell['spark'])}</td>"
++    inner = esc(cell.get("t", ""))
++    if cell.get("href"):
++        inner = f'<a href="{esc(cell["href"])}" rel="noopener">{inner}</a>'
++    if cell.get("sub"):
++        inner += f'<span class="sub">{esc(cell["sub"])}</span>'
++    return f"<td{attr}>{inner}</td>"
++
++
++def render_block(block: dict[str, Any]) -> str:
++    kind = block["kind"]
++    if kind == "p":
++        cls = f' class="{block["cls"]}"' if block.get("cls") else ""
++        return f"<p{cls}>{linkify(block['text'])}</p>"
++    if kind == "h3":
++        return f"<h3>{esc(block['text'])}</h3>"
++    if kind == "note":
++        return f'<p class="note">{linkify(block["text"])}</p>'
++    if kind == "chip":
++        return f'<span class="chip">{esc(block["text"])}</span>'
++    if kind == "callout":
++        return f'<div class="callout {esc(block.get("tone", "info"))}">{linkify(block["text"])}</div>'
++    if kind == "list":
++        cls = f' class="{block["cls"]}"' if block.get("cls") else ""
++        return f"<ul{cls}>" + "".join(f"<li>{linkify(i)}</li>" for i in block["items"]) + "</ul>"
++    if kind == "table":
++        numeric = block.get("numeric", set())
++        head = "".join(f'<th scope="col"{" class=n" if i in numeric else ""}>{esc(h)}</th>' for i, h in enumerate(block["headers"]))
++        body = "".join("<tr>" + "".join(_cell(c, i in numeric) for i, c in enumerate(row)) + "</tr>" for row in block["rows"])
++        return (f'<div class="table-wrap"><table><caption>{esc(block.get("caption", ""))}</caption>'
++                f"<thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>")
++    if kind == "probs":
++        order = [("haussier", "Hausse", "var(--gain)"), ("central", "Zone centrale", "var(--muted)"), ("baissier", "Baisse", "var(--loss)")]
++        rows = "".join(f'<div class="row"><span>{label}</span><span class="track"><span class="fill" style="width:{block["probs"].get(k, 0)}%;background:{color}"></span></span>'
++                       f'<span class="v">{block["probs"].get(k, 0)} %</span></div>' for k, label, color in order)
++        return f'<div class="probs" role="group" aria-label="Probabilités expérimentales">{rows}<small>{esc(block.get("note", ""))}</small></div>'
++    if kind == "news":
++        title = esc(block["title"])
++        if block.get("url"):
++            title = f'<a href="{esc(block["url"])}" rel="noopener">{title}</a>'
++        read = f'<p class="read"><strong>Lecture marché.</strong> {esc(block["readthrough"])}</p>' if block.get("readthrough") else ""
++        summary = f"<p>{esc(block['summary'])}</p>" if block.get("summary") else ""
++        return (f'<article class="story"><h3>{title}</h3><p class="src">{esc(block["source"])}, {esc(block["published"])}</p>{summary}{read}</article>')
++    if kind == "scenario":
++        return f'<div class="scenario"><h3>{esc(block["title"])}</h3><p>{esc(block["body"])}</p></div>'
++    if kind == "events":
++        out, current = [], None
++        for e in block["events"]:
++            if e["day"] != current:
++                current = e["day"]
++                out.append(f'<div class="day">{esc(current)}</div>')
++            label = IMPORTANCE_LABEL.get(e["importance"], e["importance"])
++            imp = f'<span class="chip high">Impact {esc(label)}</span>' if e["importance"] == "élevée" else f'<span class="chip">Impact {esc(label)}</span>'
++            status = f'<span class="chip ok">{esc(e["status"])}</span>' if e["status"] == "confirmé" else f'<span class="chip warn">{esc(e["status"])}</span>'
++            src = ""
++            if e.get("source"):
++                src = f' <a href="{esc(e["source"])}" rel="noopener">source</a>' if e["source"].startswith("http") else f' <span class="note">Source : {esc(e["source"])}</span>'
++            note = f'<div class="note">{esc(e["note"])}{src}</div>' if e.get("note") or src else ""
++            cats = f'<div class="cats">Univers concernés : {esc(", ".join(e["categories"]))}</div>' if e.get("categories") else ""
++            out.append(f'<div class="event"><div class="t">{esc(e["time"] or "heure ?")}</div><div><div class="what">{esc(e["title"])}</div>'
++                       f'<div class="tags">{imp}{status}<span class="chip">{esc(e["region"])}</span></div>{cats}{note}</div></div>')
++        return "".join(out)
++    return ""
++
++
++def render_html(model: dict[str, Any]) -> str:
++    now: datetime | None = model.get("now_local")
++    started: datetime | None = model.get("started")
++    when = f"{calendar_events.format_day(now.date())} {now.year}, {now:%H:%M}" if now else ""
++    sections = model["sections"]
++    total = sum(s["minutes"] for s in sections) or 1
++    plan = "".join(f'<li><a href="#{esc(s["id"])}"><span>{esc(s["title"])}</span><span class="m">{s["minutes"]} min</span>'
++                   f'<span class="bar" style="width:{max(3, int(100 * s["minutes"] / total))}%"></span></a></li>' for s in sections)
++    body = []
++    for s in sections:
++        body.append(f'<section id="{esc(s["id"])}" aria-labelledby="h-{esc(s["id"])}"><header><h2 id="h-{esc(s["id"])}">{esc(s["title"])}</h2>'
++                    f'<span class="meta">Lecture : {s["minutes"]} min</span></header>' + "".join(render_block(b) for b in s["blocks"]) + "</section>")
++    annex = ""
++    if model.get("legacy_text"):
++        annex = ('<details class="annex"><summary>Annexe : détail complet des données collectées (hors temps de lecture)</summary>'
++                 f"<pre>{linkify(model['legacy_text'])}</pre></details>")
++    weekend = ('<div class="callout warn">Les marchés d\'actions, de taux et de change sont fermés : les cours datent de la dernière séance.</div>'
++               if model.get("weekend") else "")
++    generated = f"{started:%d/%m/%Y à %H:%M UTC}" if started else "date inconnue"
++    words = f"{model['words']:,}".replace(",", "\u202f")
++    head = (
++        '<!doctype html><html lang="fr"><head><meta charset="utf-8">'
++        '<meta name="viewport" content="width=device-width,initial-scale=1">'
++        '<meta name="color-scheme" content="light dark">'
++        f"<title>{esc(model['kind_label'])} | Market Intelligence Daily</title>"
++        '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
++        f'<link rel="stylesheet" href="{GOOGLE_FONTS}"><style>{CSS}</style></head>'
++    )
++    masthead = (
++        '<header class="masthead"><div class="brand"><strong>Market Intelligence Daily</strong>'
++        f'<span>{esc(model["kind_label"])}</span><span>{esc(when)} (heure de Madagascar)</span></div>'
++        f'<h1>{esc(model["headline"])}</h1><p class="dek">{esc(model["dek"])}</p>'
++        f'<dl class="facts"><div><dt>Lecture</dt><dd>{model["reading_minutes"]} min</dd></div>'
++        f'<div><dt>Couverture</dt><dd>{model["n_assets"]} actifs sur {model["n_tracked"]}</dd></div>'
++        f'<div><dt>Mots</dt><dd>{words}</dd></div></dl></header>'
++    )
++    nav = (f'<nav class="plan" aria-label="Plan de lecture"><h2>Plan de lecture</h2>'
++           f'<p>Durée estimée de chaque partie, à 220 mots par minute.</p><ol>{plan}</ol></nav>')
++    footer = (f"<footer>Rapport expérimental d'information, généré le {generated}. Il ne constitue pas un conseil en investissement : "
++              "vérifier les données et les sources avant toute décision.</footer>")
++    return f'{head}<body><div class="shell">{masthead}{nav}<main id="contenu">{weekend}{"".join(body)}{annex}</main>{footer}</div></body></html>'
++
++
++# ----------------------------------------------------------------------------- texte
++def render_text(model: dict[str, Any], include_headline: bool = True) -> str:
++    lines: list[str] = []
++    now = model.get("now_local")
++    if include_headline:
++        lines += [model["kind_label"].upper(), model["headline"], "", model["dek"], ""]
++        if now:
++            lines.append(f"Édition du {calendar_events.format_day(now.date())} {now.year}, {now:%H:%M} (heure de Madagascar). Lecture estimée : {model['reading_minutes']} min.")
++        lines.append("")
++    for s in model["sections"]:
++        lines += ["", s["title"].upper(), f"(lecture : {s['minutes']} min)", ""]
++        for b in s["blocks"]:
++            k = b["kind"]
++            if k in ("p", "note"):
++                lines += [b["text"], ""]
++            elif k == "h3":
++                lines += [b["text"] + " :"]
++            elif k == "chip":
++                lines += [f"[{b['text']}]"]
++            elif k == "callout":
++                lines += [f"> {b['text']}", ""]
++            elif k == "list":
++                lines += [f"- {i}" for i in b["items"]] + [""]
++            elif k == "probs":
++                lines += [f"Hausse {b['probs'].get('haussier')} % ; zone centrale {b['probs'].get('central')} % ; baisse {b['probs'].get('baissier')} %.", b.get("note", ""), ""]
++            elif k == "table":
++                lines.append(b.get("caption", ""))
++                lines.append(" | ".join(b["headers"]))
++                for row in b["rows"]:
++                    lines.append(" | ".join("tendance" if "spark" in c else (c.get("t", "") + (f" ({c['sub']})" if c.get("sub") else "")) for c in row))
++                lines.append("")
++            elif k == "news":
++                lines += [f"* {b['title']}", f"  {b['source']}, {b['published']}"]
++                if b.get("summary"):
++                    lines.append(f"  {b['summary']}")
++                if b.get("readthrough"):
++                    lines.append(f"  Lecture marché : {b['readthrough']}")
++                if b.get("url"):
++                    lines.append(f"  {b['url']}")
++                lines.append("")
++            elif k == "scenario":
++                lines += [b["title"], b["body"], ""]
++            elif k == "events":
++                for e in b["events"]:
++                    lines.append(f"- {e['day']}{' à ' + e['time'] if e['time'] else ''} : {e['title']} [{e['status']}, impact {IMPORTANCE_LABEL.get(e['importance'], e['importance'])}]")
++                    if e.get("note"):
++                        lines.append(f"  {e['note']}")
++                lines.append("")
++    return "\n".join(lines).strip() + "\n"
++
++
++def summary_html_from_text(text: str, report_url: str) -> str:
++    """Courriel court et lisible, construit à partir du texte enregistré : l'essentiel et un lien vers la version complète."""
++    lines = text.splitlines()
++    kind_label = lines[0].title() if lines else "Rapport"
++    headline = lines[1] if len(lines) > 1 else ""
++    dek = lines[3] if len(lines) > 3 else ""
++    minutes = re.search(r"Lecture estimée : (\d+) min", text)
++    items: list[str] = []
++    in_section = False
++    for line in lines:
++        if line.strip() == "L'ESSENTIEL":
++            in_section = True
++            continue
++        if in_section:
++            if line.startswith("- "):
++                items.append(line[2:].strip())
++            elif line.isupper() and line.strip():
++                break
++    bullets = "".join(f'<li style="margin:0 0 10px">{esc(i)}</li>' for i in items)
++    label = f"Lire le rapport complet ({minutes.group(1)} min)" if minutes else "Lire le rapport complet"
++    return (
++        '<html><body style="margin:0;background:#F3F5F8;font-family:Georgia,serif;color:#17212B">'
++        '<div style="max-width:640px;margin:0 auto;padding:28px 22px;background:#FFFFFF">'
++        f'<p style="font:600 13px Arial,sans-serif;color:#566474;margin:0 0 12px">Market Intelligence Daily — {esc(kind_label)}</p>'
++        f'<h1 style="font:500 26px/1.25 Georgia,serif;margin:0 0 12px">{esc(headline)}</h1>'
++        f'<p style="font-size:16px;line-height:1.55;color:#566474;margin:0 0 18px">{esc(dek)}</p>'
++        f'<ul style="font-size:16px;line-height:1.55;padding-left:18px;margin:0 0 22px">{bullets}</ul>'
++        f'<p style="margin:0 0 6px"><a href="{esc(report_url)}" style="display:inline-block;background:#2B5C8F;color:#FFFFFF;text-decoration:none;'
++        f'font:600 15px Arial,sans-serif;padding:12px 18px;border-radius:4px">{esc(label)}</a></p>'
++        '<p style="font:12px/1.5 Arial,sans-serif;color:#566474;margin:22px 0 0">Contenu informatif et expérimental, pas un conseil en investissement. '
++        "La version texte intégrale de ce rapport figure aussi dans ce message.</p></div></body></html>"
++    )
+diff --git a/tests/test_editorial.py b/tests/test_editorial.py
+new file mode 100644
+index 0000000..23390bf
+--- /dev/null
++++ b/tests/test_editorial.py
+@@ -0,0 +1,279 @@
++import json
++import os
++import unittest
++from datetime import date, datetime, timezone
++from unittest.mock import patch
++
++from src import calendar_events, editorial, llm_editor, render_report
++from src.market_report import (ASSETS, METHOD_VERSION, AssetRow, evaluate_forecasts, evaluate_scenario_forecasts,
++                               market_conviction, record_new_forecasts)
++
++
++def make_row(ticker, daily=0.5, five=1.0, month=2.0, price=100.0, vol=16.0, day="2026-10-16"):
++    meta = ASSETS[ticker]
++    return AssetRow(ticker=ticker, name=meta["name"], asset_class=meta["class"], price=price, daily_pct=daily,
++                    five_day_pct=five, one_month_pct=month, rsi14=None, ma20_gap_pct=None, ma50_gap_pct=None,
++                    annualized_vol_pct=vol, trend="test", data_timestamp=day, note="")
++
++
++def all_rows():
++    return [make_row(t) for t in ASSETS]
++
++
++def base_ctx(**overrides):
++    rows = all_rows()
++    started = datetime(2026, 10, 17, 2, 30, tzinfo=timezone.utc)
++    ctx = {
++        "kind": "morning", "title": "t", "now_local": started.astimezone(calendar_events.TZ), "started": started,
++        "rows": rows, "sparks": {"^GSPC": [1, 2, 3, 4, 5, 6]}, "news": [], "priority_news": [], "macro": [],
++        "calendar": [], "scenario": market_conviction(rows), "forecast_eval": evaluate_forecasts({}),
++        "scenario_eval": evaluate_scenario_forecasts([]), "cross_lines": [], "errors": {}, "n_tracked": len(ASSETS),
++        "weekend": False, "legacy_text": "", "llm": None,
++    }
++    ctx.update(overrides)
++    return ctx
++
++
++class NineCategoriesTests(unittest.TestCase):
++    def test_every_category_has_instruments_and_none_is_counted_twice(self):
++        rows = all_rows()
++        for cat in editorial.CATEGORIES:
++            self.assertTrue([r for r in rows if cat["match"](r)], cat["key"])
++        for row in rows:
++            hits = [c["key"] for c in editorial.CATEGORIES if c["match"](row)]
++            self.assertLessEqual(len(hits), 1, (row.ticker, hits))
++        self.assertEqual(len(editorial.CATEGORIES), 9)
++
++    def test_vix_is_in_indices_and_bond_etfs_are_not_in_bonds(self):
++        by = {c["key"]: c for c in editorial.CATEGORIES}
++        self.assertTrue(by["indices"]["match"](make_row("^VIX")))
++        self.assertFalse(by["obligations"]["match"](make_row("TLT")))
++        self.assertTrue(by["etf"]["match"](make_row("TLT")))
++        self.assertTrue(by["obligations"]["match"](make_row("^TNX")))
++
++    def test_coverage_additions(self):
++        for ticker in ("^IRX", "^FVX", "^TYX", "BZ=F", "ASML.AS", "7203.T", "VEMAX"):
++            self.assertIn(ticker, ASSETS)
++
++
++class FormattingTests(unittest.TestCase):
++    def test_french_numbers(self):
++        self.assertEqual(editorial.fr_num(-1.95), "−1,95")
++        self.assertEqual(editorial.fr_num(81609.4, 0), "81\u202f609")
++        self.assertEqual(editorial.fr_pct(0.5), "+0,50\u00a0%")
++        self.assertEqual(editorial.fr_num(None), "n.d.")
++        self.assertEqual(editorial.fr_num(-0.001, 2), "0,00")
++
++    def test_text_numbers_and_agreements(self):
++        self.assertEqual(editorial.fr_text("S&P 500 en baisse (-1.95 %) et +0.13%"), "S&P 500 en baisse (−1,95\u00a0%) et +0,13\u00a0%")
++        self.assertIn("2,53 points de pourcentage", editorial.fr_pp(2.53))
++        self.assertIn("1,50 point de pourcentage", editorial.fr_pp(1.5))
++        self.assertIn("1,4 point de base", editorial.fr_bp(1.4))
++
++
++class CalendarTests(unittest.TestCase):
++    def test_times_are_converted_to_madagascar_and_window_is_applied(self):
++        events = [
++            {"date": "2026-10-28", "time_utc": "18:00", "title": "FOMC", "importance": "élevée", "status": "confirmé"},
++            {"date": "2026-12-09", "time_utc": "19:00", "title": "Lointain", "importance": "élevée", "status": "confirmé"},
++            {"date": "2026-10-10", "time_utc": None, "title": "Passé", "importance": "faible"},
++        ]
++        found = calendar_events.upcoming_events(events, date(2026, 10, 17), 14)
++        self.assertEqual([e["title"] for e in found], ["FOMC"])
++        self.assertEqual(found[0]["local_time"], "21:00")
++
++    def test_unknown_status_defaults_to_to_confirm_and_midnight_rollover(self):
++        found = calendar_events.upcoming_events(
++            [{"date": "2026-10-20", "time_utc": "22:30", "title": "Nuit", "importance": "moyenne"}], date(2026, 10, 17), 7)
++        self.assertEqual(found[0]["status"], "à confirmer")
++        self.assertEqual(str(found[0]["local_date"]), "2026-10-21")
++
++    def test_shipped_calendar_never_claims_confirmed_without_official_source(self):
++        for event in calendar_events.load_manual_events():
++            if event.get("status") == "confirmé":
++                self.assertTrue(str(event.get("source", "")).startswith("https://"), event["title"])
++
++    def test_fred_events_need_a_key(self):
++        with patch.dict(os.environ, {}, clear=False):
++            os.environ.pop("FRED_API_KEY", None)
++            events, errors = calendar_events.fetch_fred_release_events(date(2026, 10, 17), date(2026, 10, 24))
++        self.assertEqual((events, errors), ([], []))
++
++
++class ForecastEvaluationFixesTests(unittest.TestCase):
++    @staticmethod
++    def snapshot(kind, day, price, vol=None, forecast=True):
++        snap = {"report_type": kind, "assets": [{"ticker": "^GSPC", "data_timestamp": day, "price": price, "annualized_vol_pct": vol}]}
++        if forecast:
++            snap["scenario_forecast"] = {"probabilities": {"haussier": 40, "central": 35, "baissier": 25}}
++        return snap
++
++    def test_same_day_reruns_are_not_independent_samples(self):
++        snaps = [self.snapshot("morning", "2026-10-01", 100.0), self.snapshot("morning", "2026-10-01", 100.0),
++                 self.snapshot("audit", "2026-10-02", 102.0, forecast=False)]
++        result = evaluate_scenario_forecasts(snaps)
++        self.assertEqual(result["forecast_count"], 1)
++        self.assertEqual(result["duplicates_ignored"], 1)
++        self.assertEqual(len(result["matured"]), 1)
++
++    def test_central_band_follows_volatility(self):
++        # vol 16 % annualisée → σ quotidien ≈ 1,0 % → bande ≈ ±0,5 % : +0,3 % est « central »
++        calm = evaluate_scenario_forecasts([self.snapshot("morning", "2026-10-01", 100.0, vol=16.0),
++                                            self.snapshot("audit", "2026-10-02", 100.3, forecast=False)])
++        self.assertEqual(calm["matured"][0]["actual"], "central")
++        # sans volatilité enregistrée : ancienne bande de ±0,1 %
++        legacy = evaluate_scenario_forecasts([self.snapshot("morning", "2026-10-01", 100.0),
++                                              self.snapshot("audit", "2026-10-02", 100.3, forecast=False)])
++        self.assertEqual(legacy["matured"][0]["actual"], "haussier")
++
++    def test_benchmarks_and_version_are_reported(self):
++        snaps = [self.snapshot("morning", "2026-10-01", 100.0), self.snapshot("audit", "2026-10-02", 102.0, forecast=False)]
++        result = evaluate_scenario_forecasts(snaps)
++        self.assertEqual(result["baseline_always_up_accuracy_pct"], 100.0)
++        self.assertIsNotNone(result["climatology_brier_score"])
++        self.assertIsNone(result["brier_skill_score"])  # moins de 30 échantillons
++        self.assertEqual(result["by_version"]["v1"]["n"], 1)
++
++    def test_asset_forecasts_report_naive_baselines_and_store_volatility(self):
++        dates = ["2026-10-01", "2026-10-02", "2026-10-05", "2026-10-06"]
++        prices = [100, 101, 102, 103]
++        snaps = [{"assets": [{"ticker": "T", "data_timestamp": d, "price": p}]} for d, p in zip(dates, prices)]
++        records = [{"id": "a", "ticker": "T", "base_date": dates[1], "base_price": 101, "direction": "hausse", "horizon_sessions": 1}]
++        result = evaluate_forecasts({"forecasts": snaps, "forecast_records": records})
++        stats = result["by_horizon"]["1"]
++        self.assertEqual(stats["always_up_accuracy_pct"], 100.0)
++        self.assertEqual(stats["persistence_accuracy_pct"], 100.0)
++        state = {}
++        record_new_forecasts(state, [make_row("^GSPC", five=1.0, vol=16.0)])
++        self.assertAlmostEqual(state["forecast_records"][0]["daily_sigma_pct"], 16.0 / 252 ** 0.5, places=3)
++        self.assertEqual(state["forecast_records"][0]["method_version"], METHOD_VERSION)
++
++    def test_conviction_v2_is_versioned_and_consistent(self):
++        for score_rows in ([make_row("^GSPC", five=2), make_row("^IXIC", five=2), make_row("^DJI", five=2), make_row("^VIX", daily=-9)],
++                           [make_row("^GSPC", five=-2), make_row("^IXIC", five=-2), make_row("^DJI", five=-2), make_row("^VIX", daily=10)],
++                           [make_row("^GSPC", five=0)]):
++            result = market_conviction(score_rows)
++            self.assertEqual(sum(result["probabilities"].values()), 100)
++            self.assertLessEqual(max(result["probabilities"].values()), 60)
++            self.assertEqual(result["method_version"], METHOD_VERSION)
++        self.assertGreaterEqual(market_conviction([make_row("^GSPC", five=0)])["probabilities"]["central"], 35)
++
++
++class ReportBuildTests(unittest.TestCase):
++    def test_report_has_all_sections_and_reading_time(self):
++        model = editorial.build_report(base_ctx())
++        ids = [s["id"] for s in model["sections"]]
++        for key in ("synthese", "regime", "agenda", *[c["key"] for c in editorial.CATEGORIES], "scenarios", "audit", "methode"):
++            self.assertIn(key, ids)
++        self.assertGreaterEqual(model["reading_minutes"], 1)
++        self.assertTrue(model["headline"])
++
++    def test_weekly_and_update_have_their_own_sections(self):
++        weekly = editorial.build_report(base_ctx(kind="weekly"))
++        self.assertIn("semaine", [s["id"] for s in weekly["sections"]])
++        self.assertEqual(weekly["kind_label"], "Perspectives de la semaine")
++        update = editorial.build_report(base_ctx(kind="update", prior_assets={"^GSPC": {"price": 90.0}}))
++        self.assertIn("depuis", [s["id"] for s in update["sections"]])
++
++    def test_html_is_escaped_and_contains_plan_and_sparkline(self):
++        news = [{"title": "<script>alert(1)</script> Fed holds rates", "source": "X", "published": "d", "url": "https://example.org/a",
++                 "summary_short": "Résumé <b>gras</b>", "readthrough": "Lecture"}]
++        model = editorial.build_report(base_ctx(priority_news=news))
++        page = render_report.render_html(model)
++        self.assertNotIn("<script>alert(1)</script>", page)
++        self.assertIn("&lt;script&gt;", page)
++        self.assertIn('aria-label="Plan de lecture"', page)
++        self.assertIn("<svg", page)
++        self.assertIn("prefers-color-scheme:dark", page)
++        self.assertIn("@media print", page)
++
++    def test_text_render_and_email_summary(self):
++        model = editorial.build_report(base_ctx())
++        text = render_report.render_text(model)
++        self.assertIn("L'ESSENTIEL", text)
++        html_mail = render_report.summary_html_from_text(text, "https://example.org/r.html")
++        self.assertIn("https://example.org/r.html", html_mail)
++        self.assertIn("Lire le rapport complet", html_mail)
++        self.assertIn("S&amp;P 500", html_mail)
++
++    def test_legacy_annex_is_outside_reading_time(self):
++        small = editorial.build_report(base_ctx(legacy_text=""))
++        big = editorial.build_report(base_ctx(legacy_text="mot " * 50000))
++        self.assertEqual(small["reading_minutes"], big["reading_minutes"])
++        self.assertIn("Annexe", render_report.render_html(big))
++
++    def test_repeated_market_readthrough_is_shown_once(self):
++        items = [{"title": f"Titre {i}", "source": "S", "published": "d", "url": "u", "summary_short": f"Résumé distinct numéro {i}",
++                  "readthrough": "Même lecture"} for i in range(3)]
++        model = editorial.build_report(base_ctx(priority_news=items))
++        faits = next(s for s in model["sections"] if s["id"] == "faits")
++        self.assertEqual(sum(1 for b in faits["blocks"] if b["readthrough"]), 1)
++
++    def test_missing_data_does_not_crash(self):
++        model = editorial.build_report(base_ctx(rows=[make_row("^GSPC")], scenario={}))
++        self.assertIn("Aucune cotation exploitable", json.dumps(model["sections"], default=str, ensure_ascii=False))
++
++
++class LlmGuardrailTests(unittest.TestCase):
++    FACTS = json.dumps({"univers": {"indices": [{"instrument": "S&P 500", "variation_seance_pct": -1.09, "dernier": 6500.25}]},
++                        "calendrier": [{"date": "2026-10-28"}]})
++    OK = ("Interprétation : le S&P 500 recule de 1,09 sur la séance, un mouvement compatible avec une hausse de l'aversion au risque, "
++          "mais une seule séance ne suffit pas à conclure sur la direction des prochains jours.")
++
++    def test_supported_numbers_pass_and_invented_numbers_are_dropped(self):
++        numbers = llm_editor._facts_numbers(self.FACTS)
++        self.assertTrue(llm_editor.validate_paragraph(self.OK, numbers))
++        invented = self.OK.replace("1,09", "3,41")
++        self.assertFalse(llm_editor.validate_paragraph(invented, numbers))
++
++    def test_advice_and_short_text_are_dropped(self):
++        numbers = llm_editor._facts_numbers(self.FACTS)
++        advice = "Achetez le S&P 500 maintenant car la correction de 1,09 offre un point d'entrée très attractif pour les investisseurs patients."
++        self.assertFalse(llm_editor.validate_paragraph(advice, numbers))
++        self.assertFalse(llm_editor.validate_paragraph("Trop court.", numbers))
++
++    def test_validate_commentary_counts_dropped(self):
++        raw = {"synthese": [self.OK, self.OK.replace("1,09", "9,99")], "categories": {"indices": [self.OK], "inconnu": [self.OK]}}
++        clean, dropped = llm_editor.validate_commentary(raw, self.FACTS)
++        self.assertEqual(len(clean["synthese"]), 1)
++        self.assertEqual(dropped, 1)
++        self.assertIn("indices", clean["categories"])
++        self.assertNotIn("inconnu", clean["categories"])
++
++    def test_no_key_means_no_llm_and_no_error(self):
++        with patch.dict(os.environ, {}, clear=False):
++            os.environ.pop("ANTHROPIC_API_KEY", None)
++            self.assertEqual(llm_editor.generate_commentary(base_ctx()), (None, []))
++
++    def test_api_failure_is_not_blocking(self):
++        with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "k"}), patch("src.llm_editor.requests.post", side_effect=RuntimeError("réseau")), \
++                patch("src.llm_editor.time.sleep"):
++            result, errors = llm_editor.generate_commentary(base_ctx())
++        self.assertIsNone(result)
++        self.assertIn("indisponible", errors[0])
++
++    def test_successful_call_is_validated_and_rendered_with_label(self):
++        ctx = base_ctx()
++        facts_text = json.dumps(llm_editor.build_facts(ctx), ensure_ascii=False, default=str)
++        sp = next(r for r in ctx["rows"] if r.ticker == "^GSPC")
++        good = (f"Interprétation : le S&P 500 affiche {str(sp.daily_pct).replace('.', ',')} sur la séance, ce qui reste compatible avec une phase d'attente "
++                "des investisseurs avant les prochaines publications, sans qu'une seule séance suffise à établir une tendance.")
++        payload = {"content": [{"type": "text", "text": json.dumps({"synthese": [good, "Le S&P 500 vaut 123456,78 points."], "categories": {"indices": [good]}})}]}
++
++        class Resp:
++            def raise_for_status(self): pass
++            def json(self): return payload
++        with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "k"}), patch("src.llm_editor.requests.post", return_value=Resp()) as post:
++            result, errors = llm_editor.generate_commentary(ctx)
++        self.assertEqual(errors, [])
++        self.assertEqual(len(result["synthese"]), 1)
++        self.assertEqual(result["meta"]["dropped"], 1)
++        self.assertEqual(post.call_args.kwargs["headers"]["anthropic-version"], "2023-06-01")
++        ctx["llm"] = result
++        page = render_report.render_html(editorial.build_report(ctx))
++        self.assertIn("Rédaction assistée par modèle", page)
++        self.assertIn(facts_text[:0], page)
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/tests/test_pipeline.py b/tests/test_pipeline.py
+new file mode 100644
+index 0000000..0ba7ae1
+--- /dev/null
++++ b/tests/test_pipeline.py
+@@ -0,0 +1,66 @@
++import json
++import tempfile
++import unittest
++from pathlib import Path
++from unittest.mock import patch
++
++import pandas as pd
++
++from src import market_report as mr
++
++
++def fake_frames():
++    index = pd.date_range(end="2026-10-16", periods=80, freq="B")
++    return {t: pd.DataFrame({"Close": [100 + i * 0.1 + (i % 3) for i in range(80)]}, index=index) for t in mr.ASSETS}
++
++
++NEWS = [{"title": "Brent oil rises as supply concerns grow", "source": "Reuters", "published": "Fri, 16 Oct 2026 20:00:00 GMT",
++         "url": "https://example.org/oil",
++         "summary": "Oil prices rose on Friday as traders weighed supply disruption risks in the Middle East and the outlook for demand, "
++                    "while inventories in the United States fell more than analysts had expected."}]
++
++
++class EndToEndOfflineTests(unittest.TestCase):
++    def run_report(self, kind):
++        tmp = Path(tempfile.mkdtemp())
++        patches = [
++            patch.object(mr, "STATE_DIR", tmp), patch.object(mr, "FORECAST_FILE", tmp / "forecasts.json"),
++            patch.object(mr, "HISTORY_FILE", tmp / "market_history.csv"),
++            patch.object(mr, "fetch_prices", return_value=(fake_frames(), [])),
++            patch.object(mr, "fetch_news", return_value=(NEWS, [])),
++            patch.object(mr, "_enrich_news_item", side_effect=lambda x: x),
++            patch.object(mr, "fetch_company_fundamentals", return_value=([], [])),
++            patch.object(mr, "fetch_macro_series_with_fallback", return_value=([], [])),
++        ]
++        for p in patches:
++            p.start()
++            self.addCleanup(p.stop)
++        return mr.make_report(kind), tmp
++
++    def test_weekly_report_end_to_end(self):
++        (plain, page, snapshot, model), tmp = self.run_report("weekly")
++        self.assertEqual(model["kind"], "weekly")
++        self.assertIn("PERSPECTIVES DE LA SEMAINE", plain)
++        self.assertIn("<svg", page)  # mini-graphiques de 30 jours
++        self.assertIn("Annexe", page)
++        self.assertEqual(snapshot["scenario_forecast"]["method_version"], mr.METHOD_VERSION)
++        json.dumps(snapshot)  # l'instantané reste sérialisable
++        self.assertNotIn("sparks", snapshot)
++        mr.write_state(snapshot, [mr.AssetRow(**a) for a in snapshot["assets"]])
++        self.assertTrue((tmp / "forecasts.json").exists())
++
++    def test_every_report_type_builds_and_covers_nine_categories(self):
++        for kind in ("morning", "update", "audit"):
++            (plain, page, snapshot, model), _ = self.run_report(kind)
++            titles = [s["title"] for s in model["sections"]]
++            for label in ("Indices boursiers", "Futures sur indices", "Actions", "Matières premières", "Devises",
++                          "Crypto-monnaies", "Obligations", "ETF", "Fonds d'investissement"):
++                self.assertIn(label, titles, kind)
++
++    def test_email_subject_uses_french_label(self):
++        self.assertEqual(mr.email_subject("weekly", "2026-10-18T18:00:00+03:00"),
++                         "[Market Intelligence] Perspectives de la semaine — 2026-10-18 18:00")
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/tools/preview_from_snapshot.py b/tools/preview_from_snapshot.py
+new file mode 100644
+index 0000000..5544063
+--- /dev/null
++++ b/tools/preview_from_snapshot.py
+@@ -0,0 +1,63 @@
++"""Génère un rapport d'aperçu HORS LIGNE à partir du dernier instantané enregistré dans data/forecasts.json.
++
++Utile pour juger la mise en page sans accès réseau. Les mini-graphiques (30 jours) restent vides :
++l'historique de prix n'est pas conservé dans l'instantané ; ils apparaissent lors des exécutions réelles.
++
++Usage : python tools/preview_from_snapshot.py [morning|update|audit|weekly] [sortie.html]
++"""
++from __future__ import annotations
++
++import json
++import re
++import sys
++from datetime import datetime, timezone
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT))
++
++from src import calendar_events, editorial, market_report as mr, render_report  # noqa: E402
++
++
++def macro_from_text(text: str) -> list[dict]:
++    alias = {"CUUR0000SA0": "CPIAUCSL", "LNS14000000": "UNRATE", "CES0000000001": "PAYEMS"}
++    out = []
++    for m in re.finditer(r"^- (?P<name>.+?) \((?P<id>[A-Z0-9]+)\) : (?P<value>[\d.]+)(?P<rest>.*?); observation du (?P<date>[\d-]+); (?:variation[^;]*; )?fournisseur : (?P<prov>[^;]+); source : (?P<src>\S+?)\.$", text, re.M):
++        yoy = re.search(r"([+-][\d.]+) %", m.group("rest"))
++        out.append({"id": alias.get(m.group("id"), m.group("id")), "name": m.group("name"), "value": float(m.group("value")),
++                    "date": m.group("date"), "unit": "", "yoy_pct": float(yoy.group(1)) if yoy else None, "change": None,
++                    "provider": m.group("prov"), "source": m.group("src")})
++    return out
++
++
++def main() -> None:
++    kind = sys.argv[1] if len(sys.argv) > 1 else "morning"
++    target = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "apercu_rapport.html"
++    state = json.loads((ROOT / "data" / "forecasts.json").read_text(encoding="utf-8"))
++    snaps = state["forecasts"]
++    last = snaps[-1]
++    rows = [mr.AssetRow(**a) for a in last["assets"]]
++    started = datetime.now(timezone.utc)
++    now_local = started.astimezone(mr.TZ)
++    cal, _ = calendar_events.collect_calendar(now_local.date(), 21 if kind == "weekly" else 14)
++    legacy = (ROOT / "data" / "latest_morning.txt").read_text(encoding="utf-8")
++    news = last.get("news", [])
++    ctx = {
++        "kind": kind, "title": editorial.KIND_LABELS[kind], "now_local": now_local, "started": started, "rows": rows, "sparks": {},
++        "news": news, "priority_news": [mr.display_news(n) for n in mr.prioritize_news(news, 8)], "news_picker": mr.news_for_keywords,
++        "macro": macro_from_text((ROOT / "data" / "latest_audit.txt").read_text(encoding="utf-8")), "fundamentals": [],
++        "calendar": cal, "calendar_days": 21 if kind == "weekly" else 14, "scenario": mr.market_conviction(rows),
++        "forecast_eval": mr.evaluate_forecasts({"forecasts": snaps[:-1], "forecast_records": state.get("forecast_records", [])}),
++        "scenario_eval": mr.evaluate_scenario_forecasts(snaps[:-1]), "cross_lines": mr.scenario_context(rows),
++        "prior_assets": {a["ticker"]: a for a in snaps[-2]["assets"]} if len(snaps) > 1 else {},
++        "errors": {}, "n_tracked": len(mr.ASSETS), "weekend": now_local.weekday() >= 5, "legacy_text": legacy, "llm": None,
++    }
++    model = editorial.build_report(ctx)
++    target.write_text(render_report.render_html(model), encoding="utf-8")
++    print(f"{target} : {model['words']} mots, lecture estimée {model['reading_minutes']} min")
++    for s in model["sections"]:
++        print(f"  {s['minutes']:>2} min  {s['title']}")
++
++
++if __name__ == "__main__":
++    main()
