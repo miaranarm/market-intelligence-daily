@@ -301,6 +301,7 @@ def _feed_entries(root: ET.Element, default_source: str) -> list[dict[str, str]]
         fields: dict[str, str] = {}
         atom_link = ""
         atom_source = ""
+        summary_text = ""
         for child in list(node):
             name = child.tag.rsplit("}", 1)[-1].split(":")[-1].lower()
             value = (child.text or "").strip()
@@ -319,6 +320,9 @@ def _feed_entries(root: ET.Element, default_source: str) -> list[dict[str, str]]
                          if grand.tag.rsplit("}", 1)[-1].split(":")[-1].lower() == "title"),
                         "",
                     )
+            elif name in {"description", "summary", "content", "encoded"} and not summary_text:
+                raw_summary = "".join(child.itertext()).strip()
+                summary_text = re.sub(r"\\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", raw_summary))).strip()
             elif name in {"title", "pubdate", "published", "updated", "date"}:
                 fields[name] = value
         title = fields.get("title", "")
@@ -326,7 +330,13 @@ def _feed_entries(root: ET.Element, default_source: str) -> list[dict[str, str]]
         published = next((fields[k] for k in ("pubdate", "published", "updated", "date") if fields.get(k)), "")
         source = atom_source or fields.get("source", "") or default_source
         if title and link:
-            entries.append({"title": title, "url": link, "published": published, "source": source})
+            entries.append({
+                "title": html.unescape(title).strip(),
+                "url": link,
+                "published": published,
+                "source": html.unescape(source).strip(),
+                "summary": summary_text[:900],
+            })
     return entries
 
 
@@ -1299,7 +1309,10 @@ def append_funnel_report(
             theme, categories, impact = infer_macro_impact(item["title"])
             published = item.get("published") or "date de publication non fournie par le flux"
             source = item.get("source") or "source non précisée par le flux"
-            lines.append(f"- ACTUALITÉ : {item['title']} — {source} — {published} — {item['url']}")
+            lines.append(f"- ACTUALITÉ : {item['title']} — {source} — {published}")
+            if item.get("summary"):
+                lines.append(f"  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : {item['summary']}")
+            lines.append(f"  - SOURCE À OUVRIR : {item['url']}")
             lines.append(f"  - ANALYSE : {theme}. Actifs potentiellement concernés : {categories}. {impact}")
     else:
         lines.append("- Aucun titre n'a pu être récupéré lors de cette collecte. Le rapport ne doit pas être interprété comme une synthèse complète de l'actualité.")
