@@ -390,7 +390,7 @@ def prioritize_news(news: list[dict[str, str]], limit: int = 12) -> list[dict[st
     )
     low_market_value = (
         "termination of enforcement actions", "enforcement action", "small-scale solar generation",
-        "solar generation has quadrupled", "speech by board member",
+        "solar generation has quadrupled", "speech by board member", "cv and questionnaire", "treasury select committee",
     )
     def score(item: dict[str, str]) -> tuple[int, float]:
         title = item.get("title", "").casefold()
@@ -557,7 +557,7 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
 def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
     """Lead with verifiable market-moving facts, not merely recent or official headlines."""
     # A wider shortlist plus concurrent enrichment improves source and asset-class coverage.
-    candidates = prioritize_news(news, 36)
+    candidates = prioritize_news(news, 60)
     with ThreadPoolExecutor(max_workers=8) as pool:
         enriched = list(pool.map(_enrich_news_item, candidates))
     low_value_headlines = (
@@ -585,7 +585,7 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
         host = urlparse(item.get("url", "")).netloc.casefold().removeprefix("www.")
         is_aggregator = host == "news.google.com" or host.endswith(".news.google.com")
         source_name = item.get("source", "").casefold()
-        if is_aggregator and ("google news" in source_name or len(summary) < 100):
+        if is_aggregator and ("google news" in source_name or not source_name):
             continue
         # Keep direct-publisher headlines even when article metadata cannot be retrieved.
         # The renderer explicitly labels these as headline-only instead of silently dropping them.
