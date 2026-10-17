@@ -353,7 +353,7 @@ def _news_dedupe_key(title: str) -> str:
 
 
 def prioritize_news(news: list[dict[str, str]], limit: int = 12) -> list[dict[str, str]]:
-    """Select a diverse, market-relevant headline shortlist without inventing article content."""
+    """Rank recent news by financial relevance first, then source quality and freshness."""
     high_impact = (
         "inflation", "cpi", "pce", "gdp", "recession", "central bank", "federal reserve",
         "fed ", "ecb", "interest rate", "employment", "payroll", "jobs report", "tariff",
@@ -361,15 +361,24 @@ def prioritize_news(news: list[dict[str, str]], limit: int = 12) -> list[dict[st
         "pmi", "retail sales", "earnings", "quarterly results", "profit warning", "guidance",
         "revenue", "semiconductor", "artificial intelligence", "nvidia", "china", "bitcoin",
         "crypto", "merger", "acquisition", "opec", "supply disruption", "export restriction",
+        "equities", "stocks", "bonds", "currency", "currencies", "etf", "credit", "fund flows",
+        "capital flows", "industrial production", "trade data", "exports", "imports", "market selloff",
+    )
+    low_market_value = (
+        "termination of enforcement actions", "enforcement action", "small-scale solar generation",
+        "solar generation has quadrupled", "speech by board member",
     )
     def score(item: dict[str, str]) -> tuple[int, float]:
         title = item.get("title", "").casefold()
+        summary = item.get("summary", "").casefold()
+        text = f"{title} {summary}"
         source = item.get("source", "").casefold()
-        points = sum(2 for keyword in high_impact if keyword in title)
-        # Prefer a named publisher or institution over an aggregator's generic feed label.
+        points = sum(2 for keyword in high_impact if keyword in text)
+        if any(phrase in title for phrase in low_market_value):
+            points -= 8
         if "google news" in source:
-            points -= 2
-        elif any(token in source for token in ("federal reserve", "bureau", "bank", "administration", "commission", "department", "sec", "reuters", "associated press", "bloomberg", "financial times", "cnbc", "bbc")):
+            points -= 1
+        elif any(token in source for token in ("reuters", "associated press", "bloomberg", "financial times", "cnbc", "bbc", "sec", "federal reserve", "european central bank", "bank of japan", "eia", "bureau of labor")):
             points += 2
         published = item.get("published", "")
         recency = 0.0
@@ -387,9 +396,7 @@ def prioritize_news(news: list[dict[str, str]], limit: int = 12) -> list[dict[st
             except (TypeError, ValueError, OverflowError):
                 pass
         return points, recency
-    # Stable sort preserves source-feed diversity when relevance and freshness are similar.
     return sorted(news, key=score, reverse=True)[:max(0, limit)]
-
 
 
 def _news_fact_and_market_readthrough(item: dict[str, str]) -> tuple[str, str]:
@@ -469,19 +476,37 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
     return result
 
 def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
-    """Show reported facts first; do not disguise a headline as a factual summary."""
-    # Keep article-page enrichment bounded; discovery feeds can return dozens of links.
-    candidates = prioritize_news(news, 16)
-    enriched = [_enrich_news_item(item) for item in candidates]
-    # A title alone cannot support a factual account or a causal market interpretation.
-    factual_items = [
-        item for item in enriched
-        if len(re.sub(r"\s+", " ", item.get("summary", "")).strip()) >= 100
-    ]
+    """Lead with verifiable market-moving facts, not merely recent or official headlines."""
+    # A wider shortlist plus concurrent enrichment improves source and asset-class coverage.
+    candidates = prioritize_news(news, 36)
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        enriched = list(pool.map(_enrich_news_item, candidates))
+    low_value_headlines = (
+        "termination of enforcement actions", "enforcement action", "small-scale solar generation",
+        "solar generation has quadrupled", "speech by board member",
+    )
+    market_terms = (
+        "inflation", "cpi", "pce", "gdp", "recession", "central bank", "federal reserve",
+        "interest rate", "employment", "payroll", "tariff", "sanction", "geopolit", "war",
+        "oil", "crude", "treasury", "bond yield", "pmi", "retail sales", "earnings", "profit",
+        "guidance", "revenue", "semiconductor", "artificial intelligence", "nvidia", "china",
+        "bitcoin", "crypto", "merger", "acquisition", "opec", "supply disruption", "export restriction",
+        "equities", "stocks", "bonds", "currency", "currencies", "etf", "credit", "market selloff",
+        "fund flows", "capital flows", "industrial production", "trade data", "exports", "imports",
+    )
+    factual_items = []
+    for item in enriched:
+        summary = re.sub(r"\\s+", " ", item.get("summary", "")).strip()
+        title = item.get("title", "").casefold()
+        if len(summary) < 100 or any(phrase in title for phrase in low_value_headlines):
+            continue
+        combined = f"{title} {summary.casefold()}"
+        if any(term in combined for term in market_terms):
+            factual_items.append(item)
     priority_news = prioritize_news(factual_items, 10)
     lines += ["", "LES ACTUALITÉS QUI COMPTENT"]
     if not priority_news:
-        lines.append("Aucun résumé factuel suffisamment détaillé n’a pu être vérifié dans les flux disponibles. Les titres seuls ne sont pas présentés comme des faits; cette rubrique est incomplète.")
+        lines.append("Aucun résumé factuel suffisamment détaillé et directement pertinent pour les marchés n’a pu être vérifié dans les flux disponibles. Les titres seuls ne sont pas présentés comme des faits; cette rubrique est incomplète.")
         return
     for index, item in enumerate(priority_news, 1):
         fact, impact = _news_fact_and_market_readthrough(item)
