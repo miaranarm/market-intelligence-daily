@@ -493,10 +493,10 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
             result["url"] = final_url
 
         patterns = [
-            r"<meta[^>]+(?:property|name)=[\"'](?:og:description|article:description|twitter:description)[\"'][^>]+content=[\"']([^\"']+)[\"']",
-            r"<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+(?:property|name)=[\"'](?:og:description|article:description|twitter:description)[\"']",
-            r"<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']+)[\"']",
-            r"<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+name=[\"']description[\"']",
+            r"<meta[^>]+(?:property|name)=[\"\x27](?:og:description|article:description|twitter:description)[\"\x27][^>]+content=[\"\x27]([^\"\x27]+)[\"\x27]",
+            r"<meta[^>]+content=[\"\x27]([^\"\x27]+)[\"\x27][^>]+(?:property|name)=[\"\x27](?:og:description|article:description|twitter:description)[\"\x27]",
+            r"<meta[^>]+name=[\"\x27]description[\"\x27][^>]+content=[\"\x27]([^\"\x27]+)[\"\x27]",
+            r"<meta[^>]+content=[\"\x27]([^\"\x27]+)[\"\x27][^>]+name=[\"\x27]description[\"\x27]",
         ]
         candidates = []
         for pattern in patterns:
