@@ -526,6 +526,25 @@ class ForecastEvaluationTests(unittest.TestCase):
         self.assertIn("finance.yahoo.com", html)
         self.assertIn("viewport", html)
 
+    def test_long_supporting_sections_are_collapsed_and_excluded_from_reading_time(self):
+        plain = (
+            "Rapport de test\nHeure Madagascar : 2026-10-16 13:30:00\n"
+            "Généré UTC : 2026-10-16 10:30:00 UTC\n\n"
+            "NIVEAU 4 — CLASSES D'ACTIFS : OÙ SE CONCENTRE LE RISQUE ?\n"
+            + ("Détail justificatif de classe d'actifs. " * 1200)
+            + "\nLES 9 CATÉGORIES — ANALYSE PAR UNIVERS D’INVESTISSEMENT\n"
+            + "Résumé visible et actionnable.\n"
+        )
+        html = render_professional_html(
+            plain,
+            "Rapport de test",
+            datetime(2026, 10, 16, 13, 30, tzinfo=ZoneInfo("Indian/Antananarivo")),
+            datetime(2026, 10, 16, 10, 30, tzinfo=timezone.utc),
+        )
+        self.assertIn("<details><summary>", html)
+        self.assertIn("Détail justificatif de classe d'actifs.", html)
+        self.assertIn("Temps de lecture estimé : 1 min", html)
+
 
 if __name__ == "__main__":
     unittest.main()
