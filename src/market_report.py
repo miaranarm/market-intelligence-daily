@@ -639,6 +639,14 @@ def _parse_fred_csv(csv_text: str) -> list[dict[str, Any]]:
             "date": latest_date.date().isoformat(), "value": latest_value,
             "source": f"https://fred.stlouisfed.org/series/{series_id}",
         }
+        # Add the last two observations so the report states what changed, not just a stale level.
+        if len(series) >= 2:
+            prior_index = series.index[-2]
+            prior_date = pd.Timestamp(frame.loc[prior_index, date_col])
+            prior_value = float(series.iloc[-2])
+            item["previous_date"] = prior_date.date().isoformat()
+            item["previous_value"] = prior_value
+            item["change"] = latest_value - prior_value
         if series_id == "CPIAUCSL":
             prior_month = latest_date - pd.DateOffset(years=1)
             prior_rows = frame.loc[frame[date_col].dt.to_period("M") == prior_month.to_period("M"), series_id]
@@ -730,13 +738,19 @@ def fetch_bls_macro_fallback(missing_ids: set[str]) -> tuple[list[dict[str, Any]
                     continue
             if not observations:
                 continue
-            year, month = max(observations)
+            periods = sorted(observations)
+            year, month = periods[-1]
             value = observations[(year, month)]
             item: dict[str, Any] = {
                 "id": key, "display_id": bls_id, "name": name, "unit": unit, "date": f"{year:04d}-{month:02d}-01",
                 "value": value, "source": f"https://data.bls.gov/timeseries/{bls_id}",
                 "provider": "BLS — source officielle de repli",
             }
+            if len(periods) >= 2:
+                prior_year, prior_month = periods[-2]
+                item["previous_date"] = f"{prior_year:04d}-{prior_month:02d}-01"
+                item["previous_value"] = observations[periods[-2]]
+                item["change"] = value - observations[periods[-2]]
             if key == "CPIAUCSL":
                 prior = observations.get((year - 1, month))
                 if prior not in (None, 0):
@@ -774,9 +788,14 @@ def append_macro_series(lines: list[str], series: list[dict[str, Any]]) -> None:
             value = f"{item['value']:.3f}{extra}"
         else:
             value = f"{item['value']:.3f} {item['unit']}"
+        change_text = "variation récente indisponible"
+        if item.get("change") is not None and item.get("previous_date"):
+            change = float(item["change"])
+            unit = "%" if item["id"] in ("UNRATE", "FEDFUNDS", "DGS10", "DGS2", "T10YIE") else ""
+            change_text = f"variation depuis le {item['previous_date']} : {change:+.3f}{unit}"
         provider = item.get("provider", "FRED")
         display_id = item.get("display_id", item["id"])
-        lines.append(f"- {item['name']} ({display_id}) : {value}; observation du {item['date']}; fournisseur : {provider}; source : {item['source']}.")
+        lines.append(f"- {item['name']} ({display_id}) : {value}; observation du {item['date']}; {change_text}; fournisseur : {provider}; source : {item['source']}.")
 
 
 def infer_macro_impact(headline: str) -> tuple[str, str, str]:
