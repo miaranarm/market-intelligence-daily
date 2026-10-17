@@ -443,7 +443,27 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
         remainder = normalized_summary[len(normalized_title):].strip()
         if len(remainder) < 100:
             summary = ""
-    if len(summary) >= 100:
+    def is_useful_summary(candidate: str) -> bool:
+        candidate = re.sub(r"\s+", " ", candidate).strip()
+        normalized = re.sub(r"[^a-z0-9]+", " ", candidate.casefold()).strip()
+        generic_patterns = (
+            "is the central bank of", "our main task is to maintain price stability",
+            "learn more about", "we use cookies", "this website uses cookies",
+            "welcome to our website", "the official website of",
+        )
+        if len(candidate) < 100 or normalized.startswith(normalized_title):
+            return False
+        if any(phrase in candidate.casefold() for phrase in generic_patterns):
+            return False
+        specific_terms = (
+            "percent", "%", "billion", "million", "raised", "cut", "fell", "rose", "declined",
+            "increased", "decreased", "forecast", "expects", "reported", "announced", "earnings",
+            "revenue", "profit", "inflation", "yield", "growth", "loss", "shares", "stocks",
+            "investors", "markets", "rate", "trade", "exports", "imports", "production",
+        )
+        return any(term in candidate.casefold() for term in specific_terms)
+
+    if is_useful_summary(summary):
         result["summary"] = summary[:1200]
         return result
     url = result.get("url", "")
@@ -454,25 +474,28 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
         response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=7, allow_redirects=True)
         response.raise_for_status()
         page = response.text[:1_500_000]
+        # Prefer article-specific metadata to generic institutional page descriptions.
         patterns = [
-            r"<meta[^>]+(?:name|property)=[\"'](?:description|og:description|twitter:description|article:description)[\"'][^>]+content=[\"']([^\"']+)[\"']",
-            r"<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+(?:name|property)=[\"'](?:description|og:description|twitter:description|article:description)[\"']",
+            r"<meta[^>]+(?:property|name)=[\"'](?:og:description|article:description|twitter:description)[\"'][^>]+content=[\"']([^\"']+)[\"']",
+            r"<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+(?:property|name)=[\"'](?:og:description|article:description|twitter:description)[\"']",
+            r"<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']+)[\"']",
+            r"<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+name=[\"']description[\"']",
         ]
         candidates = []
         for pattern in patterns:
             candidates.extend(re.findall(pattern, page, flags=re.IGNORECASE))
+        final_url = getattr(response, "url", "")
+        if final_url and "news.google.com/rss/articles" not in final_url:
+            result["url"] = final_url
         for candidate in candidates:
             candidate = html.unescape(re.sub(r"\s+", " ", candidate)).strip()
-            normalized = re.sub(r"[^a-z0-9]+", " ", candidate.casefold()).strip()
-            if len(candidate) >= 100 and not normalized.startswith(normalized_title):
+            if is_useful_summary(candidate):
                 result["summary"] = candidate[:1200]
-                final_url = getattr(response, "url", "")
-                if final_url and "news.google.com/rss/articles" not in final_url:
-                    result["url"] = final_url
                 return result
     except Exception:
         pass
-    result["summary"] = summary
+    # Never present generic institutional boilerplate as facts about a specific event.
+    result["summary"] = summary if is_useful_summary(summary) else ""
     return result
 
 def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
@@ -1487,23 +1510,23 @@ def append_funnel_report(
               "Chaque rubrique combine les instruments effectivement reçus et les nouvelles qui peuvent les affecter. Les mouvements sont descriptifs; ils ne prouvent pas à eux seuls une cause ni ne constituent un signal d’achat/vente."]
     category_specs = [
         ("1. Indices boursiers", lambda r: "equity index" in r.asset_class.casefold() and "futures" not in r.asset_class.casefold(),
-         ("stock market", "equities", "indices", "index", "stocks", "wall street", "shares", "selloff", "market rally")),
+         ("stock market", "equity index", "indices", "index", "market selloff", "market rally", "global shares", "global stocks")),
         ("2. Futures sur indices", lambda r: "equity index futures" in r.asset_class.casefold(),
-         ("futures", "nasdaq", "s&p 500", "dow jones", "equity index", "wall street", "risk appetite")),
+         ("equity index futures", "nasdaq futures", "s&p 500 futures", "dow futures", "index futures", "futures point to", "stock futures")),
         ("3. Actions", lambda r: r.asset_class.casefold() in {"us equity", "equity"},
-         ("earnings", "quarterly results", "revenue", "profit", "guidance", "shares", "nvidia", "apple", "microsoft", "tesla", "meta", "semiconductor", "capital expenditure")),
+         ("earnings", "quarterly results", "revenue", "profit warning", "guidance", "shares of", "stock rises", "stock falls", "semiconductor", "capital expenditure", "company reports")),
         ("4. Matières premières", lambda r: "commodity" in r.asset_class.casefold(),
-         ("oil", "crude", "brent", "gold", "silver", "copper", "gas", "opec", "commodity", "commodities", "supply disruption", "agriculture")),
+         ("oil", "crude", "brent", "gold", "silver", "copper", "natural gas", "opec", "commodity", "commodities", "supply disruption", "agriculture", "coffee")),
         ("5. Devises (Forex)", lambda r: r.asset_class.casefold() == "fx",
-         ("forex", "currency", "currencies", "dollar", "euro", "yen", "exchange rate", "fx", "central bank", "interest rate")),
+         ("forex", "currency", "currencies", "dollar", "euro", "yen", "exchange rate", "fx market", "fed rate", "central bank decision", "interest-rate decision")),
         ("6. Crypto-actifs", lambda r: r.asset_class.casefold() == "crypto",
-         ("bitcoin", "ethereum", "crypto", "digital asset", "cryptoasset", "spot etf")),
+         ("bitcoin", "ethereum", "crypto", "digital asset", "cryptoasset", "spot bitcoin etf")),
         ("7. Obligations et crédit", lambda r: any(x in r.asset_class.casefold() for x in ("rates", "bond", "credit")),
-         ("bond", "bonds", "treasury", "yield", "credit", "debt", "spread", "fixed income")),
+         ("bond", "bonds", "treasury yield", "bond yield", "credit spread", "credit market", "debt issuance", "fixed income")),
         ("8. ETF", lambda r: "etf" in r.asset_class.casefold(),
-         ("etf", "exchange-traded fund", "fund flows", "inflows", "outflows", "passive investing")),
+         ("etf", "exchange-traded fund", "fund flows", "inflows into etfs", "outflows from etfs", "passive investing")),
         ("9. Fonds d’investissement", lambda r: "mutual fund" in r.asset_class.casefold() or "fund" in r.name.casefold() and "etf" not in r.asset_class.casefold(),
-         ("mutual fund", "investment fund", "fund manager", "fund flows", "asset allocation", "portfolio flows")),
+         ("mutual fund", "investment fund", "fund manager", "mutual fund flows", "fund asset allocation", "portfolio flows")),
     ]
     for category, matcher, keywords in category_specs:
         members = [r for r in rows if matcher(r)]
@@ -1522,9 +1545,10 @@ def append_funnel_report(
             lines.append("- Instruments suivis : " + "; ".join(instruments) + ".")
         else:
             lines.append("- Aucune cotation exploitable reçue pour cette catégorie lors de cette exécution.")
+        # Match against headlines only; publisher boilerplate can otherwise contaminate unrelated categories.
         matched_news = [
             n for n in news
-            if any(k in f"{n.get('title', '')} {n.get('summary', '')}".casefold() for k in keywords)
+            if any(k in n.get("title", "").casefold() for k in keywords)
         ]
         if matched_news:
             for item in prioritize_news(matched_news, 2):
