@@ -391,6 +391,30 @@ def prioritize_news(news: list[dict[str, str]], limit: int = 12) -> list[dict[st
     return sorted(news, key=score, reverse=True)[:max(0, limit)]
 
 
+
+def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
+    """Place substantive headlines and conditional analysis before macro and asset sections."""
+    priority_news = prioritize_news(news, 12)
+    lines += [
+        "",
+        "ACTUALITÉS PRIORITAIRES — LES FAITS D'ABORD, L'ANALYSE ENSUITE",
+        "Les titres et extraits viennent des flux collectés. Les agrégateurs servent à découvrir les articles; privilégier la publication originale lorsqu'elle est identifiable. L'analyse distingue les faits des effets possibles et ne traite pas une coïncidence comme une causalité.",
+        f"Titres retenus : {len(priority_news)} sur {len(news)} actualités uniques collectées.",
+    ]
+    if not priority_news:
+        lines.append("- Aucun titre n'a pu être récupéré lors de cette collecte. Le rapport ne constitue donc pas une synthèse complète de l'actualité.")
+        return
+    for item in priority_news:
+        theme, categories, impact = infer_macro_impact(item["title"])
+        published = item.get("published") or "date de publication non fournie par le flux"
+        source = item.get("source") or "source non précisée par le flux"
+        lines.append(f"- ACTUALITÉ : {item['title']} — {source} — {published}")
+        if item.get("summary"):
+            lines.append(f"  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : {item['summary']}")
+        lines.append(f"  - SOURCE À OUVRIR : {item['url']}")
+        lines.append(f"  - ANALYSE : {theme}. Actifs potentiellement concernés : {categories}. {impact}")
+
+
 def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
     feed_batches: list[list[dict[str, str]]] = []
     errors: list[str] = []
@@ -1301,26 +1325,6 @@ def append_funnel_report(
     lines += [f"- Élément quantitatif : {x}." for x in conviction["evidence"]]
     if not conviction["evidence"]:
         lines.append("- Aucune convergence robuste des indicateurs de marché retenus; la probabilité centrale domine faute de signal directionnel convergent.")
-    macro_news = [n for n in news if any(k in n["title"].casefold() for k in (
-        "inflation", "cpi", "pce", "gdp", "growth", "recession", "central bank", "federal reserve",
-        "fed ", "ecb", "interest rate", "employment", "payroll", "tariff", "sanction", "geopolit",
-        "oil", "crude", "treasury", "bond yield", "pmi", "retail sales"))]
-    lines += ["", "ACTUALITÉS PRIORITAIRES — LES FAITS D'ABORD, L'ANALYSE ENSUITE",
-              "Sélection des titres les plus pertinents parmi les flux récupérés. Chaque titre renvoie à sa source; l'analyse décrit les canaux possibles et ne prétend pas que le titre a causé un mouvement. Un titre seul ne remplace pas la lecture de l'article ni la vérification des chiffres.",
-              f"Titres retenus : {min(12, len(news))} sur {len(news)} actualités uniques collectées."]
-    priority_news = prioritize_news(news, 12)
-    if priority_news:
-        for item in priority_news:
-            theme, categories, impact = infer_macro_impact(item["title"])
-            published = item.get("published") or "date de publication non fournie par le flux"
-            source = item.get("source") or "source non précisée par le flux"
-            lines.append(f"- ACTUALITÉ : {item['title']} — {source} — {published}")
-            if item.get("summary"):
-                lines.append(f"  - EXTRAIT DU FLUX (résumé fourni par la source, pas l'article intégral) : {item['summary']}")
-            lines.append(f"  - SOURCE À OUVRIR : {item['url']}")
-            lines.append(f"  - ANALYSE : {theme}. Actifs potentiellement concernés : {categories}. {impact}")
-    else:
-        lines.append("- Aucun titre n'a pu être récupéré lors de cette collecte. Le rapport ne doit pas être interprété comme une synthèse complète de l'actualité.")
     lines += ["", "NIVEAU 2 — RÉGIONS ET ÉCONOMIES MAJEURES",
               "Lecture régionale : les signaux ci-dessous sont limités aux publications et instruments effectivement récupérés. L'absence de titre ne signifie pas l'absence de risque."]
     region_rules = [
@@ -1557,6 +1561,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any]]:
         "",
     ]
 
+    append_priority_news(lines, news)
     append_macro_series(lines, macro_series)
     append_funnel_report(lines, report_type, rows, news, previous, prior_morning, prior_update, data_errors, news_errors, company_fundamentals)
     lines += ["", "QUALITÉ ET SOURCES", "- Prix historiques : Yahoo Finance via yfinance (source non institutionnelle, disponibilité non garantie).", "- Séries macroéconomiques : FRED en priorité; repli vers l’API publique officielle BLS pour CPI, chômage et emploi si FRED est indisponible. Les dates et sources sont indiquées; fréquences et délais diffèrent.", "- Actualités : flux officiels Fed, BEA, Census Bureau, BCE, EIA, Banque d'Angleterre et Banque du Japon. Les publications BLS emploi/CPI/PPI sont repérées par des recherches ciblées Google News vers les archives BLS; une recherche ciblée DOL complète les demandes d'allocations chômage. Les recherches FMI/Banque mondiale sont aussi des outils de découverte, pas des preuves indépendantes : ouvrir et vérifier la publication institutionnelle originale avant de retenir un chiffre.", f"- Heure de collecte : {started.isoformat(timespec='seconds')}.", f"- Erreurs prix : {len(data_errors)}; erreurs flux actualités : {len(news_errors)}; erreurs données fondamentales SEC : {len(fundamentals_errors)}; erreurs de collecte macro (FRED puis repli BLS) : {len(macro_errors)}."]
