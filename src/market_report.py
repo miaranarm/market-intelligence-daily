@@ -579,10 +579,13 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
         title = item.get("title", "").casefold()
         if not title or any(phrase in title for phrase in low_value_headlines):
             continue
-        # Aggregator-only links and headline-only items are discovery leads, not
-        # report-ready evidence. Publish only a direct publisher URL and a usable excerpt.
+        # Google News is a discovery layer, not the publisher. Keep its story only when
+        # the RSS item identifies the publisher and includes a substantive excerpt; otherwise
+        # it is a lead, not report-ready evidence. Direct publisher pages may remain headline-only.
         host = urlparse(item.get("url", "")).netloc.casefold().removeprefix("www.")
-        if host == "news.google.com" or host.endswith(".news.google.com"):
+        is_aggregator = host == "news.google.com" or host.endswith(".news.google.com")
+        source_name = item.get("source", "").casefold()
+        if is_aggregator and ("google news" in source_name or len(summary) < 100):
             continue
         # Keep direct-publisher headlines even when article metadata cannot be retrieved.
         # The renderer explicitly labels these as headline-only instead of silently dropping them.
