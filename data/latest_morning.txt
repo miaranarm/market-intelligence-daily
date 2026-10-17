@@ -1,16 +1,12 @@
 Rapport initial — marchés multi-actifs
-Heure Madagascar : 2026-10-17 08:51:38 EAT
-Généré UTC : 2026-10-17 05:51:38 UTC
+Heure Madagascar : 2026-10-17 08:57:25 EAT
+Généré UTC : 2026-10-17 05:57:25 UTC
 
 Couverture : 82 actifs avec données reçues sur 82 suivis. Les cours correspondent à la dernière observation disponible.
 
 
 LES ACTUALITÉS QUI COMPTENT
-1. Christine Lagarde: IMFC Statement
-   Banque centrale européenne — communiqués · Sat, 17 Oct 2026 07:00:00 +0200
-   FAITS RAPPORTÉS : The European Central Bank (ECB) is the central bank of the European Union countries which have adopted the euro. Our main task is to maintain price stability in the euro area and so preserve the purchasing power of the single currency.
-   POUR LES MARCHÉS : Les rendements modifient le coût du crédit et les valorisations. Une hausse pénalise généralement les obligations déjà émises et les actions à valorisation élevée; une détente peut les soutenir. Le prochain test est l’écart entre les données d’inflation/activité et les attentes de taux.
-   Source : https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261017~7015ea3099.en.html
+Aucun résumé factuel suffisamment détaillé et directement pertinent pour les marchés n’a pu être vérifié dans les flux disponibles. Les titres seuls ne sont pas présentés comme des faits; cette rubrique est incomplète.
 
 INDICATEURS MACROÉCONOMIQUES STRUCTURÉS — FRED ET SOURCE OFFICIELLE DE REPLI
 La source et la date de chaque observation sont indiquées. Les fréquences et délais de publication diffèrent; les valeurs ne sont pas nécessairement du jour.
@@ -35,9 +31,9 @@ Lecture régionale : les signaux ci-dessous sont limités aux publications et in
 - Zone euro et Royaume-Uni :
   - European majors set for Q3 earnings growth despite darkening view on consumer cyclicals - Yahoo Finance UK — Yahoo Finance UK (Fri, 16 Oct 2026 10:08:15 GMT) — https://news.google.com/rss/articles/CBMihwFBVV95cUxPczhJQ09kVVl1aXBBVGpDMk5zcVJwbk9xUnctZVpZS2pZaWxHU2N6NS13SURVLWZFX0Zab1Y4QWgxNXNiX0tKb1FrYjJiZUFTQzdOLVFRZkxRSE9xWlRoN0plZXFVbW5SSFMzak5mbWlXYmlfcHJGQ0dzT1dwaE5vdnNBLXZaLTA?oc=5
   - UBS Highlights Top European Capital Goods Stocks Ahead of Earnings Season - Yahoo Finance UK — Yahoo Finance UK (Wed, 14 Oct 2026 06:52:00 GMT) — https://news.google.com/rss/articles/CBMijAFBVV95cUxQdGliTmpmdlIzNWo4TnZ5emNxNGJjZ2YyRTQtVF95UzQ4OGt4TjJsNUNFcHdFb2hUM0lBczE0bHg2eUo4amt1QU02bTB4QXN4eVRoNE1EVTZ3Q193RnR3amlDNWw1OFhWcnAtTU9RYUc3QnozRk5HeFNrRTg1Rk9ETERaeERfT0o4U1NSNw?oc=5
-  - European shares close out best week since June as earnings soften blow from tech selloff - Reuters — Reuters (Fri, 16 Oct 2026 16:34:41 GMT) — https://news.google.com/rss/articles/CBMivAFBVV95cUxOa1lsVE9lQzRmN0pzeFRqTUcyTFN0a3ZfNDh6Zk9MdU9hYUFXSnIzZzFINmJOd0pCbFcxaTV6VnU2QnRfazFpR1lSNHdEMlB4NHJ6RDZOVmhlZVkwZ0hPbEJoVlBrOUpYcF81YUJTYjIyRTdhNE5mNzhUeExmOS1HNDliT3Z6MEYxX2t2OVVSeDJJLVlWM0dJa3dqZUVKOTBIVmsxVlAwZEgyM3lvT2VUUlJiRkFhQi13OHBmRA?oc=5
 - Chine et Asie-Pacifique :
   - China's central bank to further open its financial markets to foreigners, chief says - Reuters — Reuters (Fri, 16 Oct 2026 15:59:00 GMT) — https://news.google.com/rss/articles/CBMixgFBVV95cUxQUms0WEVOUTlsZUpVQjNfaVZjQkV2aF9HOFhZbTQtblFHNldVUTk2N3hqeml0aDc2MG9uSzRtTzdPRC1YNXFReU5RSWV2STM3cXhWcVhLTFVONlM5UHBqOXRfeVhmZXlBZHRrVlhHQUlaWGRMeG1FYnJqNloxbEc1NmFmbjZNLUNYdThhOC1pTFFfMXF1a19tN3VKb01RMGt6bXV5UHBMNXd2cXlOQlNtaXJELW14RHBzb3o2b1RBWDhKck1Sdmc?oc=5
+  - Speech by Board Member KOEDA in Kumamoto (Economic Activity, Prices, and Monetary Policy in Japan) — Bank of Japan — actualités, politique monétaire et statistiques (Thu, 15 Oct 2026 10:30:00 +0900) — http://www.boj.or.jp/en/about/press/koen_2026/ko261015a.htm
   - Press Briefing Transcript: Asia-Pacific Department Regional Economic Outlook, Annual Meetings 2026 - International Monetary Fund | IMF — International Monetary Fund | IMF (Thu, 15 Oct 2026 13:44:14 GMT) — https://news.google.com/rss/articles/CBMisAFBVV95cUxNYUNhejNfbHFWdGVJWTU3Wi1vZHlxYkJlM2J3R3Y4WjJOX1h5cTV2NW5CV0p3SHRvakpuVFcxVzZLb1dubktfMU9faXc5T0lTMzc3TE9Bal9ZdHhRQUNNVUM0cXhZZUF3OEdWNDlJUFlWZEdLQkhQVjhJYVdUdV81TVBBYVRwRy0yQzRsSmY4Z3FkNkY3SnFMOU5SWHNwNW5ub0JIRVpqX1REUS1DU1ZPYQ?oc=5
 - Marchés émergents et autres régions :
   - Pas de publication régionale suffisamment identifiable dans les titres collectés; ne pas en déduire une absence de risque.
@@ -77,8 +73,8 @@ La classification ci-dessous repose sur les actifs reçus. Les fonds communs son
   - Sur cinq séances : 1/5 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 - Credit ETF : 1 instrument(s); variation moyenne non pondérée -0.35%.
   - Sur cinq séances : 0/1 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- Crypto : 4 instrument(s); variation moyenne non pondérée -0.99%.
-  - Meilleure variation : Solana (-0.64%); plus faible : XRP (-1.84%).
+- Crypto : 4 instrument(s); variation moyenne non pondérée -0.95%.
+  - Meilleure variation : Solana (-0.50%); plus faible : XRP (-1.87%).
   - Sur cinq séances : 0/4 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 - ETF : 8 instrument(s); variation moyenne non pondérée -1.11%.
   - Meilleure variation : Developed markets ex-US equity ETF (-0.12%); plus faible : Invesco Nasdaq 100 ETF (-2.50%).
@@ -126,12 +122,11 @@ LES 9 CATÉGORIES — ANALYSE PAR UNIVERS D’INVESTISSEMENT
 Chaque rubrique combine les instruments effectivement reçus et les nouvelles qui peuvent les affecter. Les mouvements sont descriptifs; ils ne prouvent pas à eux seuls une cause ni ne constituent un signal d’achat/vente.
 1. INDICES BOURSIERS
 - Instruments suivis : KOSPI (séance +2.05 %; 5 séances -14.46 %; cours au 2026-10-16); Nikkei 225 (séance +1.39 %; 5 séances -5.38 %; cours au 2026-10-16); S&P/ASX 200 (séance +1.00 %; 5 séances +1.03 %; cours au 2026-10-16); DAX 40 (séance +0.95 %; 5 séances +2.13 %; cours au 2026-10-16); Nifty 50 (séance +0.65 %; 5 séances +2.78 %; cours au 2026-10-16).
-- Actualité à examiner : Jim Cramer explains why even strong bank earnings couldn't save their stocks - CNBC — CNBC (Wed, 14 Oct 2026 22:48:06 GMT) — https://news.google.com/rss/articles/CBMiggFBVV95cUxNVC1ZS3NWT1VGX0IwOVJVX1JLVHc2TjBlakVJU0dxbTQ5WW9jUWxseVNIVXlmd05oRWFWZGRVVzA5dnc1cFRNd2RqbFcxc1NKV3RvZHMtNzd1NGh6UnZvc0Y3c3VwdlBmb3o4TFNDdS0wbGdfSzYtQzNud3lpb2dvSjBn0gGHAUFVX3lxTE9LeVNkZFY4dXo5NjJWNUFfWTg4Y0Y1SDhiS0ZxeVN1aGVnN3V5TXZMSV81aUtHaVBPSmRwNTA1dy1FQTdTVEg5dFA1RzR3Yy1YV2NWaWZUSkV0RWpJdWdqRlVUSEZRbFJ6SmlTOHdyaERoT1ZRb0tCajgyVVVQMUhrbTM1TGJTVQ?oc=5
-- Actualité à examiner : WaFd Bank (NASDAQ:WAFD) Reports Q3 CY2026 Earnings - StockStory — StockStory (Fri, 16 Oct 2026 18:39:34 GMT) — https://news.google.com/rss/articles/CBMi2AFBVV95cUxNRDB3TTB4WGJMLUc3OVFVcUtsVEQ0N2JJUDV1Yi0yRUNjRnJ4RWtsQ2N0NDZrU2duYWJqNUhoc1RjMXdqOHZadlA3X0thak1LQVpDOEJHajVEc2FJS09FcXU5YkQzTm12eC14ZHpzRHQyT05vbGFlME55RWpnLWtxSTNkRWhoMHdmRmdrN1E1Q3UxUWVUNGduUUFoR2Rhd01zZENqVXNieVlaZkpZdTZ1MkRNR09uU2EtdWlKRmRGYm1LcE5hTXhmekx3bzJ2dzJHeXhZeWtCclo?oc=5
+- Actualité à examiner : Market Movers blog: Chip stocks and global indices continue to slide following US inflation jump - Investment Week — Investment Week (Fri, 16 Oct 2026 10:27:05 GMT) — https://news.google.com/rss/articles/CBMickFVX3lxTE5mZHNUUnlOeExDV2hSRjhxWEs0blpwaGhqUzIzQ054d1JaTnNIcGZWbkhtTDVwZFdwUXM5ekRkX2Z5UFJEWW5uMGtRSzVnd2NwZDFRUWZnYm9JWHFlTUptZzJGSHdKOS1oTEJxOUk0bFRWdw?oc=5
+- Actualité à examiner : U.S. Import and Export Price Indexes News Release - Bureau of Labor Statistics (.gov) — Bureau of Labor Statistics (.gov) (Fri, 16 Oct 2026 12:31:53 GMT) — https://news.google.com/rss/articles/CBMibkFVX3lxTE1EOV9YT1JVZFNSbGYzSnFhZXNNcUdLaHpmYXFkNkpmdXBNaGV1S0xRZzNfeGFsczE2R1Zpb0ZuLWhTckswd0JsRUxKTkNpSV8xWV9hVGIxN1U5d2hDMXpqbjlkY1lac25oVFRtMXBn?oc=5
 2. FUTURES SUR INDICES
 - Instruments suivis : Dow Jones E-mini futures (séance -0.41 %; 5 séances +0.55 %; cours au 2026-10-16); S&P 500 E-mini futures (séance -1.11 %; 5 séances -1.98 %; cours au 2026-10-16); Russell 2000 E-mini futures (séance -1.66 %; 5 séances -3.07 %; cours au 2026-10-16); Nasdaq 100 E-mini futures (séance -2.50 %; 5 séances -5.52 %; cours au 2026-10-16).
-- Actualité à examiner : WaFd Bank (NASDAQ:WAFD) Reports Q3 CY2026 Earnings - StockStory — StockStory (Fri, 16 Oct 2026 18:39:34 GMT) — https://news.google.com/rss/articles/CBMi2AFBVV95cUxNRDB3TTB4WGJMLUc3OVFVcUtsVEQ0N2JJUDV1Yi0yRUNjRnJ4RWtsQ2N0NDZrU2duYWJqNUhoc1RjMXdqOHZadlA3X0thak1LQVpDOEJHajVEc2FJS09FcXU5YkQzTm12eC14ZHpzRHQyT05vbGFlME55RWpnLWtxSTNkRWhoMHdmRmdrN1E1Q3UxUWVUNGduUUFoR2Rhd01zZENqVXNieVlaZkpZdTZ1MkRNR09uU2EtdWlKRmRGYm1LcE5hTXhmekx3bzJ2dzJHeXhZeWtCclo?oc=5
-- Actualité à examiner : Consumer Discretionary - Specialized Consumer Services Stocks Q2 In Review: 1-800-FLOWERS (NASDAQ:FLWS) Vs Peers - TradingView — TradingView (Thu, 15 Oct 2026 03:35:00 GMT) — https://news.google.com/rss/articles/CBMi_AFBVV95cUxPX3QzRWRjRy1zeFdkVlVQUzhpbEtzaldrbjVtRmFoY2JkWFNQVHJoQ0FBZkY1OEV5Yl9aRWVSMy02dWVpNE43RC10TEhhZ1g3MTlUdDlydGpwZlZMOXhsTktyRE5CSUx3aTRzdF9ER3dtRm1QMTZoMmNkZk05bklCd2lLMU5GbGExS2RUV1NfSFZraWptM0JSYkNudll3ZWpCSVgzM3YwVDk0d3haM2otM1dxWGg0WVh2clpXTldWOUdHRF9FYlV1U2xpVVdTa1NDVWJvT2UxWWNUdmhpVGdWN3B5T05qdXhQWjVhVTRTaUZYTzFMUmJ1eDNiVnE?oc=5
+- Actualité spécifique : aucune nouvelle suffisamment ciblée identifiée dans les flux collectés; ne pas interpréter ce silence comme une absence de risque.
 3. ACTIONS
 - Instruments suivis : Exxon Mobil (séance +2.46 %; 5 séances +5.94 %; cours au 2026-10-16); JPMorgan Chase (séance +1.25 %; 5 séances +2.02 %; cours au 2026-10-16); Costco (séance +1.13 %; 5 séances +4.46 %; cours au 2026-10-16); Walmart (séance +0.80 %; 5 séances +6.70 %; cours au 2026-10-16); Apple (séance +0.43 %; 5 séances +2.03 %; cours au 2026-10-16).
 - Actualité à examiner : Jim Cramer explains why even strong bank earnings couldn't save their stocks - CNBC — CNBC (Wed, 14 Oct 2026 22:48:06 GMT) — https://news.google.com/rss/articles/CBMiggFBVV95cUxNVC1ZS3NWT1VGX0IwOVJVX1JLVHc2TjBlakVJU0dxbTQ5WW9jUWxseVNIVXlmd05oRWFWZGRVVzA5dnc1cFRNd2RqbFcxc1NKV3RvZHMtNzd1NGh6UnZvc0Y3c3VwdlBmb3o4TFNDdS0wbGdfSzYtQzNud3lpb2dvSjBn0gGHAUFVX3lxTE9LeVNkZFY4dXo5NjJWNUFfWTg4Y0Y1SDhiS0ZxeVN1aGVnN3V5TXZMSV81aUtHaVBPSmRwNTA1dy1FQTdTVEg5dFA1RzR3Yy1YV2NWaWZUSkV0RWpJdWdqRlVUSEZRbFJ6SmlTOHdyaERoT1ZRb0tCajgyVVVQMUhrbTM1TGJTVQ?oc=5
@@ -141,10 +136,10 @@ Chaque rubrique combine les instruments effectivement reçus et les nouvelles qu
 - Actualité à examiner : Rising debt, shrinking buffers: The fiscal challenge facing commodity exporters - World Bank Blogs — World Bank Blogs (Wed, 14 Oct 2026 16:01:42 GMT) — https://news.google.com/rss/articles/CBMipwFBVV95cUxOWTRoRmM1NzNULU5ZOUQ2b3VicXNCd0wySURmUHZCb25fLTNCaFFDODdWcm5jUkNFQnd0aGxHVk42WHJuM0otRU5DbjVXelhPdHVRTUlKVjduamt2UzhzYlRpZXhBTG8xMTNIQ0RrQ0Z3ZmFEOElQTFpOV3JvMy1BbnpuVVBTYTYxZnZRUU1lY1k4blJmdEFia3hDSUVEY21PYy1aYXk1dw?oc=5
 5. DEVISES (FOREX)
 - Instruments suivis : NZD/USD (séance +0.59 %; 5 séances +0.70 %; cours au 2026-10-17); USD/INR (séance +0.46 %; 5 séances -1.88 %; cours au 2026-10-17); AUD/USD (séance +0.44 %; 5 séances -0.51 %; cours au 2026-10-17); EUR/USD (séance +0.43 %; 5 séances +0.27 %; cours au 2026-10-16); GBP/USD (séance +0.43 %; 5 séances +0.67 %; cours au 2026-10-17).
-- Actualité à examiner : China's central bank to further open its financial markets to foreigners, chief says - Reuters — Reuters (Fri, 16 Oct 2026 15:59:00 GMT) — https://news.google.com/rss/articles/CBMixgFBVV95cUxQUms0WEVOUTlsZUpVQjNfaVZjQkV2aF9HOFhZbTQtblFHNldVUTk2N3hqeml0aDc2MG9uSzRtTzdPRC1YNXFReU5RSWV2STM3cXhWcVhLTFVONlM5UHBqOXRfeVhmZXlBZHRrVlhHQUlaWGRMeG1FYnJqNloxbEc1NmFmbjZNLUNYdThhOC1pTFFfMXF1a19tN3VKb01RMGt6bXV5UHBMNXd2cXlOQlNtaXJELW14RHBzb3o2b1RBWDhKck1Sdmc?oc=5
-- Actualité à examiner : European shares close out best week since June as earnings soften blow from tech selloff - Reuters — Reuters (Fri, 16 Oct 2026 16:34:41 GMT) — https://news.google.com/rss/articles/CBMivAFBVV95cUxOa1lsVE9lQzRmN0pzeFRqTUcyTFN0a3ZfNDh6Zk9MdU9hYUFXSnIzZzFINmJOd0pCbFcxaTV6VnU2QnRfazFpR1lSNHdEMlB4NHJ6RDZOVmhlZVkwZ0hPbEJoVlBrOUpYcF81YUJTYjIyRTdhNE5mNzhUeExmOS1HNDliT3Z6MEYxX2t2OVVSeDJJLVlWM0dJa3dqZUVKOTBIVmsxVlAwZEgyM3lvT2VUUlJiRkFhQi13OHBmRA?oc=5
+- Actualité à examiner : FOREX-Dollar pulls back from 18-month high as Treasury yields fall; Fed hike bets ease - Devdiscourse — Devdiscourse (Thu, 15 Oct 2026 08:28:18 GMT) — https://news.google.com/rss/articles/CBMi2wFBVV95cUxOcC1EZEdtN1VtN1VVMEFNbnl5QzdobXdncWFSbzc5LUhPNlpQRmpxTmlQMXV6U0htOUN6ZnlCUmhrTUU2bzZfRElCVlBwYmNMa1NFZFFndEtkczRHTzJrSnd3N3MzUERaUnh3QjBQYkEwNnlaQUxQcVlGRkM1dThZdTJEY2tkbVRkR3J2MWUxREZTWG1LaWhNTDZyRzFZN3pjTVlfWndNWkRVQ2s3Y3l3c0Y4U013U1RwZUliSExVZXJvMUlPdG9uZUx5ZWRkSDBwenFhZnRzWXZvdHPSAeABQVVfeXFMUEs5aEJzdzFFSGkwQ3pkenAwQnZxaDZ6SWFHSE5LRTlVb1NraVFEa0JJencydU9IQkkwbFJqV2VIREVhQjdwMzY3bUY2YWFSUG9BNXZVcncybTVDU281QVFMZ1FrWmY4aHAwZVJlUGFEejNjT0QtT0pINFo5d3AyclFYRUpid3Y1YllaN0wya21mNEZLeWNXWDFYT2hFWnp6M2t6R01IUW1WVnRtLTVKNWlkWU84YVY5cVV3ZHdLOElabkJBV2h6Y01LZlJVWkZXajA0REh4RTlJMWMzTmJxdUM?oc=5
+- Actualité à examiner : FOREX-Dollar retreats from 18-month high as Treasury yields dip; Fed hike bets ease - Devdiscourse — Devdiscourse (Thu, 15 Oct 2026 06:12:16 GMT) — https://news.google.com/rss/articles/CBMi3gFBVV95cUxPMHU3M1ZFbVJEMlJqb2lUQW9PZzREX29jUVRKNTVrWURlU0JzVFJYUlRhUFhTRWR0TUg0eFZvb3E5azVDam5vdjFHN0wtNHFRZmEzbnRLTFV5S0tHa0dLd204YUxMcWtXaVFndWtWUmJmWmF1Uk1yZWVGTDNud2VnZ0dCbTdGdWdIN243RUUyaS1LWFhsaWtDdk5ZX2RlZDBpejJmM0U2TmVNekw0WUZQNGc4ZkxLYUJNY1pYNk9RcUZyRmpMU3lmYnRZdlgyX1pxVm5XNmN3UnZfdVlfTHfSAd4BQVVfeXFMTzB1NzNWRW1SRDJSam9pVEFvT2c0RF9vY1FUSjU1a1lEZVNCc1RSWFJUYVBYU0VkdE1INHhWb29xOWs1Q2pub3YxRzdMLTRxUWZhM250S0xVeUtLR2tHS3dtOGFMTHFrV2lRZ3VrVlJiZlphdVJNcmVlRkwzbndlZ2dHQm03RnVnSDduN0VFMmktS1hYbGlrQ3ZOWV9kZWQwaXoyZjNFNk5lTXpMNFlGUDRnOGZMS2FCTWNaWDZPUXFGckZqTFN5ZmJ0WXZYMl9acVZuVzZjd1J2X3VZX0x3?oc=5
 6. CRYPTO-ACTIFS
-- Instruments suivis : Solana (séance -0.64 %; 5 séances -5.92 %; cours au 2026-10-17); Ethereum (séance -0.65 %; 5 séances -4.34 %; cours au 2026-10-17); Bitcoin (séance -0.82 %; 5 séances -2.64 %; cours au 2026-10-17); XRP (séance -1.84 %; 5 séances -7.14 %; cours au 2026-10-17).
+- Instruments suivis : Solana (séance -0.50 %; 5 séances -5.79 %; cours au 2026-10-17); Ethereum (séance -0.61 %; 5 séances -4.31 %; cours au 2026-10-17); Bitcoin (séance -0.82 %; 5 séances -2.64 %; cours au 2026-10-17); XRP (séance -1.87 %; 5 séances -7.17 %; cours au 2026-10-17).
 - Actualité à examiner : Thailand launches new crypto ETF rules allowing Bitcoin and Ether trading on its stock exchange. - Pluang — Pluang (Sat, 17 Oct 2026 01:23:53 GMT) — https://news.google.com/rss/articles/CBMioAFBVV95cUxQMXdmalRPeldjamNBWEt6bXg3YnlKUWQ4R1FmV1NYOGRkLUVfcHRLam1Fc0VYY05pVVdjWHlkRDhvdFRZb0VrZlp3MjNMWXZPSjBObVRoS3FKOEtDU3RXRC1QRTVraER4cl91YTBtMWFjSlp4OWlLd0oteGhheFV3emdvYWtxVHFVc3VGZ1NzTENZTUFSalVWNHhINXBBQjFv?oc=5
 - Actualité à examiner : Today's Crypto News: Bitcoin, Ether and Altcoin Insights - Investing News Network — Investing News Network (Wed, 14 Oct 2026 21:05:00 GMT) — https://news.google.com/rss/articles/CBMiZEFVX3lxTE9PU3pBdGY0NWJMSWFUTFRDUGx3RklNQlNENWdlQjBiNG9meUo5andqSHFER0lkNlhEaFVwOXpLYWZseVJ1YVZsU2Q4RzBWT1RoeUhTM19YaFljM2ZHcm5yMHYxTlc?oc=5
 7. OBLIGATIONS ET CRÉDIT
@@ -179,7 +174,7 @@ Ce niveau relie les résultats et décisions d'entreprise à leurs secteurs. Les
 - Plug Power Q3 2026 Progress: Revenue Growth & Cash Improvement - Fuel Cells Works — Fuel Cells Works (Thu, 15 Oct 2026 12:41:00 GMT) — https://news.google.com/rss/articles/CBMigAJBVV95cUxNc1A4Y01ZTzJINVQ2cVJobFY5bzh3VG5IT0J3TU81NTV6dHI0NHJOV0ZpSUtTcmhlSmoxZ2ZvTHVJeE82dHBPTFZqX2lNT3lDVnUteWVwWkdVSDk2S1d2TWVZQWJwaXhnX0VRbzdJYTgxcFRRY0Eyc1o5SzU0blNEd2ZDcFlXS0RqT0g3a0FIbnY0eUp6REV4eUp2WTRfZDBrcGJEVGlTRGVYa2pTTHg2OVc4YTlhUXJMcmV1YWlmdEZMTk5vb0JjdmU1UzJ1WnpQOWJQMFhNR2FCZDZyWFgxRHBGdVE2ZktSUFRxZHNiQ2pQdWxDU2lzMFM1Y0ZQbjZQ?oc=5
   - Thème : Résultats d'entreprises; actifs potentiellement concernés : actions concernées, secteurs, indices/futures, ETF et fonds. À confirmer dans la publication originale et par rapport aux attentes.
   - Mouvements observés sur les instruments associés (dernière séance disponible) : S&P 500 -1.09 %; 5 séances -1.95 %; Nasdaq Composite -2.15 %; 5 séances -4.48 %; SPDR S&P 500 ETF -1.11 %; 5 séances -1.97 %; Technology Select Sector SPDR ETF -3.02 %; 5 séances -7.70 %. Coïncidence temporelle, pas preuve que le titre explique ces mouvements.
-- Thèmes sectoriels repérés dans les titres déjà listés : technologie/semi-conducteurs (3); banques/crédit (2); consommation/distribution (3); industrie/infrastructures (2). Classification automatique, non validation des faits.
+- Thèmes sectoriels repérés dans les titres déjà listés : technologie/semi-conducteurs (2); banques/crédit (2); consommation/distribution (3); industrie/infrastructures (2). Classification automatique, non validation des faits.
 
 FONDAMENTAUX PUBLIÉS — ÉCHANTILLON SEC EDGAR
 Chiffres issus des données XBRL officielles de la SEC pour les derniers trimestres 10-Q disponibles. La comparaison annuelle n'est affichée que si un trimestre comparable existe; il ne s'agit pas d'une comparaison au consensus analystes. Les définitions comptables peuvent varier selon l'émetteur.
@@ -202,9 +197,9 @@ Instruments à examiner en priorité (sélection par amplitude; pas une recomman
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
 - KOSPI (^KS11) — classe : South Korean equity index; dernier prix +5668.05; dernière séance +2.05%; 5 séances -14.46%; 1 mois -17.97%. Source cours : https://finance.yahoo.com/quote/^KS11/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
-- XRP (XRP-USD) — classe : Crypto; dernier prix +1.31; dernière séance -1.84%; 5 séances -7.14%; 1 mois -16.57%. Source cours : https://finance.yahoo.com/quote/XRP-USD/
+- XRP (XRP-USD) — classe : Crypto; dernier prix +1.31; dernière séance -1.87%; 5 séances -7.17%; 1 mois -16.59%. Source cours : https://finance.yahoo.com/quote/XRP-USD/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
-- Solana (SOL-USD) — classe : Crypto; dernier prix +104.66; dernière séance -0.64%; 5 séances -5.92%; 1 mois -14.22%. Source cours : https://finance.yahoo.com/quote/SOL-USD/
+- Solana (SOL-USD) — classe : Crypto; dernier prix +104.80; dernière séance -0.50%; 5 séances -5.79%; 1 mois -14.11%. Source cours : https://finance.yahoo.com/quote/SOL-USD/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
 - Silver futures (SI=F) — classe : Commodity; dernier prix +56.99; dernière séance +0.28%; 5 séances -6.06%; 1 mois -12.94%. Source cours : https://finance.yahoo.com/quote/SI=F/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
@@ -241,10 +236,10 @@ Natural gas futures (NG=F) | Commodity | +3.12 | -3.71% | -3.23% | +7.41% | http
 Silver futures (SI=F) | Commodity | +56.99 | +0.28% | -6.06% | -12.94% | https://finance.yahoo.com/quote/SI=F/
 WTI crude oil futures (CL=F) | Commodity | +101.41 | +3.51% | +10.41% | -0.49% | https://finance.yahoo.com/quote/CL=F/
 High-yield corporate bond ETF (HYG) | Credit ETF | +76.86 | -0.35% | -0.48% | -1.93% | https://finance.yahoo.com/quote/HYG/
-Bitcoin (BTC-USD) | Crypto | +81467.21 | -0.82% | -2.64% | -3.06% | https://finance.yahoo.com/quote/BTC-USD/
-Ethereum (ETH-USD) | Crypto | +2424.66 | -0.65% | -4.34% | -9.88% | https://finance.yahoo.com/quote/ETH-USD/
-Solana (SOL-USD) | Crypto | +104.66 | -0.64% | -5.92% | -14.22% | https://finance.yahoo.com/quote/SOL-USD/
-XRP (XRP-USD) | Crypto | +1.31 | -1.84% | -7.14% | -16.57% | https://finance.yahoo.com/quote/XRP-USD/
+Bitcoin (BTC-USD) | Crypto | +81467.71 | -0.82% | -2.64% | -3.05% | https://finance.yahoo.com/quote/BTC-USD/
+Ethereum (ETH-USD) | Crypto | +2425.58 | -0.61% | -4.31% | -9.85% | https://finance.yahoo.com/quote/ETH-USD/
+Solana (SOL-USD) | Crypto | +104.80 | -0.50% | -5.79% | -14.11% | https://finance.yahoo.com/quote/SOL-USD/
+XRP (XRP-USD) | Crypto | +1.31 | -1.87% | -7.17% | -16.59% | https://finance.yahoo.com/quote/XRP-USD/
 Developed markets ex-US equity ETF (EFA) | ETF | +103.55 | -0.12% | +0.15% | -2.35% | https://finance.yahoo.com/quote/EFA/
 Emerging markets equity ETF (EEM) | ETF | +62.85 | -1.74% | -5.91% | -6.07% | https://finance.yahoo.com/quote/EEM/
 Gold ETF (GLD) | ETF | +382.01 | -0.18% | -0.67% | -4.10% | https://finance.yahoo.com/quote/GLD/
@@ -316,20 +311,19 @@ ENGAGEMENT POUR L'AUDIT DU SOIR
 AUDIT CRITIQUE DES ANALYSES PRÉCÉDENTES
 - Prévisions historiques enregistrées : 202; prévisions arrivées à échéance : 19; encore en attente : 183.
 - Référence évaluée : règle de momentum simple fondée sur le rendement des cinq dernières séances. C'est un point de comparaison expérimental, pas une recommandation de trading.
-- Horizon 1 séance : 5/19 directions correctes (26.3 %); mouvement absolu moyen observé : 0.701 %.
+- Horizon 1 séance : 5/19 directions correctes (26.3 %); mouvement absolu moyen observé : 0.7 %.
 - Horizon 5 séances : aucun échantillon arrivé à échéance; performance non évaluable.
 - Conclusion méthodologique : échantillon encore insuffisant pour déclarer cette règle fiable ou modifier automatiquement la méthode.
-- Exemples d'erreurs à examiner : Solana (1 séance(s), prévu baisse, réalisé hausse, +1.30 %); XRP (1 séance(s), prévu baisse, réalisé hausse, +0.68 %); KOSPI (1 séance(s), prévu baisse, réalisé hausse, +2.05 %).
+- Exemples d'erreurs à examiner : Solana (1 séance(s), prévu baisse, réalisé hausse, +1.32 %); XRP (1 séance(s), prévu baisse, réalisé hausse, +0.72 %); KOSPI (1 séance(s), prévu baisse, réalisé hausse, +2.05 %).
 - Source des prix évalués : Yahoo Finance via yfinance (https://finance.yahoo.com/); la qualité et la disponibilité de ces données ne sont pas garanties.
 - Les prévisions originales sont conservées pour empêcher toute réécriture rétrospective. Les changements de méthode devront être justifiés par des échantillons suffisants et des tests hors échantillon.
 
 AUDIT DES PROBABILITÉS DIRECTIONNELLES
 - Des prévisions matinales sont enregistrées, mais aucune n'a encore atteint une observation quotidienne distincte et terminée. Le score de calibration n'est pas encore disponible.
-- Prévisions matinales enregistrées : 7; en attente : 7. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.
+- Prévisions matinales enregistrées : 8; en attente : 8. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.
 
 À PROPOS DES DONNÉES
-Collecte : 17/10/2026 à 05:51 UTC. Données de prix reçues pour 82/82 actifs; 48 actualités collectées.
-Certains flux d’actualités étaient indisponibles (1 flux); la couverture peut être incomplète.
+Collecte : 17/10/2026 à 05:57 UTC. Données de prix reçues pour 82/82 actifs; 48 actualités collectées.
 Certaines séries macroéconomiques n’ont pas pu être récupérées.
 
 Avertissement : contenu informatif et expérimental, pas un conseil d'investissement. Vérifier les données et les actualités avant toute décision.
