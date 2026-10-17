@@ -601,12 +601,12 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
                 continue
         # Also extract readable paragraphs when publisher metadata is sparse. Paragraphs
         # are still publisher text; they are not generated or treated as independently verified.
-        for paragraph in re.findall(r"<p\\b[^>]*>(.*?)</p>", page, flags=re.IGNORECASE | re.DOTALL):
-            paragraph = html.unescape(re.sub(r"\\s+", " ", re.sub(r"<[^>]+>", " ", paragraph))).strip()
+        for paragraph in re.findall(r"<p[^>]*>(.*?)</p>", page, flags=re.IGNORECASE | re.DOTALL):
+            paragraph = " ".join(html.unescape(re.sub(r"<[^>]+>", " ", paragraph)).split())
             if len(paragraph) >= 90:
                 candidates.append(paragraph)
         for candidate in candidates:
-            candidate = html.unescape(re.sub(r"\\s+", " ", re.sub(r"<[^>]+>", " ", candidate))).strip()
+            candidate = " ".join(html.unescape(re.sub(r"<[^>]+>", " ", candidate)).split())
             if is_useful_summary(candidate):
                 result["summary"] = _summarize_news_text(candidate)
                 if len(result["summary"]) >= 100:
@@ -614,7 +614,7 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
     except Exception:
         pass
     # Never present generic institutional boilerplate as facts about a specific event.
-    result["summary"] = summary if is_useful_summary(summary) else ""
+    result["summary"] = _summarize_news_text(summary) if is_useful_summary(summary) else ""
     return result
 
 def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
