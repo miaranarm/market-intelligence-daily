@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename, fmt
+from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename, fmt, send_email
 
 
 
@@ -15,6 +15,34 @@ class ReportArchiveLinkTests(unittest.TestCase):
         timestamp = "2026-10-17T09:59:02+03:00"
         self.assertEqual(report_archive_filename("morning", timestamp), "morning-20261017-095902.html")
         self.assertEqual(report_archive_filename("update", timestamp), "update-20261017-095902.html")
+
+
+class EmailReportBodyTests(unittest.TestCase):
+    @patch.dict("os.environ", {
+        "SMTP_USERNAME": "sender@example.com",
+        "SMTP_APP_PASSWORD": "test-app-password",
+        "REPORT_RECIPIENT": "reader@example.com",
+    })
+    @patch("src.market_report.smtplib.SMTP")
+    def test_email_contains_full_report_and_archive_link(self, smtp_mock):
+        smtp = smtp_mock.return_value.__enter__.return_value
+        report_text = (
+            "RAPPORT MULTI-ACTIFS — 05:30\n"
+            "ACTUALITÉS PRIORITAIRES\n"
+            "Brent : hausse de 3,2 %; source : https://publisher.example/oil-story"
+        )
+        archive_url = "https://miaranarm.github.io/market-intelligence-daily/reports/morning-test.html"
+
+        send_email("[Market Intelligence] MORNING", archive_url, report_text)
+
+        smtp.login.assert_called_once_with("sender@example.com", "test-app-password")
+        message = smtp.send_message.call_args.args[0]
+        self.assertEqual(message["To"], "reader@example.com")
+        self.assertIn(report_text, message.get_body(preferencelist=("plain",)).get_content())
+        html_body = message.get_body(preferencelist=("html",)).get_content()
+        self.assertIn("ACTUALITÉS PRIORITAIRES", html_body)
+        self.assertIn(archive_url, html_body)
+        self.assertIn("publisher.example/oil-story", html_body)
 
 
 
