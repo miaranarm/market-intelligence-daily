@@ -3,7 +3,7 @@ Aversion au risque : le S&P 500 cède 1,95 % sur cinq séances et le VIX bondit
 
 Biais baissier à confirmer. Probabilités expérimentales à un horizon de une à cinq séances : hausse 18 %, zone centrale 27 %, baisse 55 %. Elles sont issues d'une règle simple et n'ont pas été calibrées statistiquement.
 
-Édition du samedi 17 octobre 2026, 18:53 (heure de Madagascar). Lecture estimée : 22 min.
+Édition du samedi 17 octobre 2026, 18:58 (heure de Madagascar). Lecture estimée : 22 min.
 
 
 L'ESSENTIEL
@@ -13,7 +13,7 @@ L'ESSENTIEL
 - Le VIX, indice de volatilité implicite du S&P 500, s'établit à 19,99 (+21,45 % sur la séance) : zone normale.
 - Taux : le rendement américain à 10 ans s'établit à 5,098 % (+0,9 point de base) ; l'indice du dollar est à 101,84 (−0,16 %).
 - Matières premières : Brent crude oil futures +3,72 %, or +0,26 % sur la séance.
-- Crypto : bitcoin à 81 254 dollars (−0,30 % sur 24 heures).
+- Crypto : bitcoin à 81 235 dollars (−0,33 % sur 24 heures).
 - Prochain rendez-vous majeur : lundi 19 octobre à 05:00 (heure de Madagascar) : Chine : PIB du 3e trimestre et données d'activité (production industrielle, ventes au détail) (à confirmer).
 - Les marchés d'actions, de taux et de change sont fermés ce week-end : les cours ci-dessous datent de la dernière séance et seule la crypto cote en continu.
 
@@ -33,7 +33,7 @@ Probabilités expérimentales, non calibrées. La zone centrale désigne un mouv
 Interactions entre marchés :
 - Les grands indices US ont reculé sur cinq séances : momentum récent négatif, sans que cela suffise à établir une prévision directionnelle.
 - Le VIX a fortement progressé sur la dernière séance disponible : surveiller une hausse de l'aversion au risque.
-- Bitcoin : variation de la dernière séance disponible −0,30 %; la crypto cote en continu, contrairement à la plupart des marchés traditionnels.
+- Bitcoin : variation de la dernière séance disponible −0,33 %; la crypto cote en continu, contrairement à la plupart des marchés traditionnels.
 
 Tableau de bord macroéconomique américain :
 Indicateurs macroéconomiques
@@ -93,7 +93,7 @@ FAITS MARQUANTS
 
 * Zelenskyy says Starlink speed limits in Ukraine are a ‘planned operation’
   Financial Times — actualités mondiales (flux éditeur), Sat, 17 Oct 2026 12:53:53 GMT
-  Lecture marché : Les actifs directement exposés et les matières premières concernées sont à surveiller. Une escalade peut accroître la prime de risque et les prix de l’énergie; une désescalade peut l’effacer rapidement. La réaction dépend de la durée du choc et de son effet réel sur l’offre.
+  Lecture marché : Le titre seul ne suffit pas à établir un effet sur les marchés. L’article et les actifs directement concernés n’ont pas été vérifiés : aucune direction ni cause de marché n’est inférée.
   https://www.ft.com/content/e26723df-9076-416c-957a-7fa3bd00b4d7?syn-25a6b1a6=1
 
 * BOJ Current Account Balances by Sector (Sept.)
@@ -312,16 +312,16 @@ Les actifs numériques cotent jour et nuit, week-end compris : ils servent souve
 
 Instruments suivis
 Instrument | Dernier | 1 séance | 5 séances | 1 mois | 30 jours | Cours du
-Bitcoin (BTC-USD) | 81 254,20 | −0,30 % | −0,62 % | −3,73 % | tendance | 2026-10-17
-Ethereum (ETH-USD) | 2 406,00 | −0,57 % | −1,57 % | −10,73 % | tendance | 2026-10-17
-Solana (SOL-USD) | 103,43 | −0,83 % | −2,02 % | −14,82 % | tendance | 2026-10-17
-XRP (XRP-USD) | 1,2898 | −1,54 % | −3,71 % | −15,59 % | tendance | 2026-10-17
+Bitcoin (BTC-USD) | 81 234,58 | −0,33 % | −0,65 % | −3,76 % | tendance | 2026-10-17
+Ethereum (ETH-USD) | 2 407,59 | −0,50 % | −1,50 % | −10,67 % | tendance | 2026-10-17
+Solana (SOL-USD) | 103,52 | −0,74 % | −1,93 % | −14,75 % | tendance | 2026-10-17
+XRP (XRP-USD) | 1,2914 | −1,42 % | −3,59 % | −15,49 % | tendance | 2026-10-17
 
-Sur les 4 crypto-monnaies suivies, 0 progressent et 4 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à −0,81 %. Bitcoin mène le groupe (−0,30 %) et XRP ferme la marche (−1,54 %). Sur cinq séances, 0 sur 4 sont en hausse ; sur un mois, 0 sur 4.
+Sur les 4 crypto-monnaies suivies, 0 progressent et 4 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à −0,75 %. Bitcoin mène le groupe (−0,33 %) et XRP ferme la marche (−1,42 %). Sur cinq séances, 0 sur 4 sont en hausse ; sur un mois, 0 sur 4.
 
-Le bitcoin cote 81 254 dollars (−0,30 % sur 24 heures, −0,62 % sur cinq jours, −3,73 % sur un mois). L'ether fait moins bien que le bitcoin de 0,95 point de pourcentage sur cinq jours, signe d'un appétit pour le risque moins marqué au sein du secteur.
+Le bitcoin cote 81 235 dollars (−0,33 % sur 24 heures, −0,65 % sur cinq jours, −3,76 % sur un mois). L'ether fait moins bien que le bitcoin de 0,85 point de pourcentage sur cinq jours, signe d'un appétit pour le risque moins marqué au sein du secteur.
 
-Le bitcoin (−0,30 %) et le Nasdaq (−2,15 %) vont dans le même sens sur la dernière séance. Les horaires ne se recouvrent pas (24 heures sur 24 contre une séance), et une seule séance ne suffit pas à conclure à une corrélation.
+Le bitcoin (−0,33 %) et le Nasdaq (−2,15 %) vont dans le même sens sur la dernière séance. Les horaires ne se recouvrent pas (24 heures sur 24 contre une séance), et une seule séance ne suffit pas à conclure à une corrélation.
 
 Aucune nouvelle suffisamment ciblée n'a été identifiée dans les flux collectés ; ce silence ne dit rien du risque.
 
@@ -455,13 +455,13 @@ Un rapport n'a de valeur que s'il se mesure à la réalité. Chaque prévision e
 
 Résultats de l'audit
 Mesure | Résultat
-Scénarios S&P 500 du matin | 1 prévisions uniques ; 0 arrivées à échéance ; 1 en attente ; 17 relances du même jour ignorées
-Règle de momentum par actif, 1 séance | 5 bonnes directions sur 19 (26,3 %) ; toujours hausse : 47,4 % ; persistance : non évaluable
+Scénarios S&P 500 du matin | 1 prévisions uniques ; 0 arrivées à échéance ; 1 en attente ; 18 relances du même jour ignorées
+Règle de momentum par actif, 1 séance | 7 bonnes directions sur 21 (33,3 %) ; toujours hausse : 38,1 % ; persistance : non évaluable
 Règle de momentum par actif, 5 séances | aucun échantillon arrivé à échéance
 
 > Échantillon insuffisant : 0 prévision de scénario arrivée à échéance, alors qu'il faut au moins trente séances distinctes pour tirer une conclusion. À ce stade, aucune probabilité de ce rapport ne doit être considérée comme fiable.
 
-Dernières erreurs à examiner : Solana (1 séance(s), prévu baisse, réalisé hausse, +1,50 %) ; XRP (1 séance(s), prévu baisse, réalisé hausse, +0,60 %) ; KOSPI (1 séance(s), prévu baisse, réalisé hausse, +2,05 %).
+Dernières erreurs à examiner : USD/INR (1 séance(s), prévu baisse, réalisé neutre, +0,01 %) ; Solana (1 séance(s), prévu baisse, réalisé hausse, +0,13 %) ; KOSPI (1 séance(s), prévu baisse, réalisé hausse, +2,05 %).
 
 
 DONNÉES, SOURCES ET LIMITES
