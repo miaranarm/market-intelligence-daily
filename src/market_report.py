@@ -33,6 +33,14 @@ STATE_DIR = ROOT / "data"
 FORECAST_FILE = STATE_DIR / "forecasts.json"
 HISTORY_FILE = STATE_DIR / "market_history.csv"
 REPORT_URL = "https://miaranarm.github.io/market-intelligence-daily/"
+
+
+def report_archive_filename(report_type: str, run_time_madagascar: str) -> str:
+    """Return a stable per-edition filename so old email links never point at a newer report."""
+    stamp = run_time_madagascar[:19].replace("-", "").replace("T", "-").replace(":", "")
+    return f"{report_type}-{stamp}.html"
+
+
 USER_AGENT = "MarketIntelligenceDaily/0.1 (personal research; contact via repository owner)"
 
 ASSETS: dict[str, dict[str, str]] = {
@@ -1894,8 +1902,13 @@ def main() -> int:
         if not snapshot:
             raise RuntimeError(f"Aucun rapport enregistré pour le type {args.report_type}")
         subject = f"[Market Intelligence] {args.report_type.upper()} — {snapshot['run_time_madagascar'][:16]}"
-        send_email(subject, REPORT_URL)
-        print(f"Report link emailed: type={args.report_type}; url={REPORT_URL}")
+        archive_name = report_archive_filename(args.report_type, snapshot["run_time_madagascar"])
+        archive_path = ROOT / "docs" / "reports" / archive_name
+        if not archive_path.is_file():
+            raise RuntimeError(f"Rapport archivé introuvable pour cette édition : {archive_path}")
+        report_url = f"{REPORT_URL}reports/{archive_name}"
+        send_email(subject, report_url)
+        print(f"Report edition link emailed: type={args.report_type}; url={report_url}")
         return 0
     plain, html_body, snapshot = make_report(args.report_type)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
@@ -1905,14 +1918,20 @@ def main() -> int:
     public_dir = ROOT / "docs"
     public_dir.mkdir(parents=True, exist_ok=True)
     (public_dir / "index.html").write_text(html_body, encoding="utf-8")
+    # Preserve an immutable public copy for this edition; the homepage remains the latest report.
+    archive_dir = public_dir / "reports"
+    archive_dir.mkdir(parents=True, exist_ok=True)
+    archive_name = report_archive_filename(args.report_type, snapshot["run_time_madagascar"])
+    (archive_dir / archive_name).write_text(html_body, encoding="utf-8")
     # Append the immutable forecast/data snapshot before email delivery.
     # Workflow commits state only after successful completion.
     rows = [AssetRow(**item) for item in snapshot["assets"]]
     write_state(snapshot, rows)
     subject = f"[Market Intelligence] {args.report_type.upper()} — {snapshot['run_time_madagascar'][:16]}"
+    archive_url = f"{REPORT_URL}reports/{archive_name}"
     if not args.no_email:
-        send_email(subject, REPORT_URL)
-    print(f"Report generated: {report_path.name}; assets={len(rows)}; type={args.report_type}; email={'disabled' if args.no_email else 'sent'}")
+        send_email(subject, archive_url)
+    print(f"Report generated: {report_path.name}; archive={archive_name}; assets={len(rows)}; type={args.report_type}; email={'disabled' if args.no_email else 'sent'}")
     return 0
 
 if __name__ == "__main__":
