@@ -684,7 +684,7 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
         lines += ["", "TITRES À VÉRIFIER — RÉSUMÉ FACTUEL INDISPONIBLE"]
         for item in prioritize_news(headline_only_items, 3):
             lines.append(f"- {item['title']} — {item.get('source', 'éditeur non précisé')} ({item.get('published', 'date non fournie')}) — {item['url']}")
-        lines.append("Ces titres sont des pistes de recherche, pas des faits suffisamment documentés pour soutenir une conclusion de marché.")
+        lines.append("Le résumé détaillé de l’éditeur n’a pas pu être vérifié; ces titres restent des pistes de recherche, pas des faits suffisamment documentés pour soutenir une conclusion de marché.")
 
 def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
     feed_batches: list[list[dict[str, str]]] = []
