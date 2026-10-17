@@ -321,8 +321,9 @@ class MarketConvictionTests(unittest.TestCase):
         bearish = market_conviction([
             self.row("^GSPC", -2.0), self.row("^IXIC", -2.0), self.row("^DJI", -2.0), self.row("^VIX", 0.0, 10.0)
         ])
-        self.assertGreaterEqual(bullish["probabilities"]["haussier"], 75)
-        self.assertGreaterEqual(bearish["probabilities"]["baissier"], 75)
+        # Uncalibrated momentum heuristics must not imply extreme directional confidence.
+        self.assertLessEqual(bullish["probabilities"]["haussier"], 60)
+        self.assertLessEqual(bearish["probabilities"]["baissier"], 60)
         self.assertEqual(sum(bullish["probabilities"].values()), 100)
         self.assertEqual(sum(bearish["probabilities"].values()), 100)
         self.assertIn("non calibrée", bullish["method"])
