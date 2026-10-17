@@ -3,84 +3,218 @@
   "mis_a_jour": "2026-10-17",
   "events": [
     {
-      "date": "2026-10-19", "time_utc": "02:00",
+      "date": "2026-10-19",
+      "time_utc": "02:00",
       "title": "Chine : PIB du 3e trimestre et données d'activité (production industrielle, ventes au détail)",
-      "region": "Chine", "importance": "élevée",
-      "categories": ["devises", "matieres", "indices", "actions"],
-      "currencies": ["AUD", "NZD", "CNY"],
+      "region": "Chine",
+      "importance": "élevée",
+      "categories": [
+        "devises",
+        "matieres",
+        "indices",
+        "actions"
+      ],
+      "currencies": [
+        "AUD",
+        "NZD",
+        "CNY"
+      ],
       "status": "à confirmer",
       "source": "Analyse « Daily Market Analyse » du 17/10/2026, non vérifiée à la source officielle",
       "note": "Heure indicative; vérifier sur le site du Bureau national de la statistique de Chine."
     },
     {
-      "date": "2026-10-23", "time_utc": null,
-      "title": "Indices PMI préliminaires d'octobre : États-Unis, zone euro, Royaume-Uni",
-      "region": "États-Unis / Europe", "importance": "élevée",
-      "categories": ["devises", "indices", "obligations"],
-      "currencies": ["USD", "EUR", "GBP"],
-      "status": "à confirmer",
-      "source": "Analyse « Daily Market Analyse » du 17/10/2026, non vérifiée à la source officielle",
-      "note": "Les horaires exacts varient selon la zone; vérifier sur le calendrier de l'éditeur des PMI."
-    },
-    {
-      "date": "2026-10-28", "time_utc": "18:00",
+      "date": "2026-10-28",
+      "time_utc": "18:00",
       "title": "Décision de politique monétaire de la Réserve fédérale (FOMC)",
-      "region": "États-Unis", "importance": "élevée",
-      "categories": ["devises", "obligations", "indices", "futures", "matieres", "crypto", "etf"],
-      "currencies": ["USD"],
+      "region": "États-Unis",
+      "importance": "élevée",
+      "categories": [
+        "devises",
+        "obligations",
+        "indices",
+        "futures",
+        "matieres",
+        "crypto",
+        "etf"
+      ],
+      "currencies": [
+        "USD"
+      ],
       "status": "confirmé",
       "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
       "note": "Réunion des 27 et 28 octobre; communiqué à 14:00 heure de New York (18:00 UTC), conférence de presse à 18:30 UTC."
     },
     {
-      "date": "2026-10-29", "time_utc": "13:15",
+      "date": "2026-10-29",
+      "time_utc": "12:30",
+      "title": "États-Unis : estimation avancée du PIB du T3 et revenus/dépenses des ménages (PCE) de septembre",
+      "region": "États-Unis",
+      "importance": "élevée",
+      "categories": [
+        "indices",
+        "futures",
+        "obligations",
+        "devises",
+        "actions"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "status": "confirmé",
+      "source": "https://www.bea.gov/news/schedule/",
+      "note": "BEA : publication officielle à 08:30 heure de l'Est; 12:30 UTC tant que l'heure d'été américaine est en vigueur."
+    },
+    {
+      "date": "2026-10-29",
+      "time_utc": "13:15",
       "title": "Décision de politique monétaire de la Banque centrale européenne",
-      "region": "Zone euro", "importance": "élevée",
-      "categories": ["devises", "obligations", "indices", "futures", "etf"],
-      "currencies": ["EUR"],
+      "region": "Zone euro",
+      "importance": "élevée",
+      "categories": [
+        "devises",
+        "obligations",
+        "indices",
+        "futures",
+        "etf"
+      ],
+      "currencies": [
+        "EUR"
+      ],
       "status": "confirmé",
       "source": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
       "note": "Réunion des 28 et 29 octobre; décision à 14:15 heure de Francfort (13:15 UTC), conférence de presse à 13:45 UTC."
     },
     {
-      "date": "2026-10-30", "time_utc": "03:00",
+      "date": "2026-10-30",
+      "time_utc": "12:30",
+      "title": "États-Unis : indice du coût de l'emploi (ECI), troisième trimestre",
+      "region": "États-Unis",
+      "importance": "moyenne",
+      "categories": [
+        "obligations",
+        "devises",
+        "indices"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "status": "confirmé",
+      "source": "https://www.bls.gov/schedule/2026/10_sched.htm",
+      "note": "BLS : publication officielle à 08:30 heure de l'Est; mesure des coûts salariaux et avantages."
+    },
+    {
+      "date": "2026-10-30",
+      "time_utc": null,
       "title": "Banque du Japon : décision de politique monétaire et rapport trimestriel de perspectives",
-      "region": "Japon", "importance": "élevée",
-      "categories": ["devises", "obligations", "indices", "futures"],
-      "currencies": ["JPY"],
+      "region": "Japon",
+      "importance": "élevée",
+      "categories": [
+        "devises",
+        "obligations",
+        "indices",
+        "futures"
+      ],
+      "currencies": [
+        "JPY"
+      ],
       "status": "confirmé",
       "source": "https://www.boj.or.jp/en/mopo/mpmsche_minu/index.htm",
-      "note": "Réunion des 29 et 30 octobre; la date est confirmée, l'heure (autour de midi à Tokyo) est approximative."
+      "note": "Réunion des 29 et 30 octobre confirmée par le calendrier officiel; heure de la décision non publiée dans le calendrier consulté."
     },
     {
-      "date": "2026-11-05", "time_utc": "12:00",
+      "date": "2026-11-03",
+      "time_utc": "15:00",
+      "title": "États-Unis : offres d'emploi JOLTS pour septembre",
+      "region": "États-Unis",
+      "importance": "élevée",
+      "categories": [
+        "obligations",
+        "devises",
+        "indices"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "status": "confirmé",
+      "source": "https://www.bls.gov/schedule/2026/11_sched.htm",
+      "note": "BLS : publication officielle à 10:00 heure de l'Est, après le passage à l'heure standard américaine."
+    },
+    {
+      "date": "2026-11-04",
+      "time_utc": "13:30",
+      "title": "États-Unis : balance commerciale des biens et services pour septembre",
+      "region": "États-Unis",
+      "importance": "moyenne",
+      "categories": [
+        "devises",
+        "obligations",
+        "actions",
+        "matieres"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "status": "confirmé",
+      "source": "https://www.bea.gov/news/schedule/",
+      "note": "BEA : publication officielle à 08:30 heure de l'Est, après le passage à l'heure standard américaine."
+    },
+    {
+      "date": "2026-11-05",
+      "time_utc": "12:00",
       "title": "Banque d'Angleterre : décision de politique monétaire",
-      "region": "Royaume-Uni", "importance": "élevée",
-      "categories": ["devises", "obligations", "indices"],
-      "currencies": ["GBP"],
-      "status": "à confirmer",
-      "source": "Analyse « Daily Market Analyse » du 17/10/2026 (citant Reuters), non vérifiée sur le site de la Banque d'Angleterre",
-      "note": "Heure indicative."
+      "region": "Royaume-Uni",
+      "importance": "élevée",
+      "categories": [
+        "devises",
+        "obligations",
+        "indices"
+      ],
+      "currencies": [
+        "GBP"
+      ],
+      "status": "confirmé",
+      "source": "https://www.bankofengland.co.uk/monetary-policy/upcoming-mpc-dates",
+      "note": "Date officielle du MPC; publication du communiqué et des minutes à 12:00 UTC."
     },
     {
-      "date": "2026-12-09", "time_utc": "19:00",
-      "title": "Décision de politique monétaire de la Réserve fédérale (FOMC) avec projections économiques",
-      "region": "États-Unis", "importance": "élevée",
-      "categories": ["devises", "obligations", "indices", "futures", "matieres", "crypto", "etf"],
-      "currencies": ["USD"],
+      "date": "2026-11-05",
+      "time_utc": "13:30",
+      "title": "États-Unis : productivité et coûts unitaires du travail, estimation préliminaire du T3",
+      "region": "États-Unis",
+      "importance": "moyenne",
+      "categories": [
+        "obligations",
+        "devises",
+        "indices"
+      ],
+      "currencies": [
+        "USD"
+      ],
       "status": "confirmé",
-      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
-      "note": "Réunion des 8 et 9 décembre; communiqué à 14:00 heure de New York (19:00 UTC)."
+      "source": "https://www.bls.gov/schedule/2026/11_sched.htm",
+      "note": "BLS : publication officielle à 08:30 heure de l'Est."
     },
     {
-      "date": "2026-12-17", "time_utc": "13:15",
-      "title": "Décision de politique monétaire de la Banque centrale européenne avec projections",
-      "region": "Zone euro", "importance": "élevée",
-      "categories": ["devises", "obligations", "indices", "futures", "etf"],
-      "currencies": ["EUR"],
+      "date": "2026-11-06",
+      "time_utc": "13:30",
+      "title": "États-Unis : rapport sur l'emploi d'octobre (Employment Situation)",
+      "region": "États-Unis",
+      "importance": "élevée",
+      "categories": [
+        "obligations",
+        "devises",
+        "indices",
+        "futures",
+        "actions",
+        "crypto"
+      ],
+      "currencies": [
+        "USD"
+      ],
       "status": "confirmé",
-      "source": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
-      "note": "Réunion des 16 et 17 décembre; décision à 14:15 heure de Francfort (13:15 UTC)."
+      "source": "https://www.bls.gov/schedule/news_release/empSit.htm",
+      "note": "BLS : publication officielle à 08:30 heure de l'Est."
     }
   ]
 }
