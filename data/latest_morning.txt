@@ -1,21 +1,16 @@
 Rapport initial — marchés multi-actifs
-Heure Madagascar : 2026-10-17 08:20:57 EAT
-Généré UTC : 2026-10-17 05:20:57 UTC
+Heure Madagascar : 2026-10-17 08:47:45 EAT
+Généré UTC : 2026-10-17 05:47:45 UTC
 
 Couverture : 82 actifs avec données reçues sur 82 suivis. Les cours correspondent à la dernière observation disponible.
 
 
 LES ACTUALITÉS QUI COMPTENT
-1. Federal Reserve Board announces termination of enforcement actions with Gardner Bancshares, Inc. and Small Business Bank
-   Federal Reserve — communiqués officiels · Fri, 16 Oct 2026 15:00:00 GMT
-   FAITS RAPPORTÉS : The Federal Reserve Board on Friday announced the termination of the enforcement actions listed below: Gardner Bancshares, Inc., Lenexa, Kansas and Small Busi
+1. Christine Lagarde: IMFC Statement
+   Banque centrale européenne — communiqués · Sat, 17 Oct 2026 07:00:00 +0200
+   FAITS RAPPORTÉS : The European Central Bank (ECB) is the central bank of the European Union countries which have adopted the euro. Our main task is to maintain price stability in the euro area and so preserve the purchasing power of the single currency.
    POUR LES MARCHÉS : Les rendements modifient le coût du crédit et les valorisations. Une hausse pénalise généralement les obligations déjà émises et les actions à valorisation élevée; une détente peut les soutenir. Le prochain test est l’écart entre les données d’inflation/activité et les attentes de taux.
-   Source : https://www.federalreserve.gov/newsevents/pressreleases/enforcement20261016a.htm
-2. U.S. small-scale solar generation has quadrupled in the last decade
-   US Energy Information Administration — énergie · Fri, 16 Oct 2026  09:00:00 EST
-   FAITS RAPPORTÉS : We estimate that U.S. generation from small-scale or rooftop solar photovoltaic systems (smaller than 1 megawatt of capacity) has increased from 18,812 gigawatthours (GWh) to 92,979 GWh over the last decade. The four states with the highest generation of small-scale solar in the country-California, Arizona, Texas, and Florida-are in regions with more abundant solar resources. Even though it is in a region with lower solar resources, New York ranks as the fifth-largest rooftop solar generation producer as a result of capacity growth supported by technology improvements and state incentives.
-   POUR LES MARCHÉS : La portée de cette nouvelle dépend de ses détails et de la surprise par rapport aux attentes. Identifier les entreprises ou pays concernés, puis vérifier la réaction des prix et les prochaines données qui confirmeraient ou invalideraient l’interprétation.
-   Source : https://www.eia.gov/todayinenergy/detail.php?id=68324
+   Source : https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261017~7015ea3099.en.html
 
 INDICATEURS MACROÉCONOMIQUES STRUCTURÉS — FRED ET SOURCE OFFICIELLE DE REPLI
 La source et la date de chaque observation sont indiquées. Les fréquences et délais de publication diffèrent; les valeurs ne sont pas nécessairement du jour.
@@ -40,6 +35,7 @@ Lecture régionale : les signaux ci-dessous sont limités aux publications et in
 - Zone euro et Royaume-Uni :
   - European majors set for Q3 earnings growth despite darkening view on consumer cyclicals - Yahoo Finance UK — Yahoo Finance UK (Fri, 16 Oct 2026 10:08:15 GMT) — https://news.google.com/rss/articles/CBMihwFBVV95cUxPczhJQ09kVVl1aXBBVGpDMk5zcVJwbk9xUnctZVpZS2pZaWxHU2N6NS13SURVLWZFX0Zab1Y4QWgxNXNiX0tKb1FrYjJiZUFTQzdOLVFRZkxRSE9xWlRoN0plZXFVbW5SSFMzak5mbWlXYmlfcHJGQ0dzT1dwaE5vdnNBLXZaLTA?oc=5
   - UBS Highlights Top European Capital Goods Stocks Ahead of Earnings Season - Yahoo Finance UK — Yahoo Finance UK (Wed, 14 Oct 2026 06:52:00 GMT) — https://news.google.com/rss/articles/CBMijAFBVV95cUxQdGliTmpmdlIzNWo4TnZ5emNxNGJjZ2YyRTQtVF95UzQ4OGt4TjJsNUNFcHdFb2hUM0lBczE0bHg2eUo4amt1QU02bTB4QXN4eVRoNE1EVTZ3Q193RnR3amlDNWw1OFhWcnAtTU9RYUc3QnozRk5HeFNrRTg1Rk9ETERaeERfT0o4U1NSNw?oc=5
+  - European shares close out best week since June as earnings soften blow from tech selloff - Reuters — Reuters (Fri, 16 Oct 2026 16:34:41 GMT) — https://news.google.com/rss/articles/CBMivAFBVV95cUxOa1lsVE9lQzRmN0pzeFRqTUcyTFN0a3ZfNDh6Zk9MdU9hYUFXSnIzZzFINmJOd0pCbFcxaTV6VnU2QnRfazFpR1lSNHdEMlB4NHJ6RDZOVmhlZVkwZ0hPbEJoVlBrOUpYcF81YUJTYjIyRTdhNE5mNzhUeExmOS1HNDliT3Z6MEYxX2t2OVVSeDJJLVlWM0dJa3dqZUVKOTBIVmsxVlAwZEgyM3lvT2VUUlJiRkFhQi13OHBmRA?oc=5
 - Chine et Asie-Pacifique :
   - China's central bank to further open its financial markets to foreigners, chief says - Reuters — Reuters (Fri, 16 Oct 2026 15:59:00 GMT) — https://news.google.com/rss/articles/CBMixgFBVV95cUxQUms0WEVOUTlsZUpVQjNfaVZjQkV2aF9HOFhZbTQtblFHNldVUTk2N3hqeml0aDc2MG9uSzRtTzdPRC1YNXFReU5RSWV2STM3cXhWcVhLTFVONlM5UHBqOXRfeVhmZXlBZHRrVlhHQUlaWGRMeG1FYnJqNloxbEc1NmFmbjZNLUNYdThhOC1pTFFfMXF1a19tN3VKb01RMGt6bXV5UHBMNXd2cXlOQlNtaXJELW14RHBzb3o2b1RBWDhKck1Sdmc?oc=5
   - Speech by Board Member KOEDA in Kumamoto (Economic Activity, Prices, and Monetary Policy in Japan) — Bank of Japan — actualités, politique monétaire et statistiques (Thu, 15 Oct 2026 10:30:00 +0900) — http://www.boj.or.jp/en/about/press/koen_2026/ko261015a.htm
@@ -50,12 +46,12 @@ Lecture régionale : les signaux ci-dessous sont limités aux publications et in
 NIVEAU 3 — GRANDES FORCES ET INTERACTIONS ENTRE LES MARCHÉS
 - Les grands indices US ont reculé sur cinq séances : momentum récent négatif, sans que cela suffise à établir une prévision directionnelle. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
 - Le VIX a fortement progressé sur la dernière séance disponible : surveiller une hausse de l'aversion au risque. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
-- Bitcoin : variation de la dernière séance disponible -0.78%; la crypto cote en continu, contrairement à la plupart des marchés traditionnels. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
+- Bitcoin : variation de la dernière séance disponible -0.84%; la crypto cote en continu, contrairement à la plupart des marchés traditionnels. — Source des cours : Yahoo Finance, données historiques https://finance.yahoo.com/.
 - Actions US vs taux longs US : S&P 500 -1.09 %; US 10-year Treasury yield +0.18 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
 - Technologie vs marché large : Nasdaq Composite -2.15 %; S&P 500 -1.09 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
 - Or vs dollar : Gold futures +0.26 %; US Dollar Index -0.16 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
 - Pétrole vs dollar : WTI crude oil futures +3.51 %; US Dollar Index -0.16 %; mouvements de sens opposés. Une seule séance ne suffit pas à prouver une relation causale.
-- Bitcoin vs technologie : Bitcoin -0.78 %; Nasdaq Composite -2.15 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
+- Bitcoin vs technologie : Bitcoin -0.84 %; Nasdaq Composite -2.15 %; mouvements de même sens. Une seule séance ne suffit pas à prouver une relation causale.
 
 NIVEAU 4 — CLASSES D'ACTIFS : OÙ SE CONCENTRE LE RISQUE ?
 La classification ci-dessous repose sur les actifs reçus. Les fonds communs sont inclus lorsque leur cotation de valeur liquidative est disponible; une donnée absente est signalée, jamais inventée.
@@ -82,8 +78,8 @@ La classification ci-dessous repose sur les actifs reçus. Les fonds communs son
   - Sur cinq séances : 1/5 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 - Credit ETF : 1 instrument(s); variation moyenne non pondérée -0.35%.
   - Sur cinq séances : 0/1 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
-- Crypto : 4 instrument(s); variation moyenne non pondérée -0.94%.
-  - Meilleure variation : Solana (-0.51%); plus faible : XRP (-1.85%).
+- Crypto : 4 instrument(s); variation moyenne non pondérée -1.02%.
+  - Meilleure variation : Solana (-0.66%); plus faible : XRP (-1.88%).
   - Sur cinq séances : 0/4 instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.
 - ETF : 8 instrument(s); variation moyenne non pondérée -1.11%.
   - Meilleure variation : Developed markets ex-US equity ETF (-0.12%); plus faible : Invesco Nasdaq 100 ETF (-2.50%).
@@ -141,10 +137,10 @@ Ce niveau relie les résultats et décisions d'entreprise à leurs secteurs. Les
 - AI Capex Faces First Major Test as Meta Prepares to Reveal Results of Trillion-Dollar Bet Next Week - BigGo Finance — BigGo Finance (Fri, 16 Oct 2026 13:35:00 GMT) — https://news.google.com/rss/articles/CBMidkFVX3lxTE0xU2xCLTR6Nlc0SWRtQTlNWFA2TDA1bVkzTVd5aklldUhJaGpqLUlSV3k3ekl5aS13MDBucFVrNFZFNmN6di1tOXlSaU5JUDJmZjZXVGhDaENYcXJFbjBBc29XZ01NdzZyS1R6cmZiZzR6eXltVWc?oc=5
   - Thème : Résultats d'entreprises; actifs potentiellement concernés : actions concernées, secteurs, indices/futures, ETF et fonds. À confirmer dans la publication originale et par rapport aux attentes.
   - Mouvements observés sur les instruments associés (dernière séance disponible) : Meta Platforms -3.72 %; 5 séances -1.30 %; S&P 500 -1.09 %; 5 séances -1.95 %; Nasdaq Composite -2.15 %; 5 séances -4.48 %; SPDR S&P 500 ETF -1.11 %; 5 séances -1.97 %. Coïncidence temporelle, pas preuve que le titre explique ces mouvements.
-- WaFd Bank (NASDAQ:WAFD) Reports Q3 CY2026 Earnings - StockStory — StockStory (Fri, 16 Oct 2026 18:39:34 GMT) — https://news.google.com/rss/articles/CBMi2AFBVV95cUxNRDB3TTB4WGJMLUc3OVFVcUtsVEQ0N2JJUDV1Yi0yRUNjRnJ4RWtsQ2N0NDZrU2duYWJqNUhoc1RjMXdqOHZadlA3X0thak1LQVpDOEJHajVEc2FJS09FcXU5YkQzTm12eC14ZHpzRHQyT05vbGFlME55RWpnLWtxSTNkRWhoMHdmRmdrN1E1Q3UxUWVUNGduUUFoR2Rhd01zZENqVXNieVlaZkpZdTZ1MkRNR09uU2EtdWlKRmRGYm1LcE5hTXhmekx3bzJ2dzJHeXhZeWtCclo?oc=5
+- Plug Power Q3 2026 Progress: Revenue Growth & Cash Improvement - Fuel Cells Works — Fuel Cells Works (Thu, 15 Oct 2026 12:41:00 GMT) — https://news.google.com/rss/articles/CBMigAJBVV95cUxNc1A4Y01ZTzJINVQ2cVJobFY5bzh3VG5IT0J3TU81NTV6dHI0NHJOV0ZpSUtTcmhlSmoxZ2ZvTHVJeE82dHBPTFZqX2lNT3lDVnUteWVwWkdVSDk2S1d2TWVZQWJwaXhnX0VRbzdJYTgxcFRRY0Eyc1o5SzU0blNEd2ZDcFlXS0RqT0g3a0FIbnY0eUp6REV4eUp2WTRfZDBrcGJEVGlTRGVYa2pTTHg2OVc4YTlhUXJMcmV1YWlmdEZMTk5vb0JjdmU1UzJ1WnpQOWJQMFhNR2FCZDZyWFgxRHBGdVE2ZktSUFRxZHNiQ2pQdWxDU2lzMFM1Y0ZQbjZQ?oc=5
   - Thème : Résultats d'entreprises; actifs potentiellement concernés : actions concernées, secteurs, indices/futures, ETF et fonds. À confirmer dans la publication originale et par rapport aux attentes.
   - Mouvements observés sur les instruments associés (dernière séance disponible) : S&P 500 -1.09 %; 5 séances -1.95 %; Nasdaq Composite -2.15 %; 5 séances -4.48 %; SPDR S&P 500 ETF -1.11 %; 5 séances -1.97 %; Technology Select Sector SPDR ETF -3.02 %; 5 séances -7.70 %. Coïncidence temporelle, pas preuve que le titre explique ces mouvements.
-- Plug Power Q3 2026 Progress: Revenue Growth & Cash Improvement - Fuel Cells Works — Fuel Cells Works (Thu, 15 Oct 2026 12:41:00 GMT) — https://news.google.com/rss/articles/CBMigAJBVV95cUxNc1A4Y01ZTzJINVQ2cVJobFY5bzh3VG5IT0J3TU81NTV6dHI0NHJOV0ZpSUtTcmhlSmoxZ2ZvTHVJeE82dHBPTFZqX2lNT3lDVnUteWVwWkdVSDk2S1d2TWVZQWJwaXhnX0VRbzdJYTgxcFRRY0Eyc1o5SzU0blNEd2ZDcFlXS0RqT0g3a0FIbnY0eUp6REV4eUp2WTRfZDBrcGJEVGlTRGVYa2pTTHg2OVc4YTlhUXJMcmV1YWlmdEZMTk5vb0JjdmU1UzJ1WnpQOWJQMFhNR2FCZDZyWFgxRHBGdVE2ZktSUFRxZHNiQ2pQdWxDU2lzMFM1Y0ZQbjZQ?oc=5
+- Major earnings reports are due next week, but strong results may not be enough to quell market fears - CNBC — CNBC (Fri, 16 Oct 2026 19:39:38 GMT) — https://news.google.com/rss/articles/CBMiigFBVV95cUxNMDB5eUJodTlUZTZQNzNYdFhCVWFOWUdRZk5ENkFRNll3OEE0RjJkb0tMUzZRMkJYNktERG5pN1ZmR1JTUW1FczQ0UmQwSGRza2xUeUsyTndRajd0aVU3dXRTaE1nVkFKalpJZm9yMVVNWUJpYi1vUGp2VEJwQl85dmNzY0ExV015MGc?oc=5
   - Thème : Résultats d'entreprises; actifs potentiellement concernés : actions concernées, secteurs, indices/futures, ETF et fonds. À confirmer dans la publication originale et par rapport aux attentes.
   - Mouvements observés sur les instruments associés (dernière séance disponible) : S&P 500 -1.09 %; 5 séances -1.95 %; Nasdaq Composite -2.15 %; 5 séances -4.48 %; SPDR S&P 500 ETF -1.11 %; 5 séances -1.97 %; Technology Select Sector SPDR ETF -3.02 %; 5 séances -7.70 %. Coïncidence temporelle, pas preuve que le titre explique ces mouvements.
 - Thèmes sectoriels repérés dans les titres déjà listés : technologie/semi-conducteurs (2); banques/crédit (2); consommation/distribution (3); industrie/infrastructures (2). Classification automatique, non validation des faits.
@@ -170,9 +166,9 @@ Instruments à examiner en priorité (sélection par amplitude; pas une recomman
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
 - KOSPI (^KS11) — classe : South Korean equity index; dernier prix +5668.05; dernière séance +2.05%; 5 séances -14.46%; 1 mois -17.97%. Source cours : https://finance.yahoo.com/quote/^KS11/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
-- XRP (XRP-USD) — classe : Crypto; dernier prix +1.31; dernière séance -1.85%; 5 séances -7.15%; 1 mois -16.57%. Source cours : https://finance.yahoo.com/quote/XRP-USD/
+- XRP (XRP-USD) — classe : Crypto; dernier prix +1.31; dernière séance -1.88%; 5 séances -7.17%; 1 mois -16.60%. Source cours : https://finance.yahoo.com/quote/XRP-USD/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
-- Solana (SOL-USD) — classe : Crypto; dernier prix +104.79; dernière séance -0.51%; 5 séances -5.80%; 1 mois -14.11%. Source cours : https://finance.yahoo.com/quote/SOL-USD/
+- Solana (SOL-USD) — classe : Crypto; dernier prix +104.64; dernière séance -0.66%; 5 séances -5.93%; 1 mois -14.24%. Source cours : https://finance.yahoo.com/quote/SOL-USD/
   - Lecture multi-horizon : la variation de la dernière séance et celle des cinq séances sont dans le même sens; le mouvement récent confirme provisoirement le biais observé sur la semaine, sans garantir sa poursuite.
 - Silver futures (SI=F) — classe : Commodity; dernier prix +56.99; dernière séance +0.28%; 5 séances -6.06%; 1 mois -12.94%. Source cours : https://finance.yahoo.com/quote/SI=F/
   - Lecture multi-horizon : la dernière séance diverge du mouvement sur cinq séances; rechercher une prise de bénéfices, une nouvelle information ou un retournement avant de conclure.
@@ -209,10 +205,10 @@ Natural gas futures (NG=F) | Commodity | +3.12 | -3.71% | -3.23% | +7.41% | http
 Silver futures (SI=F) | Commodity | +56.99 | +0.28% | -6.06% | -12.94% | https://finance.yahoo.com/quote/SI=F/
 WTI crude oil futures (CL=F) | Commodity | +101.41 | +3.51% | +10.41% | -0.49% | https://finance.yahoo.com/quote/CL=F/
 High-yield corporate bond ETF (HYG) | Credit ETF | +76.86 | -0.35% | -0.48% | -1.93% | https://finance.yahoo.com/quote/HYG/
-Bitcoin (BTC-USD) | Crypto | +81498.47 | -0.78% | -2.61% | -3.02% | https://finance.yahoo.com/quote/BTC-USD/
-Ethereum (ETH-USD) | Crypto | +2425.15 | -0.63% | -4.32% | -9.86% | https://finance.yahoo.com/quote/ETH-USD/
-Solana (SOL-USD) | Crypto | +104.79 | -0.51% | -5.80% | -14.11% | https://finance.yahoo.com/quote/SOL-USD/
-XRP (XRP-USD) | Crypto | +1.31 | -1.85% | -7.15% | -16.57% | https://finance.yahoo.com/quote/XRP-USD/
+Bitcoin (BTC-USD) | Crypto | +81450.00 | -0.84% | -2.66% | -3.08% | https://finance.yahoo.com/quote/BTC-USD/
+Ethereum (ETH-USD) | Crypto | +2423.31 | -0.70% | -4.39% | -9.93% | https://finance.yahoo.com/quote/ETH-USD/
+Solana (SOL-USD) | Crypto | +104.64 | -0.66% | -5.93% | -14.24% | https://finance.yahoo.com/quote/SOL-USD/
+XRP (XRP-USD) | Crypto | +1.31 | -1.88% | -7.17% | -16.60% | https://finance.yahoo.com/quote/XRP-USD/
 Developed markets ex-US equity ETF (EFA) | ETF | +103.55 | -0.12% | +0.15% | -2.35% | https://finance.yahoo.com/quote/EFA/
 Emerging markets equity ETF (EEM) | ETF | +62.85 | -1.74% | -5.91% | -6.07% | https://finance.yahoo.com/quote/EEM/
 Gold ETF (GLD) | ETF | +382.01 | -0.18% | -0.67% | -4.10% | https://finance.yahoo.com/quote/GLD/
@@ -284,19 +280,19 @@ ENGAGEMENT POUR L'AUDIT DU SOIR
 AUDIT CRITIQUE DES ANALYSES PRÉCÉDENTES
 - Prévisions historiques enregistrées : 202; prévisions arrivées à échéance : 19; encore en attente : 183.
 - Référence évaluée : règle de momentum simple fondée sur le rendement des cinq dernières séances. C'est un point de comparaison expérimental, pas une recommandation de trading.
-- Horizon 1 séance : 5/19 directions correctes (26.3 %); mouvement absolu moyen observé : 0.696 %.
+- Horizon 1 séance : 5/19 directions correctes (26.3 %); mouvement absolu moyen observé : 0.704 %.
 - Horizon 5 séances : aucun échantillon arrivé à échéance; performance non évaluable.
 - Conclusion méthodologique : échantillon encore insuffisant pour déclarer cette règle fiable ou modifier automatiquement la méthode.
-- Exemples d'erreurs à examiner : Solana (1 séance(s), prévu baisse, réalisé hausse, +1.24 %); XRP (1 séance(s), prévu baisse, réalisé hausse, +0.57 %); KOSPI (1 séance(s), prévu baisse, réalisé hausse, +2.05 %).
+- Exemples d'erreurs à examiner : Solana (1 séance(s), prévu baisse, réalisé hausse, +1.44 %); XRP (1 séance(s), prévu baisse, réalisé hausse, +0.71 %); KOSPI (1 séance(s), prévu baisse, réalisé hausse, +2.05 %).
 - Source des prix évalués : Yahoo Finance via yfinance (https://finance.yahoo.com/); la qualité et la disponibilité de ces données ne sont pas garanties.
 - Les prévisions originales sont conservées pour empêcher toute réécriture rétrospective. Les changements de méthode devront être justifiés par des échantillons suffisants et des tests hors échantillon.
 
 AUDIT DES PROBABILITÉS DIRECTIONNELLES
 - Des prévisions matinales sont enregistrées, mais aucune n'a encore atteint une observation quotidienne distincte et terminée. Le score de calibration n'est pas encore disponible.
-- Prévisions matinales enregistrées : 5; en attente : 5. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.
+- Prévisions matinales enregistrées : 6; en attente : 6. Les résultats sont mesurés sur la prochaine date de données distincte disponible, pas sur une heure intrajournalière garantie.
 
 À PROPOS DES DONNÉES
-Collecte : 17/10/2026 à 05:20 UTC. Données de prix reçues pour 82/82 actifs; 48 actualités collectées.
+Collecte : 17/10/2026 à 05:47 UTC. Données de prix reçues pour 82/82 actifs; 48 actualités collectées.
 Certaines séries macroéconomiques n’ont pas pu être récupérées.
 
 Avertissement : contenu informatif et expérimental, pas un conseil d'investissement. Vérifier les données et les actualités avant toute décision.
