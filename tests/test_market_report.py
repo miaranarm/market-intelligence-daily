@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
-from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, prioritize_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
+from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html
 
 
 
@@ -22,6 +22,25 @@ class PriorityNewsTests(unittest.TestCase):
         self.assertEqual(selected[0]["url"], "https://example.com/fed")
         self.assertIn("source", selected[0])
         self.assertIn("published", selected[0])
+
+
+
+class PriorityNewsRenderingTests(unittest.TestCase):
+    def test_report_starts_news_with_excerpt_source_and_analysis(self):
+        lines = []
+        news = [{
+            "title": "Federal Reserve holds rates after inflation update",
+            "source": "Federal Reserve",
+            "published": "2026-10-16T18:00:00Z",
+            "summary": "The committee maintained the target range.",
+            "url": "https://example.org/fed-release",
+        }]
+        append_priority_news(lines, news)
+        rendered = "\\n".join(lines)
+        self.assertLess(rendered.index("ACTUALITÉS PRIORITAIRES"), rendered.index("ACTUALITÉ :"))
+        self.assertIn("The committee maintained the target range", rendered)
+        self.assertIn("https://example.org/fed-release", rendered)
+        self.assertIn("ANALYSE :", rendered)
 
 
 
