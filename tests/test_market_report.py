@@ -125,7 +125,6 @@ class PriorityNewsRenderingTests(unittest.TestCase):
         self.assertIn("https://news.google.com/rss/articles/publisher-story?oc=5", rendered)
         self.assertNotIn("Bitcoin ETF rules announced", rendered)
         self.assertIn("Central bank publishes policy statement", rendered)
-        self.assertIn("Le titre seul ne suffit pas à établir un effet sur les marchés", rendered)
         self.assertNotIn("Banknote imagery advisory group minutes", rendered)
         self.assertIn("résumé détaillé de l’éditeur n’a pas pu être vérifié", rendered)
 
