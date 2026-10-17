@@ -19,6 +19,7 @@ from email.message import EmailMessage
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
 import numpy as np
