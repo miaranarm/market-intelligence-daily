@@ -618,13 +618,41 @@ class ForecastEvaluationTests(unittest.TestCase):
         self.assertIn("finance.yahoo.com", html)
         self.assertIn("viewport", html)
 
-    def test_long_supporting_sections_are_collapsed_and_excluded_from_reading_time(self):
+    def test_all_nine_asset_classes_remain_visible_by_default(self):
         plain = (
             "Rapport de test\nHeure Madagascar : 2026-10-16 13:30:00\n"
             "Généré UTC : 2026-10-16 10:30:00 UTC\n\n"
             "NIVEAU 4 — CLASSES D'ACTIFS : OÙ SE CONCENTRE LE RISQUE ?\n"
-            + ("Détail justificatif de classe d'actifs. " * 1200)
-            + "\nLES 9 CATÉGORIES — ANALYSE PAR UNIVERS D’INVESTISSEMENT\n"
+            "Synthèse des classes d'actifs.\n"
+            "LES 9 CATÉGORIES — ANALYSE PAR UNIVERS D’INVESTISSEMENT\n"
+            "1. INDICES BOURSIERS\nFaits et lecture marché.\n"
+            "2. FUTURES SUR INDICES\nFaits et lecture marché.\n"
+            "3. ACTIONS\nFaits et lecture marché.\n"
+            "4. MATIÈRES PREMIÈRES\nFaits et lecture marché.\n"
+            "5. DEVISES (FOREX)\nFaits et lecture marché.\n"
+            "6. CRYPTO-ACTIFS\nFaits et lecture marché.\n"
+            "7. OBLIGATIONS ET CRÉDIT\nFaits et lecture marché.\n"
+            "8. ETF\nFaits et lecture marché.\n"
+            "9. FONDS D’INVESTISSEMENT\nFaits et lecture marché.\n"
+        )
+        html = render_professional_html(
+            plain,
+            "Rapport de test",
+            datetime(2026, 10, 16, 13, 30, tzinfo=ZoneInfo("Indian/Antananarivo")),
+            datetime(2026, 10, 16, 10, 30, tzinfo=timezone.utc),
+        )
+        self.assertNotIn("<details><summary>Niveau 4", html)
+        self.assertIn("Indices Boursiers", html)
+        self.assertIn("Crypto-Actifs", html)
+        self.assertIn("Fonds D’Investissement", html)
+
+    def test_long_supporting_sections_are_collapsed_and_excluded_from_reading_time(self):
+        plain = (
+            "Rapport de test\nHeure Madagascar : 2026-10-16 13:30:00\n"
+            "Généré UTC : 2026-10-16 10:30:00 UTC\n\n"
+            "FONDAMENTAUX PUBLIÉS — ÉCHANTILLON SEC EDGAR\n"
+            + ("Détail justificatif des données fondamentales. " * 1200)
+            + "\nNIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE\n"
             + "Résumé visible et actionnable.\n"
         )
         html = render_professional_html(
@@ -634,7 +662,7 @@ class ForecastEvaluationTests(unittest.TestCase):
             datetime(2026, 10, 16, 10, 30, tzinfo=timezone.utc),
         )
         self.assertIn("<details><summary>", html)
-        self.assertIn("Détail justificatif de classe", html)
+        self.assertIn("Détail justificatif des données fondamentales", html)
         self.assertIn("Temps de lecture estimé : 1 min", html)
 
 
