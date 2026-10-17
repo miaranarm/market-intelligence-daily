@@ -501,7 +501,9 @@ def _summarize_news_text(value: str, max_chars: int = 1050) -> str:
             continue
         if any(x in sentence.casefold() for x in (
             "accept cookies", "privacy policy", "subscribe to", "sign up for",
-            "all rights reserved", "read more:", "advertisement",
+            "all rights reserved", "read more:", "advertisement", "livestream",
+            "search quotes, news", "create free account", "watchlist", "select usa intl",
+            "sign in", "skip to content", "open navigation menu", "market data delayed",
         )):
             continue
         seen.add(key)
@@ -555,7 +557,9 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
         generic_patterns = (
             "is the central bank of", "our main task is to maintain price stability",
             "learn more about", "we use cookies", "this website uses cookies",
-            "welcome to our website", "the official website of",
+            "welcome to our website", "the official website of", "livestream",
+            "search quotes, news", "create free account", "watchlist", "select usa intl",
+            "skip to content", "open navigation menu", "market data delayed",
         )
         if len(candidate) < 100 or normalized.startswith(normalized_title):
             return False
