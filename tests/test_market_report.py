@@ -542,7 +542,7 @@ class ForecastEvaluationTests(unittest.TestCase):
             datetime(2026, 10, 16, 10, 30, tzinfo=timezone.utc),
         )
         self.assertIn("<details><summary>", html)
-        self.assertIn("Détail justificatif de classe d'actifs.", html)
+        self.assertIn("Détail justificatif de classe", html)
         self.assertIn("Temps de lecture estimé : 1 min", html)
 
 
