@@ -32,7 +32,7 @@ class PriorityNewsRenderingTests(unittest.TestCase):
             "title": "Federal Reserve holds rates after inflation update",
             "source": "Federal Reserve",
             "published": "2026-10-16T18:00:00Z",
-            "summary": "The committee maintained the target range.",
+            "summary": "The committee maintained the target range after reviewing inflation and activity. Officials said future decisions would depend on incoming data, while markets continued to assess the timing of any policy easing.",
             "url": "https://example.org/fed-release",
         }]
         append_priority_news(lines, news)
