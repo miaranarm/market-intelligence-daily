@@ -1302,42 +1302,79 @@ def linkify_text(value: str) -> str:
 
 
 def render_professional_html(plain: str, title: str, now_local: datetime, started: datetime) -> str:
-    """Turn the text report into a responsive, sectioned HTML briefing."""
+    """Render a readable briefing with detailed supporting tables available on demand."""
     lines = plain.splitlines()
-    reading_minutes = max(1, round(len(plain.split()) / 180))
+    collapsed_sections = {
+        "NIVEAU 4 — CLASSES D'ACTIFS : OÙ SE CONCENTRE LE RISQUE ?": "LES 9 CATÉGORIES — ANALYSE PAR UNIVERS D’INVESTISSEMENT",
+        "NIVEAU 5 — SECTEURS, SEGMENTS, THÉMATIQUES ET MICROÉCONOMIE": "FONDAMENTAUX PUBLIÉS — ÉCHANTILLON SEC EDGAR",
+        "FONDAMENTAUX PUBLIÉS — ÉCHANTILLON SEC EDGAR": "NIVEAU 6 — INSTRUMENTS PRÉCIS ET LISTE DE SURVEILLANCE",
+        "PANORAMA COMPLET DES INSTRUMENTS COLLECTÉS": "NIVEAU 7 — DÉCISION, INVALIDATION ET AUDIT",
+    }
+    # Reading time reflects the visible briefing, not the supporting sections
+    # that are collapsed by default but remain available to the reader.
+    visible_lines = []
+    hidden_until = None
+    for source_line in lines:
+        stripped = source_line.strip()
+        if hidden_until:
+            if stripped == hidden_until:
+                hidden_until = None
+                visible_lines.append(source_line)
+            continue
+        if stripped in collapsed_sections:
+            hidden_until = collapsed_sections[stripped]
+            continue
+        visible_lines.append(source_line)
+    reading_minutes = max(1, round(len("\n".join(visible_lines).split()) / 180))
     content_lines = lines[4:] if len(lines) >= 4 else lines
-    blocks: list[str] = []
-    i = 0
-    while i < len(content_lines):
-        line = content_lines[i].strip()
-        if not line:
-            i += 1
-            continue
-        if line.startswith("Actif | Classe |"):
-            headers = [x.strip() for x in line.split("|")]
-            rows_html = []
-            i += 1
-            while i < len(content_lines) and " | " in content_lines[i]:
-                cells = [x.strip() for x in content_lines[i].split("|")]
-                rows_html.append("<tr>" + "".join(f"<td>{linkify_text(cell)}</td>" for cell in cells) + "</tr>")
+
+    def render_lines(segment: list[str]) -> str:
+        blocks: list[str] = []
+        i = 0
+        while i < len(segment):
+            line = segment[i].strip()
+            if not line:
                 i += 1
-            blocks.append("<div class='table-wrap'><table><thead><tr>" +
-                          "".join(f"<th>{html.escape(cell)}</th>" for cell in headers) +
-                          "</tr></thead><tbody>" + "".join(rows_html) + "</tbody></table></div>")
-            continue
-        if line == line.upper() and len(line) >= 5 and any(c.isalpha() for c in line):
-            blocks.append(f"<h2>{html.escape(line.title() if len(line) < 55 else line)}</h2>")
-            i += 1
-            continue
-        if line.startswith("- "):
-            items = []
-            while i < len(content_lines) and content_lines[i].strip().startswith("- "):
-                items.append("<li>" + linkify_text(content_lines[i].strip()[2:]) + "</li>")
+                continue
+            if line in collapsed_sections:
+                stop_heading = collapsed_sections[line]
+                j = i + 1
+                while j < len(segment) and segment[j].strip() != stop_heading:
+                    j += 1
+                body = render_lines(segment[i + 1:j])
+                blocks.append(
+                    "<details><summary>" + html.escape(line.title()) +
+                    " — ouvrir les détails</summary><div class='details-body'>" +
+                    body + "</div></details>"
+                )
+                i = j
+                continue
+            if line.startswith("Actif | Classe |"):
+                headers = [x.strip() for x in line.split("|")]
+                rows_html = []
                 i += 1
-            blocks.append("<ul>" + "".join(items) + "</ul>")
-            continue
-        blocks.append("<p>" + linkify_text(line) + "</p>")
-        i += 1
+                while i < len(segment) and " | " in segment[i]:
+                    cells = [x.strip() for x in segment[i].split("|")]
+                    rows_html.append("<tr>" + "".join(f"<td>{linkify_text(cell)}</td>" for cell in cells) + "</tr>")
+                    i += 1
+                blocks.append("<div class='table-wrap'><table><thead><tr>" +
+                              "".join(f"<th>{html.escape(cell)}</th>" for cell in headers) +
+                              "</tr></thead><tbody>" + "".join(rows_html) + "</tbody></table></div>")
+                continue
+            if line == line.upper() and len(line) >= 5 and any(c.isalpha() for c in line):
+                blocks.append(f"<h2>{html.escape(line.title() if len(line) < 55 else line)}</h2>")
+                i += 1
+                continue
+            if line.startswith("- "):
+                items = []
+                while i < len(segment) and segment[i].strip().startswith("- "):
+                    items.append("<li>" + linkify_text(segment[i].strip()[2:]) + "</li>")
+                    i += 1
+                blocks.append("<ul>" + "".join(items) + "</ul>")
+                continue
+            blocks.append("<p>" + linkify_text(line) + "</p>")
+            i += 1
+        return "".join(blocks)
 
     return (
         "<!doctype html><html lang='fr'><head><meta charset='utf-8'>"
@@ -1354,21 +1391,20 @@ def render_professional_html(plain: str, title: str, now_local: datetime, starte
         ".report p{margin:10px 0}.report ul{padding-left:22px;margin:8px 0 18px}.report li{padding:3px 0}.table-wrap{overflow-x:auto;margin:14px 0 22px;border:1px solid #e3e9f1;border-radius:10px}"
         "table{border-collapse:collapse;width:100%;min-width:720px;font-size:13px}th{background:#f2f5fa;color:#344b68;text-align:left;font-weight:750}"
         "th,td{padding:10px 12px;border-bottom:1px solid #e9edf3;vertical-align:top}tbody tr:nth-child(even){background:#fafbfd}tbody tr:last-child td{border-bottom:0}"
-        "a{color:#145ca8;text-decoration:none;overflow-wrap:anywhere}a:hover{text-decoration:underline}.footer{color:#68778d;font-size:12px;margin:18px 4px}"
-        "@media(max-width:600px){.wrap{padding:12px 9px 30px}.hero,.report{border-radius:13px}.report{padding:16px}.report h2{font-size:15px}}"
+        "details{margin:16px 0;border:1px solid #dfe6ef;border-radius:10px;background:#fbfcfe}summary{cursor:pointer;padding:13px 16px;font-weight:750;color:#19365b}"
+        ".details-body{padding:0 16px 16px}.details-body h2{margin-top:20px}a{color:#145ca8;text-decoration:none;overflow-wrap:anywhere}a:hover{text-decoration:underline}"
+        ".footer{color:#68778d;font-size:12px;margin:18px 4px}@media(max-width:600px){.wrap{padding:12px 9px 30px}.hero,.report{border-radius:13px}.report{padding:16px}.report h2{font-size:15px}}"
         "</style></head><body><main class='wrap'>"
         "<header class='hero'><div class='eyebrow'>Daily Market Intelligence · Briefing multi-actifs</div>"
         f"<h1>{html.escape(title)}</h1><div class='meta'>Heure de Madagascar : {now_local:%d/%m/%Y à %H:%M:%S %Z}</div>"
         f"<div class='meta'>Généré le {started:%d/%m/%Y à %H:%M:%S UTC}</div>"
-        f"<div class='meta'>Temps de lecture estimé : {reading_minutes} min (à 180 mots/minute)</div></header>"
+        f"<div class='meta'>Temps de lecture estimé : {reading_minutes} min (à 180 mots/minute, hors annexes repliées)</div></header>"
         "<div class='notice'><strong>Lecture critique :</strong> les données de marché peuvent être retardées, révisées ou indisponibles. "
         "Les faits observés sont distingués des interprétations; les liens permettent de retrouver les sources citées.</div>"
-        "<article class='report'>" + "".join(blocks) + "</article>"
+        "<article class='report'>" + render_lines(content_lines) + "</article>"
         "<p class='footer'>Rapport expérimental d'information. Vérifier les données et les sources avant toute décision; ce document ne constitue pas un conseil en investissement.</p>"
         "</main></body></html>"
     )
-
-
 
 def market_conviction(rows: list[AssetRow]) -> dict[str, Any]:
     """Transparent, uncalibrated cross-asset scoring heuristic; never label it statistically calibrated."""
