@@ -42,6 +42,39 @@ class PriorityNewsRenderingTests(unittest.TestCase):
         self.assertIn("https://example.org/fed-release", rendered)
         self.assertIn("POUR LES MARCHÉS :", rendered)
 
+    @patch("src.market_report._enrich_news_item", side_effect=lambda item: item)
+    def test_excludes_aggregator_links_and_headline_only_items(self, _enrich):
+        news = [
+            {
+                "title": "Bitcoin ETF rules announced",
+                "source": "Google News",
+                "published": "2026-10-17T04:00:00Z",
+                "summary": "Regulators announced a new framework for exchange-traded products tied to digital assets, with implementation details to be confirmed by the exchange.",
+                "url": "https://news.google.com/rss/articles/example",
+            },
+            {
+                "title": "Central bank publishes policy statement",
+                "source": "Publisher",
+                "published": "2026-10-17T04:00:00Z",
+                "summary": "",
+                "url": "https://publisher.example/policy-statement",
+            },
+            {
+                "title": "Oil prices rise after supply disruption",
+                "source": "Publisher",
+                "published": "2026-10-17T04:00:00Z",
+                "summary": "Oil futures rose after the producer group reported an unexpected interruption to supply. The report described the affected output and said traders were monitoring how long the disruption might last.",
+                "url": "https://publisher.example/oil-supply-disruption",
+            },
+        ]
+        lines = []
+        append_priority_news(lines, news)
+        rendered = "\n".join(lines)
+        self.assertIn("Oil prices rise after supply disruption", rendered)
+        self.assertNotIn("news.google.com", rendered)
+        self.assertNotIn("Central bank publishes policy statement", rendered)
+        self.assertNotIn("le résumé détaillé de l’éditeur n’a pas pu être vérifié", rendered)
+
 
 
 class NewsFeedSummaryTests(unittest.TestCase):
