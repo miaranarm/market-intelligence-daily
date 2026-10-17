@@ -1284,31 +1284,33 @@ def append_funnel_report(
         "semiconductor", "bank earnings", "company results")
     corporate_news = [n for n in news if any(k in n["title"].casefold() for k in corporate_keywords)]
     if corporate_news:
-        for item in corporate_news[:8]:
+        for item in corporate_news[:6]:
             theme, categories, impact = infer_macro_impact(item["title"])
             lines.append(f"- {item['title']} — {item['source']} ({item['published']}) — {item['url']}")
             lines.append(f"  - Thème : {theme}; actifs potentiellement concernés : {categories}. À confirmer dans la publication originale et par rapport aux attentes.")
     else:
         lines.append("- Aucun titre clairement identifié comme publication d'entreprise dans les flux reçus. Cela ne signifie pas qu'aucune entreprise ne publie aujourd'hui : le calendrier des résultats n'est pas encore alimenté par une source spécialisée structurée.")
-    sector_groups = [
-        ("Technologie et semi-conducteurs", ("technology", "semiconductor", "chip", "nvidia", "apple", "microsoft", "artificial intelligence", "ai ")),
-        ("Banques et crédit", ("bank", "jpmorgan", "credit", "loan", "deposit", "net interest margin")),
-        ("Énergie et matières premières", ("oil", "energy", "gas", "opec", "exxon", "gold", "copper")),
-        ("Consommation et distribution", ("consumer", "retail", "walmart", "costco", "amazon", "sales")),
-        ("Santé et pharmacie", ("healthcare", "pharma", "drug", "lilly", "clinical")),
-        ("Industrie et infrastructures", ("industrial", "manufacturing", "orders", "caterpillar", "capex")),
+    sector_counts = {
+        "technologie/semi-conducteurs": ("technology", "semiconductor", "chip", "nvidia", "apple", "microsoft", "artificial intelligence", "ai "),
+        "banques/crédit": ("bank", "jpmorgan", "credit", "loan", "deposit", "net interest margin"),
+        "énergie/matières premières": ("oil", "energy", "gas", "opec", "exxon", "gold", "copper"),
+        "consommation/distribution": ("consumer", "retail", "walmart", "costco", "amazon", "sales"),
+        "santé/pharmacie": ("healthcare", "pharma", "drug", "lilly", "clinical"),
+        "industrie/infrastructures": ("industrial", "manufacturing", "orders", "caterpillar", "capex"),
+    }
+    theme_summary = [
+        f"{sector} ({sum(1 for item in corporate_news if any(k in item['title'].casefold() for k in keywords))})"
+        for sector, keywords in sector_counts.items()
+        if any(any(k in item["title"].casefold() for k in keywords) for item in corporate_news)
     ]
-    for sector, keywords in sector_groups:
-        matches = [n for n in corporate_news if any(k in n["title"].casefold() for k in keywords)]
-        if matches:
-            lines.append(f"- {sector} :")
-            for item in matches[:2]:
-                lines.append(f"  - {item['title']} — {item['url']}")
+    lines.append("- Thèmes sectoriels repérés dans les titres déjà listés : " + ("; ".join(theme_summary) if theme_summary else "aucun thème assez précis") + ". Classification automatique, non validation des faits.")
+
     lines += ["", "FONDAMENTAUX PUBLIÉS — ÉCHANTILLON SEC EDGAR",
               "Chiffres issus des données XBRL officielles de la SEC pour les derniers trimestres 10-Q disponibles. La comparaison annuelle n'est affichée que si un trimestre comparable existe; il ne s'agit pas d'une comparaison au consensus analystes. Les définitions comptables peuvent varier selon l'émetteur.",
               "Montants en milliards USD; BPA dilué en USD/action. La marge opérationnelle est calculée à partir du résultat opérationnel et du chiffre d'affaires trimestriels. Le flux de trésorerie disponible (FCF) est approximé par flux opérationnel moins investissements corporels; il peut être indisponible si un poste manque."]
     if company_fundamentals:
-        for item in company_fundamentals:
+        # Keep the most decision-relevant large issuers in the main briefing.
+        for item in company_fundamentals[:10]:
             revenue = "n.d." if item["revenue"] is None else f"{item['revenue'] / 1_000_000_000:.2f} Md$"
             revenue_yoy = "comparaison annuelle indisponible" if item["revenue_yoy_pct"] is None else f"{item['revenue_yoy_pct']:+.1f} % sur un an"
             eps = "n.d." if item["eps"] is None else f"{item['eps']:.2f} $"
@@ -1350,7 +1352,7 @@ def append_funnel_report(
     movers = sorted([r for r in rows if r.daily_pct is not None],
                     key=lambda r: max(abs(r.daily_pct or 0), abs(r.five_day_pct or 0), abs(r.one_month_pct or 0)), reverse=True)
     lines.append("Instruments à examiner en priorité (sélection par amplitude; pas une recommandation d'achat/vente) :")
-    for r in movers[:12]:
+    for r in movers[:8]:
         lines.append(f"- {r.name} ({r.ticker}) — classe : {r.asset_class}; dernier prix {fmt(r.price)}; dernière séance {fmt(r.daily_pct, '%')}; 5 séances {fmt(r.five_day_pct, '%')}; 1 mois {fmt(r.one_month_pct, '%')}. Source cours : https://finance.yahoo.com/quote/{r.ticker}/")
         if r.daily_pct is not None and r.five_day_pct is not None:
             if r.daily_pct * r.five_day_pct > 0:
