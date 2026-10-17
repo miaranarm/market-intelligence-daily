@@ -68,8 +68,8 @@ Heures de Madagascar (Indian/Antananarivo, UTC+3). Les marchés sont fermés le 
 |---|---|---|
 | `morning` | 05:30, lundi à vendredi | Lecture complète : essentiel, régime, agenda, faits marquants, 9 univers, scénarios, audit |
 | `update` | 13:30, lundi à vendredi | Même structure, avec une partie « Depuis le rapport précédent » |
-| `audit` | 00:30 (mardi à samedi), après la clôture américaine | Bilan de la séance et audit des prévisions |
-| `weekly` | dimanche 18:00, avant la réouverture | Semaine écoulée, 21 jours d'agenda, scénarios de la semaine |
+| `audit` | 21:00, lundi à vendredi | Bilan des prévisions du matin sur les observations disponibles; la séance américaine peut être encore ouverte |
+| `weekly` | dimanche 18:00 | Semaine écoulée, 21 jours d'agenda, scénarios conditionnels de réouverture |
 
 GitHub Actions peut démarrer en retard ; aucun horaire n'est garanti.
 
