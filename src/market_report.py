@@ -478,9 +478,9 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
         # metadata and structured Article JSON-LD before accepting an aggregator link.
         final_url = getattr(response, "url", "")
         canonical_patterns = [
-            r'<link[^>]+rel=["\\']canonical["\\'][^>]+href=["\\']([^"\\']+)["\\']',
-            r'<meta[^>]+property=["\\']og:url["\\'][^>]+content=["\\']([^"\\']+)["\\']',
-            r'<meta[^>]+content=["\\']([^"\\']+)["\\'][^>]+property=["\\']og:url["\\']',
+            r"<link[^>]+rel=[\"']canonical[\"'][^>]+href=[\"']([^\"']+)[\"']",
+            r"<meta[^>]+property=[\"']og:url[\"'][^>]+content=[\"']([^\"']+)[\"']",
+            r"<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+property=[\"']og:url[\"']",
         ]
         for pattern in canonical_patterns:
             match = re.search(pattern, page, flags=re.IGNORECASE)
@@ -493,17 +493,17 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
             result["url"] = final_url
 
         patterns = [
-            r"<meta[^>]+(?:property|name)=["\\'](?:og:description|article:description|twitter:description)["\\'][^>]+content=["\\']([^"\\']+)["\\']",
-            r"<meta[^>]+content=["\\']([^"\\']+)["\\'][^>]+(?:property|name)=["\\'](?:og:description|article:description|twitter:description)["\\']",
-            r"<meta[^>]+name=["\\']description["\\'][^>]+content=["\\']([^"\\']+)["\\']",
-            r"<meta[^>]+content=["\\']([^"\\']+)["\\'][^>]+name=["\\']description["\\']",
+            r"<meta[^>]+(?:property|name)=[\"'](?:og:description|article:description|twitter:description)[\"'][^>]+content=[\"']([^\"']+)[\"']",
+            r"<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+(?:property|name)=[\"'](?:og:description|article:description|twitter:description)[\"']",
+            r"<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']+)[\"']",
+            r"<meta[^>]+content=[\"']([^\"']+)[\"'][^>]+name=[\"']description[\"']",
         ]
         candidates = []
         for pattern in patterns:
             candidates.extend(re.findall(pattern, page, flags=re.IGNORECASE))
         # Structured data frequently contains the actual article description even
         # when Open Graph metadata is absent. Do not treat generic site boilerplate as facts.
-        for match in re.findall(r'<script[^>]+type=["\\']application/ld\\+json["\\'][^>]*>(.*?)</script>', page, flags=re.IGNORECASE | re.DOTALL):
+        for match in re.findall(r"<script[^>]+type=[\"']application/ld\+json[\"'][^>]*>(.*?)</script>", page, flags=re.IGNORECASE | re.DOTALL):
             try:
                 payload = json.loads(html.unescape(match))
                 nodes = payload if isinstance(payload, list) else [payload]
