@@ -791,8 +791,15 @@ def append_macro_series(lines: list[str], series: list[dict[str, Any]]) -> None:
         change_text = "variation récente indisponible"
         if item.get("change") is not None and item.get("previous_date"):
             change = float(item["change"])
-            unit = "%" if item["id"] in ("UNRATE", "FEDFUNDS", "DGS10", "DGS2", "T10YIE") else ""
-            change_text = f"variation depuis le {item['previous_date']} : {change:+.3f}{unit}"
+            if item["id"] in ("UNRATE", "FEDFUNDS", "DGS10", "DGS2", "T10YIE"):
+                change_unit = " point de pourcentage"
+            elif item["id"] == "CPIAUCSL":
+                change_unit = " point d'indice"
+            elif item["id"] == "PAYEMS":
+                change_unit = " milliers d'emplois"
+            else:
+                change_unit = ""
+            change_text = f"variation depuis le {item['previous_date']} : {change:+.3f}{change_unit}"
         provider = item.get("provider", "FRED")
         display_id = item.get("display_id", item["id"])
         lines.append(f"- {item['name']} ({display_id}) : {value}; observation du {item['date']}; {change_text}; fournisseur : {provider}; source : {item['source']}.")
