@@ -37,10 +37,10 @@ class PriorityNewsRenderingTests(unittest.TestCase):
         }]
         append_priority_news(lines, news)
         rendered = "\n".join(lines)
-        self.assertLess(rendered.index("ACTUALITÉS PRIORITAIRES"), rendered.index("ACTUALITÉ :"))
+        self.assertLess(rendered.index("LES ACTUALITÉS QUI COMPTENT"), rendered.index("1. Federal Reserve holds rates"))
         self.assertIn("The committee maintained the target range", rendered)
         self.assertIn("https://example.org/fed-release", rendered)
-        self.assertIn("ANALYSE :", rendered)
+        self.assertIn("POUR LES MARCHÉS :", rendered)
 
 
 
