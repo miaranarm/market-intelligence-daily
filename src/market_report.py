@@ -469,23 +469,25 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
     return result
 
 def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
-    """Lead with recent reported events and distinguish article facts from interpretation."""
-    priority_news = prioritize_news(news, 10)
+    """Show reported facts first; do not disguise a headline as a factual summary."""
+    enriched = [_enrich_news_item(item) for item in news]
+    # A title alone cannot support a factual account or a causal market interpretation.
+    factual_items = [
+        item for item in enriched
+        if len(re.sub(r"\s+", " ", item.get("summary", "")).strip()) >= 100
+    ]
+    priority_news = prioritize_news(factual_items, 10)
     lines += ["", "LES ACTUALITÉS QUI COMPTENT"]
     if not priority_news:
-        lines.append("Aucune actualité exploitable des trois derniers jours n’a été récupérée. Les conclusions de marché doivent être considérées comme incomplètes.")
+        lines.append("Aucun résumé factuel suffisamment détaillé n’a pu être vérifié dans les flux disponibles. Les titres seuls ne sont pas présentés comme des faits; cette rubrique est incomplète.")
         return
-    for index, raw_item in enumerate(priority_news, 1):
-        item = _enrich_news_item(raw_item)
+    for index, item in enumerate(priority_news, 1):
         fact, impact = _news_fact_and_market_readthrough(item)
         published = item.get("published") or "date non fournie"
         source = item.get("source") or "éditeur non précisé"
         lines.append(f"{index}. {item['title']}")
         lines.append(f"   {source} · {published}")
-        if fact and fact.casefold() != item["title"].casefold():
-            lines.append(f"   FAITS RAPPORTÉS : {fact}")
-        else:
-            lines.append("   FAITS RAPPORTÉS : résumé de l’éditeur indisponible; le titre seul ne permet pas de confirmer les chiffres ou les détails.")
+        lines.append(f"   FAITS RAPPORTÉS : {fact}")
         lines.append(f"   POUR LES MARCHÉS : {impact}")
         lines.append(f"   Source : {item['url']}")
 
