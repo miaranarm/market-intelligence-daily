@@ -327,7 +327,7 @@ def _feed_entries(root: ET.Element, default_source: str) -> list[dict[str, str]]
                     )
             elif name in {"description", "summary", "content", "encoded"} and not summary_text:
                 raw_summary = "".join(child.itertext()).strip()
-                summary_text = re.sub(r"\\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", raw_summary))).strip()
+                summary_text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", raw_summary))).strip()
             elif name in {"title", "pubdate", "published", "updated", "date"}:
                 fields[name] = value
         title = fields.get("title", "")
@@ -428,11 +428,16 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
             response.raise_for_status()
             root = ET.fromstring(response.content)
             # Cap each feed so one prolific publisher cannot crowd out other sources.
-            for item in _feed_entries(root, feed_name)[:6]:
+            # Scan beyond the first few feed entries: some feeds put older or
+            # non-market items first. Apply the per-feed cap only after freshness
+            # and deduplication checks, otherwise fresh stories can be missed.
+            for item in _feed_entries(root, feed_name):
                 if item["url"] not in seen and _news_dedupe_key(item["title"]) not in seen_titles and _is_recent_news_item(item["published"]):
                     seen.add(item["url"])
                     seen_titles.add(_news_dedupe_key(item["title"]))
                     batch.append(item)
+                    if len(batch) >= 6:
+                        break
         except Exception as exc:
             # Each feed is independent. A failed source is recorded, but never blocks
             # the report; official BEA/Census feeds and targeted BLS discovery queries
