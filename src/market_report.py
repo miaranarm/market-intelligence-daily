@@ -455,6 +455,62 @@ def _news_fact_and_market_readthrough(item: dict[str, str]) -> tuple[str, str]:
     return fact, impact
 
 
+def _summarize_news_text(value: str, max_chars: int = 1050) -> str:
+    """Create a compact, factual extractive summary from publisher-provided text.
+
+    This does not invent missing facts: it selects sentences from the source, prioritizing
+    concrete figures, named entities, dates, and reported actions.
+    """
+    value = html.unescape(re.sub(r"<[^>]+>", " ", value))
+    value = re.sub(r"\s+", " ", value).strip()
+    if not value:
+        return ""
+    sentences = re.split(r"(?<=[.!?])\s+(?=[A-Z0-9“\"'])", value)
+    clean = []
+    seen = set()
+    for sentence in sentences:
+        sentence = sentence.strip(" \t\r\n•-")
+        key = re.sub(r"[^a-z0-9]+", " ", sentence.casefold()).strip()
+        if len(sentence) < 45 or len(sentence) > 700 or key in seen:
+            continue
+        if any(x in sentence.casefold() for x in (
+            "accept cookies", "privacy policy", "subscribe to", "sign up for",
+            "all rights reserved", "read more:", "advertisement",
+        )):
+            continue
+        seen.add(key)
+        clean.append(sentence)
+    if not clean:
+        return value[:max_chars].rsplit(" ", 1)[0]
+    def sentence_score(sentence: str) -> tuple[int, int]:
+        low = sentence.casefold()
+        score = 0
+        if re.search(r"\d", sentence):
+            score += 3
+        if re.search(r"\b(percent|per cent|basis points|billion|million|trillion|\d+(?:\.\d+)?%)\b", low):
+            score += 2
+        if re.search(r"\b(said|reported|announced|rose|fell|cut|raised|expects|forecast|revised|approved|rejected|reached|declined|increased|decreased|grew|dropped|surged)\b", low):
+            score += 2
+        if re.search(r"\b(fed|federal reserve|ecb|bank of japan|treasury|investors|shares|stocks|oil|gold|bitcoin|revenue|profit|inflation|yield|sales|earnings)\b", low):
+            score += 1
+        return score, -clean.index(sentence)
+    # Keep source order among equally relevant sentences, but let concrete factual
+    # sentences outrank generic introductions.
+    ranked = sorted(clean, key=sentence_score, reverse=True)
+    chosen = []
+    total = 0
+    for sentence in ranked:
+        if total + len(sentence) + 1 > max_chars:
+            continue
+        chosen.append(sentence)
+        total += len(sentence) + 1
+        if len(chosen) >= 4:
+            break
+    if not chosen:
+        chosen = [clean[0][:max_chars]]
+    return " ".join(chosen)
+
+
 def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
     """Recover a publisher's real description when an RSS discovery feed gives only a headline."""
     result = dict(item)
@@ -543,11 +599,18 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
                             candidates.append(value)
             except (ValueError, TypeError):
                 continue
+        # Also extract readable paragraphs when publisher metadata is sparse. Paragraphs
+        # are still publisher text; they are not generated or treated as independently verified.
+        for paragraph in re.findall(r"<p\\b[^>]*>(.*?)</p>", page, flags=re.IGNORECASE | re.DOTALL):
+            paragraph = html.unescape(re.sub(r"\\s+", " ", re.sub(r"<[^>]+>", " ", paragraph))).strip()
+            if len(paragraph) >= 90:
+                candidates.append(paragraph)
         for candidate in candidates:
             candidate = html.unescape(re.sub(r"\\s+", " ", re.sub(r"<[^>]+>", " ", candidate))).strip()
             if is_useful_summary(candidate):
-                result["summary"] = candidate[:1200]
-                return result
+                result["summary"] = _summarize_news_text(candidate)
+                if len(result["summary"]) >= 100:
+                    return result
     except Exception:
         pass
     # Never present generic institutional boilerplate as facts about a specific event.
@@ -589,8 +652,9 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
             continue
         # Keep direct-publisher headlines even when article metadata cannot be retrieved.
         # The renderer explicitly labels these as headline-only instead of silently dropping them.
-        if any(term in title for term in market_terms):
-            item["summary"] = summary
+        searchable = f"{title} {summary}".casefold()
+        if any(term in searchable for term in market_terms):
+            item["summary"] = _summarize_news_text(summary) if summary else ""
             factual_items.append(item)
     priority_news = prioritize_news(factual_items, 10)
     lines += ["", "LES ACTUALITÉS QUI COMPTENT"]
@@ -1653,11 +1717,15 @@ def append_funnel_report(
         # Match against headlines only; publisher boilerplate can otherwise contaminate unrelated categories.
         matched_news = [
             n for n in news
-            if any(k in n.get("title", "").casefold() for k in keywords)
+            if any(k in f"{n.get('title', '')} {n.get('summary', '')}".casefold() for k in keywords)
         ]
         if matched_news:
             for item in prioritize_news(matched_news, 2):
-                lines.append(f"- Actualité à examiner : {item['title']} — {item.get('source', 'source non précisée')} ({item.get('published', 'date non fournie')}) — {item['url']}")
+                lines.append(f"- Actualité : {item['title']} — {item.get('source', 'source non précisée')} ({item.get('published', 'date non fournie')})")
+                if item.get("summary"):
+                    lines.append(f"  - Faits rapportés par la source : {_summarize_news_text(item['summary'], 520)}")
+                lines.append(f"  - Lecture marché : {_news_fact_and_market_readthrough(item)[1]}")
+                lines.append(f"  - Source primaire ou article : {item['url']}")
         else:
             lines.append("- Actualité spécifique : aucune nouvelle suffisamment ciblée identifiée dans les flux collectés; ne pas interpréter ce silence comme une absence de risque.")
     lines += ["", "NIVEAU 5 — SECTEURS, SEGMENTS, THÉMATIQUES ET MICROÉCONOMIE",
