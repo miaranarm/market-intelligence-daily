@@ -1483,6 +1483,54 @@ def append_funnel_report(
         if weekly:
             positive = sum(1 for x in weekly if (x.five_day_pct or 0) > 0)
             lines.append(f"  - Sur cinq séances : {positive}/{len(weekly)} instrument(s) en hausse; cet indicateur de largeur n'est pas pondéré par capitalisation.")
+    lines += ["", "LES 9 CATÉGORIES — ANALYSE PAR UNIVERS D’INVESTISSEMENT",
+              "Chaque rubrique combine les instruments effectivement reçus et les nouvelles qui peuvent les affecter. Les mouvements sont descriptifs; ils ne prouvent pas à eux seuls une cause ni ne constituent un signal d’achat/vente."]
+    category_specs = [
+        ("1. Indices boursiers", lambda r: "equity index" in r.asset_class.casefold() and "futures" not in r.asset_class.casefold(),
+         ("stock market", "equities", "indices", "index", "stocks", "wall street", "shares", "selloff", "market rally")),
+        ("2. Futures sur indices", lambda r: "equity index futures" in r.asset_class.casefold(),
+         ("futures", "nasdaq", "s&p 500", "dow jones", "equity index", "wall street", "risk appetite")),
+        ("3. Actions", lambda r: r.asset_class.casefold() in {"us equity", "equity"},
+         ("earnings", "quarterly results", "revenue", "profit", "guidance", "shares", "nvidia", "apple", "microsoft", "tesla", "meta", "semiconductor", "capital expenditure")),
+        ("4. Matières premières", lambda r: "commodity" in r.asset_class.casefold(),
+         ("oil", "crude", "brent", "gold", "silver", "copper", "gas", "opec", "commodity", "commodities", "supply disruption", "agriculture")),
+        ("5. Devises (Forex)", lambda r: r.asset_class.casefold() == "fx",
+         ("forex", "currency", "currencies", "dollar", "euro", "yen", "exchange rate", "fx", "central bank", "interest rate")),
+        ("6. Crypto-actifs", lambda r: r.asset_class.casefold() == "crypto",
+         ("bitcoin", "ethereum", "crypto", "digital asset", "cryptoasset", "spot etf")),
+        ("7. Obligations et crédit", lambda r: any(x in r.asset_class.casefold() for x in ("rates", "bond", "credit")),
+         ("bond", "bonds", "treasury", "yield", "credit", "debt", "spread", "fixed income")),
+        ("8. ETF", lambda r: "etf" in r.asset_class.casefold(),
+         ("etf", "exchange-traded fund", "fund flows", "inflows", "outflows", "passive investing")),
+        ("9. Fonds d’investissement", lambda r: "mutual fund" in r.asset_class.casefold() or "fund" in r.name.casefold() and "etf" not in r.asset_class.casefold(),
+         ("mutual fund", "investment fund", "fund manager", "fund flows", "asset allocation", "portfolio flows")),
+    ]
+    for category, matcher, keywords in category_specs:
+        members = [r for r in rows if matcher(r)]
+        lines.append(category.upper())
+        if members:
+            ordered = sorted(
+                members,
+                key=lambda r: (r.daily_pct is not None, r.daily_pct if r.daily_pct is not None else -999),
+                reverse=True,
+            )
+            instruments = []
+            for row in ordered[:5]:
+                daily_text = "variation séance n.d." if row.daily_pct is None else f"séance {row.daily_pct:+.2f} %"
+                weekly_text = "5 séances n.d." if row.five_day_pct is None else f"5 séances {row.five_day_pct:+.2f} %"
+                instruments.append(f"{row.name} ({daily_text}; {weekly_text}; cours au {row.data_timestamp or 'date n.d.'})")
+            lines.append("- Instruments suivis : " + "; ".join(instruments) + ".")
+        else:
+            lines.append("- Aucune cotation exploitable reçue pour cette catégorie lors de cette exécution.")
+        matched_news = [
+            n for n in news
+            if any(k in f"{n.get('title', '')} {n.get('summary', '')}".casefold() for k in keywords)
+        ]
+        if matched_news:
+            for item in prioritize_news(matched_news, 2):
+                lines.append(f"- Actualité à examiner : {item['title']} — {item.get('source', 'source non précisée')} ({item.get('published', 'date non fournie')}) — {item['url']}")
+        else:
+            lines.append("- Actualité spécifique : aucune nouvelle suffisamment ciblée identifiée dans les flux collectés; ne pas interpréter ce silence comme une absence de risque.")
     lines += ["", "NIVEAU 5 — SECTEURS, SEGMENTS, THÉMATIQUES ET MICROÉCONOMIE",
               "Ce niveau relie les résultats et décisions d'entreprise à leurs secteurs. Les titres de presse sont des pistes : chiffres publiés, consensus, guidance et réaction boursière doivent être vérifiés dans les documents originaux avant toute conclusion ferme."]
     corporate_keywords = (
