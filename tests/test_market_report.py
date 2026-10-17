@@ -109,6 +109,13 @@ class PriorityNewsRenderingTests(unittest.TestCase):
                 "summary": "Global stocks declined after the latest inflation data came in above expectations. Technology shares led losses, while investors reassessed the outlook for interest rates and bond yields.",
                 "url": "https://news.google.com/rss/articles/publisher-story?oc=5",
             },
+            {
+                "title": "Banknote imagery advisory group minutes – 15 July 2026",
+                "source": "Bank of England",
+                "published": "2026-10-16T11:00:00Z",
+                "summary": "Members considered the proposed animals and their habitats for future banknote imagery and discussed design features to support authentication.",
+                "url": "https://www.bankofengland.co.uk/minutes/2026/july/banknote-advisory-minutes-15-july",
+            },
         ]
         lines = []
         append_priority_news(lines, news)
@@ -118,6 +125,8 @@ class PriorityNewsRenderingTests(unittest.TestCase):
         self.assertIn("https://news.google.com/rss/articles/publisher-story?oc=5", rendered)
         self.assertNotIn("Bitcoin ETF rules announced", rendered)
         self.assertIn("Central bank publishes policy statement", rendered)
+        self.assertIn("Le titre seul ne suffit pas à établir un effet sur les marchés", rendered)
+        self.assertNotIn("Banknote imagery advisory group minutes", rendered)
         self.assertIn("résumé détaillé de l’éditeur n’a pas pu être vérifié", rendered)
 
 
