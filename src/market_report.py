@@ -470,7 +470,9 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
 
 def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
     """Show reported facts first; do not disguise a headline as a factual summary."""
-    enriched = [_enrich_news_item(item) for item in news]
+    # Keep article-page enrichment bounded; discovery feeds can return dozens of links.
+    candidates = prioritize_news(news, 16)
+    enriched = [_enrich_news_item(item) for item in candidates]
     # A title alone cannot support a factual account or a causal market interpretation.
     factual_items = [
         item for item in enriched
