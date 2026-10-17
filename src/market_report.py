@@ -652,6 +652,12 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
     result["summary"] = _summarize_news_text(summary) if is_useful_summary(summary) else ""
     return result
 
+def _is_google_news_url(url: str) -> bool:
+    """Return True only while a story still points to Google's aggregator rather than its publisher."""
+    host = urlparse(url).netloc.casefold().removeprefix("www.")
+    return host == "news.google.com" or host.endswith(".news.google.com")
+
+
 def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
     """Lead with verifiable market-moving facts, not merely recent or official headlines."""
     # make_report enriches the complete news set once so every later section uses the same verified excerpt.
@@ -2063,6 +2069,10 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any], dict[str, A
     # while the nine asset classes and microeconomic section reused title-only RSS metadata.
     with ThreadPoolExecutor(max_workers=8) as pool:
         news = list(pool.map(_enrich_news_item, news))
+    unresolved_google_news = sum(_is_google_news_url(item.get("url", "")) for item in news)
+    # An unresolved Google News redirect is a research lead, not a citable publisher source.
+    # Exclude it from every section rather than letting aggregator URLs leak into regional or sector analysis.
+    news = [item for item in news if not _is_google_news_url(item.get("url", ""))]
     company_fundamentals, fundamentals_errors = fetch_company_fundamentals()
     macro_series, macro_errors = fetch_macro_series_with_fallback()
     rows.sort(key=lambda r: (r.asset_class, r.name))
@@ -2093,6 +2103,8 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any], dict[str, A
         lines.append(f"Certains cours n’ont pas été récupérés ({len(data_errors)} actifs). Les valeurs absentes ne doivent pas être interprétées comme nulles.")
     if news_errors:
         lines.append(f"Certains flux d’actualités étaient indisponibles ({len(news_errors)} flux); la couverture peut être incomplète.")
+    if unresolved_google_news:
+        lines.append(f"{unresolved_google_news} lien(s) Google Actualités non résolu(s) vers une page éditeur ont été exclus; ils ne servent pas de preuve dans l’analyse.")
     if fundamentals_errors:
         lines.append("Certaines données fondamentales d’entreprises n’ont pas pu être récupérées.")
     if macro_errors:
