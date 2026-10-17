@@ -74,12 +74,21 @@ class PriorityNewsRenderingTests(unittest.TestCase):
                 "summary": "Oil futures rose after the producer group reported an unexpected interruption to supply. The report described the affected output and said traders were monitoring how long the disruption might last.",
                 "url": "https://publisher.example/oil-supply-disruption",
             },
+            {
+                "title": "Global stocks slide as inflation surprises investors",
+                "source": "Investment Week",
+                "published": "2026-10-17T03:00:00Z",
+                "summary": "Global stocks declined after the latest inflation data came in above expectations. Technology shares led losses, while investors reassessed the outlook for interest rates and bond yields.",
+                "url": "https://news.google.com/rss/articles/publisher-story?oc=5",
+            },
         ]
         lines = []
         append_priority_news(lines, news)
         rendered = "\n".join(lines)
         self.assertIn("Oil prices rise after supply disruption", rendered)
-        self.assertNotIn("news.google.com", rendered)
+        self.assertIn("Global stocks slide as inflation surprises investors", rendered)
+        self.assertIn("https://news.google.com/rss/articles/publisher-story?oc=5", rendered)
+        self.assertNotIn("Bitcoin ETF rules announced", rendered)
         self.assertIn("Central bank publishes policy statement", rendered)
         self.assertIn("le résumé détaillé de l’éditeur n’a pas pu être vérifié", rendered)
 
