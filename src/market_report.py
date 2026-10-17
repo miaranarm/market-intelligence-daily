@@ -139,6 +139,11 @@ NEWS_FEEDS = [
     ("Google News — recherche ciblée FMI, liens vers les domaines officiels", "https://news.google.com/rss/search?q=site%3Aimf.org%2Fen%2Fnews+OR+site%3Amediacenter.imf.org+economy+financial+stability&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — recherche ciblée Banque mondiale, liens vers les domaines officiels", "https://news.google.com/rss/search?q=site%3Aworldbank.org%2Fen%2Fnews+OR+site%3Ablogs.worldbank.org+economy+debt+growth+markets&hl=en-US&gl=US&ceid=US:en"),
     # Cross-checking across several publishers; aggregator headlines are leads, not independent proof.
+    # Direct publisher feeds reduce dependence on aggregator URLs and provide original excerpts.
+    ("CNBC — actualités principales (flux éditeur)", "https://www.cnbc.com/id/100003114/device/rss/rss.html"),
+    ("Yahoo Finance — actualités financières (flux éditeur)", "https://finance.yahoo.com/news/rssindex"),
+    ("Financial Times — actualités mondiales (flux éditeur)", "https://www.ft.com/world?format=rss"),
+    ("The Guardian — actualités économiques (flux éditeur)", "https://www.theguardian.com/business/rss"),
     ("Google News — macroéconomie mondiale et banques centrales", "https://news.google.com/rss/search?q=inflation+employment+GDP+central+banks+interest+rates&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — marchés et économie", "https://news.google.com/rss/search?q=global+markets+economy+central+banks&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — résultats mondiaux des entreprises", "https://news.google.com/rss/search?q=company+earnings+quarterly+results+guidance+revenue+profit&hl=en-US&gl=US&ceid=US:en"),
@@ -335,12 +340,18 @@ def _feed_entries(root: ET.Element, default_source: str) -> list[dict[str, str]]
         link = atom_link or fields.get("link", "")
         published = next((fields[k] for k in ("pubdate", "published", "updated", "date") if fields.get(k)), "")
         source = atom_source or fields.get("source", "") or default_source
+        source_url = ""
+        for child in list(node):
+            if child.tag.rsplit("}", 1)[-1].split(":")[-1].lower() == "source":
+                source_url = (child.attrib.get("url") or child.attrib.get("href") or "").strip()
+                break
         if title and link:
             entries.append({
                 "title": html.unescape(title).strip(),
                 "url": link,
                 "published": published,
                 "source": html.unescape(source).strip(),
+                "source_url": source_url,
                 "summary": summary_text[:900],
             })
     return entries
@@ -556,10 +567,15 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
         title = item.get("title", "").casefold()
         if not title or any(phrase in title for phrase in low_value_headlines):
             continue
-        # Keep a clearly relevant, dated headline even when a publisher blocks its
-        # article description. Never invent missing figures: label the limitation.
+        # Aggregator-only links and headline-only items are discovery leads, not
+        # report-ready evidence. Publish only a direct publisher URL and a usable excerpt.
+        host = urlparse(item.get("url", "")).netloc.casefold().removeprefix("www.")
+        if host == "news.google.com" or host.endswith(".news.google.com"):
+            continue
+        if len(summary) < 100:
+            continue
         if any(term in title for term in market_terms):
-            item["summary"] = summary if len(summary) >= 100 else ""
+            item["summary"] = summary
             factual_items.append(item)
     priority_news = prioritize_news(factual_items, 10)
     lines += ["", "LES ACTUALITÉS QUI COMPTENT"]
