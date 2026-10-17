@@ -496,7 +496,7 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
     )
     factual_items = []
     for item in enriched:
-        summary = re.sub(r"\\s+", " ", item.get("summary", "")).strip()
+        summary = re.sub(r"\s+", " ", item.get("summary", "")).strip()
         title = item.get("title", "").casefold()
         if len(summary) < 100 or any(phrase in title for phrase in low_value_headlines):
             continue
