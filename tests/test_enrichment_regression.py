@@ -4,7 +4,19 @@ from __future__ import annotations
 import unittest
 from datetime import datetime, timedelta, timezone
 
-from src import enrichment
+from src import enrichment, market_report
+
+
+
+class MarketReadthroughTests(unittest.TestCase):
+    def test_crypto_story_is_not_misclassified_as_ai_infrastructure(self) -> None:
+        item = {
+            "title": "XRP Ledger lending feature prepares for launch",
+            "summary": "Crypto funding changes as stablecoin and token lending activity expands.",
+        }
+        _, impact = market_report._news_fact_and_market_readthrough(item)
+        self.assertIn("actifs numériques", impact)
+        self.assertNotIn("centres de données", impact)
 
 
 class NewsQualityTests(unittest.TestCase):
