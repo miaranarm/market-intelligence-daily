@@ -263,8 +263,17 @@ def fetch_mover_news(movers: list[dict[str, Any]], max_movers: int = 10) -> tupl
     return news, errors
 
 
-MOVE_WORDS = ("fall", "fell", "drop", "slide", "slump", "plunge", "tumble", "sell-off", "selloff", "rout", "retreat", "sink",
-              "rally", "surge", "jump", "soar", "gain", "rise", "rose", "climb", "rebound", "spike", "lose", "lost", "weak", "strong")
+MOVE_WORDS = (
+    # Anglais : titres des flux internationaux.
+    "fall", "fell", "drop", "slide", "slump", "plunge", "tumble", "sell-off", "selloff", "rout", "retreat", "sink",
+    "rally", "surge", "jump", "soar", "gain", "rise", "rose", "climb", "rebound", "spike", "lose", "lost", "weak", "strong",
+    # Français : notamment Le Monde et les flux francophones.
+    "baisse", "baisses", "recul", "recule", "reculent", "chute", "chute de", "chutent", "plonge", "plongent",
+    "dévisse", "dévissent", "s'effondre", "s'effondrent", "fléchit", "fléchissent", "perd", "perdent",
+    "perte", "pertes", "hausse", "hausses", "bondit", "bondissent", "grimpe", "grimpent", "progresse",
+    "progressent", "gagne", "gagnent", "rebond", "rebondit", "rebondissent", "se redresse", "en baisse",
+    "en hausse", "en repli",
+)
 # Mots qui désignent un instrument dans le texte des articles généraux (indices, matières premières).
 ALIASES = {
     "^KS11": ("kospi", "korea"), "^N225": ("nikkei",), "^HSI": ("hang seng",), "^IXIC": ("nasdaq",), "QQQ": ("nasdaq", "qqq"),
