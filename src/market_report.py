@@ -1778,13 +1778,12 @@ def append_funnel_report(
 ) -> None:
     """Build the report from global regime to specific instruments and an auditable action plan."""
     conviction = market_conviction(rows)
-    probs = conviction["probabilities"]
     by = {r.ticker: r for r in rows}
     lines += [
         "NIVEAU 1 — LE MONDE : RÉGIME MACROÉCONOMIQUE ET FINANCIER",
         f"Diagnostic de marché : {conviction['stance']}. Horizon indicatif : prochaines 1 à 5 séances; ce n'est pas une prévision long terme.",
-        f"Probabilités directionnelles expérimentales : hausse {probs['haussier']} % · scénario central / marché sans direction nette {probs['central']} % · baisse {probs['baissier']} %.",
-        "Ces probabilités sont issues d'une règle explicite de momentum et de volatilité, pas d'un modèle statistiquement calibré ni d'une probabilité implicite de marché. Elles seront confrontées aux résultats dans les rapports du soir; si les données croisées sont insuffisantes, la conviction doit être considérée comme fragile.",
+        "Les pourcentages de probabilité ne sont pas publiés : la règle actuelle n'est pas calibrée et ne justifie pas une précision numérique.",
+        "Le diagnostic est un biais heuristique, pas une probabilité mesurée. La règle reste suivie en interne et évaluée hors échantillon; tant qu'elle ne surpasse pas des références simples sur un échantillon suffisant, il faut lire le biais comme une hypothèse à tester, non comme une probabilité de marché.",
         "Les variables réellement observées dans cette exécution sont les prix et variations disponibles. Croissance, inflation, liquidité et géopolitique ne seront qualifiées de moteurs confirmés que lorsqu'une publication ou une source vérifiable les étaye.",
     ]
     lines += [f"- Élément quantitatif : {x}." for x in conviction["evidence"]]
