@@ -658,10 +658,10 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     # a confident but unrelated market explanation.
     common_acronyms = {"US", "UK", "EU", "GDP", "CPI", "PCE", "ETF", "CEO", "IPO", "AI",
                        "SEC", "FOMC", "ECB", "BOJ", "OPEC", "PMI", "WTI", "NYSE", "NASDAQ"}
-    title_acronyms = {token.casefold() for token in re.findall(r"\\b[A-Z]{2,6}\\b", html.unescape(title))
+    title_acronyms = {token.casefold() for token in re.findall(r"\b[A-Z]{2,6}\\b", html.unescape(title))
                       if token not in common_acronyms}
     if summary and title_acronyms and not any(
-        re.search(rf"\\b{re.escape(token)}\\b", html.unescape(summary).casefold())
+        re.search(rf"\b{re.escape(token)}\\b", html.unescape(summary).casefold())
         for token in title_acronyms
     ):
         summary = ""
