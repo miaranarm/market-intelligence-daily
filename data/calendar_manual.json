@@ -1,28 +1,7 @@
 {
   "_lisez_moi": "Calendrier tenu à la main. Une entrée = un événement. Heures en UTC (time_utc, ou null si inconnue). status : « confirmé » seulement si la date vient du site officiel de l'institution ; sinon « à confirmer ». Ne jamais inventer une date : une entrée douteuse reste « à confirmer » avec sa source. Mettre à jour chaque dimanche (voir CONSIGNE_CHATGPT.md).",
-  "mis_a_jour": "2026-10-17",
+  "mis_a_jour": "2026-10-19",
   "events": [
-    {
-      "date": "2026-10-19",
-      "time_utc": "02:00",
-      "title": "Chine : PIB du 3e trimestre et données d'activité (production industrielle, ventes au détail)",
-      "region": "Chine",
-      "importance": "élevée",
-      "categories": [
-        "devises",
-        "matieres",
-        "indices",
-        "actions"
-      ],
-      "currencies": [
-        "AUD",
-        "NZD",
-        "CNY"
-      ],
-      "status": "à confirmer",
-      "source": "Analyse « Daily Market Analyse » du 17/10/2026, non vérifiée à la source officielle",
-      "note": "Heure indicative; vérifier sur le site du Bureau national de la statistique de Chine."
-    },
     {
       "date": "2026-10-28",
       "time_utc": "18:00",
