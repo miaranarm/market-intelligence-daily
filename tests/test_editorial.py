@@ -378,6 +378,19 @@ class NewsExcerptCoherenceTests(unittest.TestCase):
         self.assertEqual(block["summary"], "")
         self.assertIn("ne correspond pas suffisamment", block["readthrough"])
 
+    def test_crypto_story_does_not_inherit_ai_infrastructure_commentary(self):
+        item = {
+            "title": "XRP Ledger is set to fix its lending code before anyone can use it",
+            "summary": "GENIUS pushes yield off-chain; diversified RWA stablecoins sustain yields from real credit as crypto funding compresses.",
+            "readthrough": "Le marché arbitre entre la croissance attendue des revenus liés à l'IA et le coût du financement des infrastructures. À suivre : dépenses d'investissement et centres de données.",
+            "source": "CoinDesk",
+            "published": "2026-10-19",
+            "url": "https://example.com/story",
+        }
+        block = editorial._news_block(item, {})
+        self.assertIn("actifs numériques", block["readthrough"])
+        self.assertNotIn("centres de données", block["readthrough"])
+
     def test_excerpt_with_headline_entity_is_retained(self):
         item = {
             "title": "XRP Ledger expands lending",
