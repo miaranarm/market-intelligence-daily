@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 
 from zoneinfo import ZoneInfo
 
+from src.enrichment import clean_summary
 from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, _summarize_news_text, _enrich_news_item, _is_google_news_url, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename, fmt, send_email
 
 
@@ -776,3 +777,15 @@ class FinalNewsRenderingGuardTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CleanSummaryRegressionTests(unittest.TestCase):
+    def test_preserves_valid_lowercase_opening_sentence(self):
+        source = "investors are watching the next inflation release closely."
+        self.assertIn("investors are watching", clean_summary(source))
+
+    def test_decodes_html_entities_and_removes_publisher_boilerplate(self):
+        source = "Markets fell after the release &amp; investors reassessed rates. Subscribe to our newsletter."
+        cleaned = clean_summary(source)
+        self.assertIn("& investors reassessed rates", cleaned)
+        self.assertNotIn("Subscribe to our newsletter", cleaned)
