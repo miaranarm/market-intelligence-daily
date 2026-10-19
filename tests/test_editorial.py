@@ -287,3 +287,28 @@ class LlmGuardrailTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class LLMFactContextTests(unittest.TestCase):
+    def test_fundamentals_and_news_provenance_are_passed_to_editor(self):
+        ctx = base_ctx(
+            fundamentals=[{
+                "ticker": "NVDA", "name": "Nvidia", "period": "2026-09-30",
+                "revenue": 1000.0, "revenue_yoy_pct": 20.0, "eps": 2.5, "eps_yoy_pct": 15.0,
+                "operating_income": 300.0, "operating_margin_pct": 30.0,
+                "operating_cash_flow": 250.0, "capex": 40.0, "free_cash_flow": 210.0,
+                "source": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001045810.json",
+            }],
+            priority_news=[{
+                "title": "Résultats de Nvidia", "source": "SEC", "published": "2026-10-18",
+                "summary_short": "Résumé vérifié de l'actualité.", "readthrough": "Conséquence possible.",
+                "url": "https://www.sec.gov/example",
+            }],
+        )
+        facts = llm_editor.build_facts(ctx)
+        self.assertEqual(facts["fondamentaux_entreprises"][0]["ticker"], "NVDA")
+        self.assertEqual(facts["fondamentaux_entreprises"][0]["croissance_ca_annuelle_pct"], 20.0)
+        self.assertEqual(facts["fondamentaux_entreprises"][0]["source_officielle"],
+                         "https://data.sec.gov/api/xbrl/companyfacts/CIK0001045810.json")
+        self.assertEqual(facts["actualites"][0]["url"], "https://www.sec.gov/example")
+        self.assertEqual(facts["actualites"][0]["lecture_marche_existante"], "Conséquence possible.")
+

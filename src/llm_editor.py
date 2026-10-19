@@ -34,7 +34,7 @@ FREE_SMALL_INTEGER = 10  # les petits entiers (« trois », « 5 séances ») ne
 SECTION_KEYS = ("synthese", "regime", "agenda", "scenarios")
 
 SYSTEM_PROMPT = """Tu es l'analyste d'un rapport de marché quotidien en français destiné à un lecteur averti (ancien banquier).
-Tu reçois un JSON de faits : prix, variations, séries macroéconomiques, calendrier, actualités, diagnostic chiffré.
+Tu reçois un JSON de faits : prix et dates des cours, séries macroéconomiques, calendrier, actualités avec leurs sources/liens, fondamentaux trimestriels SEC de certaines entreprises (chiffre d'affaires, BPA dilué, résultat et marge opérationnels, flux de trésorerie, CAPEX), évaluations historiques et diagnostic chiffré.
 
 RÈGLES ABSOLUES
 1. N'utilise que les faits du JSON. N'invente aucun chiffre, aucune date, aucun événement, aucune citation.
@@ -43,8 +43,9 @@ RÈGLES ABSOLUES
 4. Sépare nettement ce que les données montrent de ton interprétation : commence toute interprétation par « Interprétation : » et formule les causes comme des hypothèses conditionnelles (« pourrait », « serait compatible avec »). Une corrélation sur une séance n'est pas une cause.
 5. Aucun conseil d'achat, de vente ou de prise de position. Tu peux dire ce qui confirmerait ou invaliderait un scénario.
 6. Lorsque tu t'appuies sur une actualité, nomme sa source (champ « source »). Si un événement du calendrier est « à confirmer », écris-le.
-7. Si les données manquent pour une rubrique, dis-le en une phrase au lieu de combler.
-8. Ton sobre, précis, sans emphase ni superlatifs, comme une note de recherche d'une banque privée.
+7. Pour les actions, exploite les fondamentaux SEC disponibles en nommant l'entreprise, la période des chiffres et la source officielle. Ne prétends pas qu'une action est bon marché ou chère sans données de valorisation; ne parle pas de surprise de résultats sans consensus fourni; ne mélange pas les périodes comptables.
+8. Si les données manquent pour une rubrique, dis-le en une phrase au lieu de combler.
+9. Ton sobre, précis, sans emphase ni superlatifs, comme une note de recherche d'une banque privée.
 
 FORMAT
 Réponds par un unique objet JSON, sans texte autour, sans balises de code, de la forme :
@@ -75,8 +76,23 @@ def build_facts(ctx: dict[str, Any]) -> dict[str, Any]:
                    "variation": m.get("change"), "inflation_sur_un_an_pct": m.get("yoy_pct")} for m in ctx.get("macro") or []],
         "calendrier": [{"date": str(e["local_date"]), "heure_madagascar": e.get("local_time"), "evenement": e["title"],
                         "importance": e["importance"], "statut": e["status"]} for e in ctx.get("calendar") or []],
+        "fondamentaux_entreprises": [{
+            "ticker": f.get("ticker"), "entreprise": f.get("name"), "periode": f.get("period"),
+            "chiffre_affaires_usd": f.get("revenue"), "croissance_ca_annuelle_pct": f.get("revenue_yoy_pct"),
+            "bpa_dilue_usd": f.get("eps"), "croissance_bpa_annuelle_pct": f.get("eps_yoy_pct"),
+            "resultat_operationnel_usd": f.get("operating_income"),
+            "marge_operationnelle_pct": f.get("operating_margin_pct"),
+            "flux_tresorerie_exploitation_usd": f.get("operating_cash_flow"),
+            "investissements_capex_usd": f.get("capex"), "flux_tresorerie_libre_usd": f.get("free_cash_flow"),
+            "source_officielle": f.get("source"),
+        } for f in (ctx.get("fundamentals") or [])],
         "actualites": [{"id": f"n{i + 1}", "titre": n.get("title"), "source": n.get("source"), "date": n.get("published"),
-                        "resume": (n.get("summary") or "")[:420]} for i, n in enumerate((ctx.get("priority_news") or [])[:12])],
+                        "resume": (n.get("summary_short") or n.get("summary") or "")[:520],
+                        "lecture_marche_existante": n.get("readthrough"), "url": n.get("url") or n.get("link")}
+                       for i, n in enumerate((ctx.get("priority_news") or [])[:12])],
+        "evaluation_previsions": ctx.get("forecast_eval"),
+        "evaluation_scenarios": ctx.get("scenario_eval"),
+        "liens_interactifs_entre_actifs": ctx.get("cross_lines") or [],
     }
 
 
