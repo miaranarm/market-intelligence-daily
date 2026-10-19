@@ -583,6 +583,10 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
             "welcome to our website", "the official website of", "livestream",
             "search quotes, news", "create free account", "watchlist", "select usa intl",
             "skip to content", "open navigation menu", "market data delayed",
+            # Publisher marketing copy is not evidence about the event in the headline.
+            "index offering", "discover our index offerings", "benchmarked assets",
+            "trusted by 100+ global partners", "all rights reserved", "subscribe to our",
+            "sign up for our newsletter", "advertisement", "premium feature",
         )
         if len(candidate) < 100 or normalized.startswith(normalized_title):
             return False
