@@ -327,3 +327,23 @@ class LLMFactContextTests(unittest.TestCase):
         self.assertEqual(facts["actualites"][0]["url"], "https://www.sec.gov/example")
         self.assertEqual(facts["actualites"][0]["lecture_marche_existante"], "Conséquence possible.")
 
+
+
+
+class MacroVariationUnitTests(unittest.TestCase):
+    def test_macro_variations_have_series_specific_units(self):
+        blocks = editorial._regime_blocks({
+            "macro": [
+                {"id": "CPIAUCSL", "name": "Indice CPI-U", "value": 336.9, "date": "2026-09-01",
+                 "change": 1.96, "yoy_pct": 3.74, "provider": "BLS", "source": "https://example.com/cpi"},
+                {"id": "PAYEMS", "name": "Emploi salarié non agricole", "value": 159044, "date": "2026-09-01",
+                 "change": 29, "provider": "BLS", "source": "https://example.com/jobs"},
+                {"id": "DGS10", "name": "Treasury à 10 ans", "value": 5.09, "date": "2026-10-16",
+                 "change": -0.01, "provider": "FRED", "source": "https://example.com/yield"},
+            ],
+            "scenario": {}, "cross_lines": [], "freshness_note": "",
+        }, {})
+        table = next(block for block in blocks if block.get("kind") == "table")
+        self.assertIn("Variation vs observation précédente", table["headers"])
+        values = [row[3]["t"] for row in table["rows"]]
+        self.assertEqual(values, ["+1,96 pt d'indice", "+29,00 milliers", "−0,01 pt de %"])
