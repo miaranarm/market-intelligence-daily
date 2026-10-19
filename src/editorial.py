@@ -651,7 +651,27 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     summary = enrichment.clean_summary(item.get("summary_short") or item.get("summary", ""))
     if summary and (_norm(summary).startswith(_norm(title)[:45]) or _norm(title).startswith(_norm(summary)[:45])):
         summary = ""
+
+    # RSS descriptions can accidentally come from a sidebar or a neighbouring story.
+    # If a headline contains a distinctive acronym/entity, require it in the excerpt;
+    # otherwise hide the excerpt and its derived interpretation instead of publishing
+    # a confident but unrelated market explanation.
+    common_acronyms = {"US", "UK", "EU", "GDP", "CPI", "PCE", "ETF", "CEO", "IPO", "AI",
+                       "SEC", "FOMC", "ECB", "BOJ", "OPEC", "PMI", "WTI", "NYSE", "NASDAQ"}
+    title_acronyms = {token.casefold() for token in re.findall(r"\\b[A-Z]{2,6}\\b", html.unescape(title))
+                      if token not in common_acronyms}
+    if summary and title_acronyms and not any(
+        re.search(rf"\\b{re.escape(token)}\\b", html.unescape(summary).casefold())
+        for token in title_acronyms
+    ):
+        summary = ""
+        item_summary_mismatch = True
+    else:
+        item_summary_mismatch = False
     read = item.get("readthrough", "")
+    if item_summary_mismatch:
+        read = ("Le résumé disponible ne correspond pas suffisamment à l'entité du titre; "
+                "aucune conséquence de marché n'est attribuée sans vérifier l'article original.")
     if read in seen:
         read = ""
     elif read:
