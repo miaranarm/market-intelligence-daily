@@ -15,6 +15,7 @@ consigné et ne bloque jamais le rapport.
 """
 from __future__ import annotations
 
+import html
 import io
 import re
 import time
@@ -333,13 +334,20 @@ CHROME_PATTERNS = re.compile(r"(discover our|index offering|subscribe|sign up|ne
 
 
 def clean_summary(text: str) -> str:
-    """Retire les phrases d'habillage de page (offres, abonnements) et les fragments tronqués
-    qui commencent au milieu d'une date (« 9, the Wall Street Journal reported… »)."""
-    sentences = re.split(r"(?<=[.!?])\s+(?=[A-Z\"“‘'])", re.sub(r"\s+", " ", text or "").strip())
+    """Nettoie les extraits RSS avant affichage : HTML, entités, habillage et fragments tronqués."""
+    # Les flux mélangent texte brut, entités HTML et balises. Décoder les entités avant
+    # suppression des balises évite d'afficher &amp; / &nbsp; et de conserver du contenu caché.
+    normalized = html.unescape(text or "")
+    normalized = re.sub(r"(?is)<(script|style)\b[^>]*>.*?</\1\s*>", " ", normalized)
+    normalized = re.sub(r"(?s)<!--.*?-->", " ", normalized)
+    normalized = re.sub(r"(?s)<[^>]+>", " ", normalized)
+    normalized = re.sub(r"\s+", " ", normalized).strip()
+    sentences = re.split(r"(?<=[.!?])\s+(?=[A-Z\"“‘'])", normalized)
     kept = [s for s in sentences
-            if s and not CHROME_PATTERNS.search(s) and not re.match(r"^\d{1,2}(,|\s+to\b|\s+and\b)", s)
+            if s and not CHROME_PATTERNS.search(s)
+            and not re.match(r"^\d{1,2}(,|\s+to\b|\s+and\b)", s)
             and not re.match(r"^[a-z]", s)]
-    return " ".join(kept).strip()
+    return re.sub(r"\s+", " ", " ".join(kept)).strip()
 
 
 # --------------------------------------------------------------------------- cohérence des dates de cours
