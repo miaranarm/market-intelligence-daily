@@ -113,3 +113,14 @@ The self-audit baseline is experimental, not a validated trading strategy. Direc
 ## Public visibility and security
 
 This repository is public. Source code, commit history, the `docs/` report page, and tracked files in `data/` are visible to anyone. In particular, `data/forecasts.json` and `data/market_history.csv` contain quantitative indicators intended for internal analysis; they are nevertheless public because they are tracked in this public repository. Do not commit credentials, API keys, app passwords, or personal data. GitHub Actions secrets are stored separately in repository settings and are not automatically published. The report workflow needs `contents: write` to commit report snapshots and the generated page, and sends email through Gmail SMTP over STARTTLS without printing credentials.
+
+## Collecte enrichie (v2.1)
+
+Module `src/enrichment.py`, ajouté après l'audit du rapport du 19/10/2026 :
+
+- **Pourquoi ça bouge** : détection des mouvements inhabituels sur la séance, cinq séances et un mois (seuil statistique *et* plancher absolu par classe d'actifs), puis recherche d'actualités propres à chaque instrument (flux Yahoo Finance par valeur, requêtes thématiques pour indices, matières premières, crypto). Sans actualité trouvée, le rapport écrit « cause non établie ».
+- **Flux d'actualités** : une quinzaine de flux éditeurs ajoutés (CNBC par thème, MarketWatch, BBC, Guardian monde, OilPrice, CoinDesk, Cointelegraph, Le Monde). Les flux qui répondent sans aucun élément exploitable sont listés dans le journal GitHub Actions (`WARNING: … flux sans élément récent`) : une adresse périmée s'y repère.
+- **Pertinence** : les actualités hors sujet (appareils connectés, vol dérouté…) sont écartées ; les « faits marquants » privilégient les articles avec extrait.
+- **Macro** : replis officiels quand FRED est injoignable : taux effectif des fonds fédéraux (NY Fed), rendements 2 ans / 10 ans et anticipations d'inflation (Trésor américain), taux de dépôt de la BCE.
+- **Calendrier des résultats** : prochaines publications trimestrielles des valeurs suivies (dates estimées par Yahoo Finance, toujours « à confirmer »).
+- **Cohérence des dates** : avertissement quand les cours n'ont pas la même date de séance, signalement des cours à variation exactement nulle, et note quand futures de taux et rendements au comptant ne portent pas sur la même séance.
