@@ -346,7 +346,7 @@ def clean_summary(text: str) -> str:
     kept = [s for s in sentences
             if s and not CHROME_PATTERNS.search(s)
             and not re.match(r"^\d{1,2}(,|\s+to\b|\s+and\b)", s)
-            and not re.match(r"^[a-z]", s)]
+            ]
     return re.sub(r"\s+", " ", " ".join(kept)).strip()
 
 
