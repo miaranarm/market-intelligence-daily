@@ -464,7 +464,8 @@ def _news_fact_and_market_readthrough(item: dict[str, str]) -> tuple[str, str]:
 
     if not summary:
         impact = "Le titre seul ne suffit pas à établir un effet sur les marchés. L’article et les actifs directement concernés n’ont pas été vérifiés : aucune direction ni cause de marché n’est inférée."
-    elif any(k in text for k in ("artificial intelligence", " ai ", "semiconductor", "chip stocks", "data centre", "data center", "nvidia", "broadcom")):
+    elif (any(k in text for k in ("artificial intelligence", " ai ", "semiconductor", "chip stocks", "data centre", "data center", "nvidia", "broadcom"))
+          and not any(k in text for k in ("bitcoin", "ethereum", "crypto", "digital asset", "stablecoin", "xrp", "token", "blockchain"))):
         impact = "Le marché arbitre entre la croissance attendue des revenus liés à l’IA et le coût du financement des infrastructures. À suivre : prévisions de ventes, dépenses d’investissement, dette des opérateurs de centres de données et réaction des semi-conducteurs."
     elif any(k in text for k in ("treasury yield", "bond yield", "government bonds", "sovereign yields", "interest rate", "rate hike", "federal reserve", "central bank", "monetary policy")):
         impact = "Les rendements modifient le coût du crédit et les valorisations. Une hausse pénalise généralement les obligations déjà émises et les actions à valorisation élevée; une détente peut les soutenir. Le prochain test est l’écart entre les données d’inflation/activité et les attentes de taux."
