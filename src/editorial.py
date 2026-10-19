@@ -718,14 +718,14 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     ))
     # Do not let a stale/template-generated AI read-through leak into an unrelated story.
     # This applies to every news topic, not only crypto headlines.
-    if ai_readthrough and not ai_source:
-        read = ("Interprétation écartée : le commentaire évoquait l'IA ou les infrastructures "
-                "de données, sans lien explicite établi par le titre et l'extrait. "
-                "La conséquence de marché reste à vérifier dans l'article original.")
-    elif crypto_source and ai_readthrough and not crypto_readthrough:
+    if crypto_source and ai_readthrough and not crypto_readthrough:
         read = ("Cette actualité concerne les actifs numériques. Son effet de marché précis "
                 "n'est pas établi par le titre et l'extrait seuls; vérifier les détails de l'article "
                 "et la réaction des actifs concernés avant d'attribuer une cause.")
+    elif ai_readthrough and not ai_source:
+        read = ("Interprétation écartée : le commentaire évoquait l'IA ou les infrastructures "
+                "de données, sans lien explicite établi par le titre et l'extrait. "
+                "La conséquence de marché reste à vérifier dans l'article original.")
 
     if read in seen:
         read = ""
