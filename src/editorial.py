@@ -606,11 +606,17 @@ def _regime_blocks(ctx: dict[str, Any], by: dict[str, Any]) -> list[dict[str, An
             if has_change:
                 change = "n.d."
                 if m.get("change") is not None:
-                    change = fr_num(m["change"], 2, True) + ("" if m["id"] in ("CPIAUCSL", "PAYEMS") else " pt")
+                    if m["id"] == "CPIAUCSL":
+                        unit = " pt d'indice"
+                    elif m["id"] == "PAYEMS":
+                        unit = " milliers"
+                    else:
+                        unit = " pt de %"
+                    change = fr_num(m["change"], 2, True) + unit
                 row.append({"t": change})
             row.append({"t": m.get("provider", "FRED"), "href": m.get("source")})
             rows.append(row)
-        headers = ["Indicateur", "Valeur", "Observation du"] + (["Variation"] if has_change else []) + ["Source"]
+        headers = ["Indicateur", "Valeur", "Observation du"] + (["Variation vs observation précédente"] if has_change else []) + ["Source"]
         blocks.append({"kind": "table", "caption": "Indicateurs macroéconomiques", "numeric": {1} | ({3} if has_change else set()),
                        "headers": headers, "rows": rows})
         blocks.append({"kind": "note", "text": "Ces séries sont publiées avec un décalage (mensuel pour l'inflation et l'emploi) : elles décrivent le fond de l'économie, pas la séance du jour."})
