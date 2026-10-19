@@ -2049,14 +2049,28 @@ def display_news(item: dict[str, str]) -> dict[str, str]:
     return out
 
 
-def news_for_keywords(news: list[dict[str, str]], keywords: tuple[str, ...], limit: int = 2) -> list[dict[str, str]]:
-    """Actualités documentées (résumé d'au moins 100 caractères) dont le titre ou le résumé contient un mot-clé entier."""
+def news_for_keywords(news: list[dict[str, str]], keywords: tuple[str, ...], limit: int = 2,
+                      exclude_urls: set[str] | None = None) -> list[dict[str, str]]:
+    """Actualités documentées (résumé d'au moins 100 caractères) pour un univers.
+
+    Un mot-clé simple (« index », « bond ») doit figurer dans le titre : dans le corps d'un article
+    il apparaît partout (page d'offre d'un éditeur, par exemple) et rattachait le même article à cinq
+    univers. Une expression de plusieurs mots peut figurer dans le titre ou le résumé.
+    `exclude_urls` écarte les articles déjà affichés dans un autre univers.
+    """
     def present(text: str, keyword: str) -> bool:
         return re.search(r"(?<![a-z0-9])" + re.escape(keyword.casefold()) + r"(?![a-z0-9])", text.casefold()) is not None
+
+    def hit(n: dict[str, str], keyword: str) -> bool:
+        if " " in keyword.strip():
+            return present(f"{n.get('title', '')} {n.get('summary', '')}", keyword)
+        return present(n.get("title", ""), keyword)
+
     matched = [
         n for n in news
-        if len(re.sub(r"\s+", " ", n.get("summary", "")).strip()) >= 100
-        and any(present(f"{n.get('title', '')} {n.get('summary', '')}", k) for k in keywords)
+        if len(re.sub(r"\s+", " ", enrichment.clean_summary(n.get("summary", ""))).strip()) >= 100
+        and n.get("url") not in (exclude_urls or set())
+        and any(hit(n, k) for k in keywords)
     ]
     return [display_news(n) for n in prioritize_news(matched, limit)]
 
@@ -2095,11 +2109,16 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any], dict[str, A
     with ThreadPoolExecutor(max_workers=8) as pool:
         mover_news = list(pool.map(_enrich_news_item, mover_news))
     mover_news = [item for item in mover_news if not _is_google_news_url(item.get("url", ""))]
-    movers = enrichment.attach_news_to_movers(movers, mover_news)
+    movers = enrichment.attach_news_to_movers(movers, mover_news, news)
     company_fundamentals, fundamentals_errors = fetch_company_fundamentals()
     macro_series, macro_errors = fetch_macro_series_with_fallback()
     macro_series, extra_macro_errors = enrichment.complete_macro(macro_series)
     macro_errors = macro_errors + extra_macro_errors
+    # Une série FRED en échec mais comblée par un repli officiel n'est pas un incident : on ne
+    # signale que les séries réellement absentes du tableau final.
+    present = {m["id"] for m in macro_series}
+    macro_errors = [e for e in macro_errors
+                    if not any(f"FRED {sid}:" in e for sid in present)]
     rows.sort(key=lambda r: (r.asset_class, r.name))
     previous = read_state().get("forecasts", [])
     prior_morning = next((x for x in reversed(previous) if x.get("report_type") == "morning"), None)

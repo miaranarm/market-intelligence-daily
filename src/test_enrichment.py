@@ -149,3 +149,68 @@ class EditorialIntegrationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RealReportRegressionTests(unittest.TestCase):
+    """Cas réels du rapport du 19/10/2026."""
+
+    def test_clean_summary_drops_chrome_and_truncated_fragments(self):
+        text = ("Podobnik said the expansion is part of a broader plan. Index Offering Discover our index offerings with $49 billion. "
+                "9, the Wall Street Journal reported on Monday. Crude oil prices hovered near recent highs on Sunday.")
+        cleaned = enrichment.clean_summary(text)
+        self.assertNotIn("Index Offering", cleaned)
+        self.assertNotIn("9, the Wall Street", cleaned)
+        self.assertIn("Crude oil prices hovered", cleaned)
+
+    def test_unrelated_article_citing_etf_is_not_attached(self):
+        mover = {"ticker": "QQQ", "name": "Invesco Nasdaq 100 ETF", "asset_class": "ETF"}
+        moderna = {"title": "Stocktwits Pharma Pulse: Moderna-Merck Cancer Vaccine Grabs Spotlight", "published": "",
+                   "summary": "The Invesco QQQ Trust (QQQ), down 6%, fell last week.", "url": "u", "ticker": "QQQ"}
+        selloff = {"title": "Tech Stock Sell-Off: 1 Unstoppable Nasdaq ETF to Buy", "published": "",
+                   "summary": "The Nasdaq-100 ETF QQQ fell.", "url": "v", "ticker": "QQQ"}
+        out = enrichment.attach_news_to_movers([mover], [moderna, selloff])
+        self.assertEqual([n["url"] for n in out[0]["news"]], ["v"])
+
+    def test_old_articles_are_not_attached(self):
+        mover = {"ticker": "EEM", "name": "Emerging markets equity ETF", "asset_class": "ETF"}
+        old = {"title": "Emerging markets ETFs fall", "summary": "x fell", "published": "Wed, 30 Sep 2026 11:20:00 +0000", "url": "o", "ticker": "EEM"}
+        with patch.object(enrichment, "is_recent", wraps=lambda p, **k: False):
+            self.assertEqual(enrichment.attach_news_to_movers([mover], [old])[0]["news"], [])
+
+    def test_general_news_explains_index_without_network(self):
+        mover = {"ticker": "^KS11", "name": "KOSPI", "asset_class": "South Korean equity index"}
+        general = [{"title": "Bitcoin, Korea's Kospi and Nasdaq futures rally as China GDP beats estimates", "published": "",
+                    "summary": "Asian stocks rally.", "url": "g", "source": "CoinDesk"}]
+        out = enrichment.attach_news_to_movers([mover], [], general)
+        self.assertEqual(out[0]["news"][0]["url"], "g")
+
+    def test_breakeven_accepts_tc_prefix_for_real_yields(self):
+        def entry(day, tag, v):
+            return (f"<entry><content><m:properties xmlns:m='m' xmlns:d='d'><d:NEW_DATE>{day}T00:00:00</d:NEW_DATE>"
+                    f"<d:{tag}>{v}</d:{tag}></m:properties></content></entry>")
+        nominal = ("<feed><entry><content><m:properties xmlns:m='m' xmlns:d='d'><d:NEW_DATE>2026-10-16T00:00:00</d:NEW_DATE>"
+                   "<d:BC_2YEAR>4.74</d:BC_2YEAR><d:BC_10YEAR>5.09</d:BC_10YEAR></m:properties></content></entry></feed>").encode()
+        real = f"<feed>{entry('2026-10-16', 'TC_10YEAR', 2.60)}</feed>".encode()
+        resp = lambda c: MagicMock(content=c)
+        with patch.object(enrichment.requests, "get", side_effect=lambda url, **kw: resp(real if "real" in url else nominal)):
+            items, _ = enrichment.fetch_treasury_curve(date(2026, 10, 19))
+        self.assertAlmostEqual({i["id"]: i for i in items}["T10YIE"]["value"], 2.49)
+
+
+class EditorialRegressionTests(unittest.TestCase):
+    def test_same_story_is_not_repeated_in_every_universe(self):
+        from src import market_report as mr
+        story = {"title": "Deutsche Bank targets Asia crypto custody expansion", "url": "https://x/1", "published": "", "source": "CoinDesk",
+                 "summary": "The bank also plans stablecoin conversion, tokenized deposits and digital bond issuance as part of a target of roughly 8% annual revenue growth by 2028."}
+        picked = mr.news_for_keywords([story], ("crypto",), 3)
+        self.assertEqual(len(picked), 1)
+        self.assertEqual(mr.news_for_keywords([story], ("crypto",), 3, exclude_urls={"https://x/1"}), [])
+        # mot simple absent du titre : plus de rattachement via le corps de l'article
+        self.assertEqual(mr.news_for_keywords([story], ("bond",), 3), [])
+
+    def test_dollar_index_inconsistent_with_pairs_is_flagged(self):
+        pairs = {"EURUSD=X": 0.21, "USDJPY=X": -0.05, "GBPUSD=X": 0.43, "USDCAD=X": -0.52, "USDCHF=X": -0.46}
+        rows = [row(t, t, "FX", daily=v, stamp="2026-10-19") for t, v in pairs.items()] + [row("DX-Y.NYB", "US Dollar Index", "FX", daily=-0.01, stamp="2026-10-19")]
+        by = {r.ticker: r for r in rows}
+        text = " ".join(editorial._analyse_devises(rows, by, {}))
+        self.assertIn("Incohérence", text)

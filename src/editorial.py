@@ -335,6 +335,13 @@ def _analyse_devises(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -
             text += f" Face aux {ups + downs} devises mesurées contre lui, le dollar progresse contre {ups} et recule contre {downs} : "
             text += "mouvement généralisé" if max(ups, downs) >= 0.75 * (ups + downs) else "mouvement partagé, sans tendance nette"
             text += "."
+        weights = {"EURUSD=X": -0.576, "USDJPY=X": 0.136, "GBPUSD=X": -0.119, "USDCAD=X": 0.091, "USDCHF=X": 0.036}
+        parts = [(w, by[t].daily_pct) for t, w in weights.items() if by.get(t) and by[t].daily_pct is not None]
+        if len(parts) >= 4 and dxy.daily_pct is not None:
+            implied = sum(w * p for w, p in parts)
+            if abs(dxy.daily_pct - implied) > 0.12:
+                text += (f" Incohérence à noter : les paires qui composent l'indice impliquent environ {fr_pct(implied)}, "
+                         f"contre {fr_pct(dxy.daily_pct)} affichés : la cotation de l'indice est probablement décalée ; se fier aux paires.")
         pair_days = {str(by[t].data_timestamp)[:10] for t in usd_quoted_second + usd_quoted_first if by.get(t) and by[t].data_timestamp}
         dxy_day = str(dxy.data_timestamp)[:10] if dxy.data_timestamp else ""
         if pair_days and dxy_day and dxy_day not in pair_days:
@@ -627,7 +634,7 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     """Bloc d'actualité sans redite : pas de résumé qui répète le titre, pas deux fois la même lecture de marché."""
     seen: set[str] = ctx.setdefault("_seen_readthrough", set())
     title = item.get("title", "")
-    summary = item.get("summary_short") or item.get("summary", "")
+    summary = enrichment.clean_summary(item.get("summary_short") or item.get("summary", ""))
     if summary and (_norm(summary).startswith(_norm(title)[:45]) or _norm(title).startswith(_norm(summary)[:45])):
         summary = ""
     read = item.get("readthrough", "")
@@ -678,7 +685,12 @@ def _category_section(cat: dict[str, Any], rows: list[Any], by_all: dict[str, An
         blocks.append({"kind": "chip", "text": "Rédaction assistée par modèle, limitée aux données de ce rapport"})
         blocks += [{"kind": "p", "text": t} for t in llm_paragraphs]
     picker = ctx.get("news_picker")
-    stories = picker(ctx.get("news", []), cat["keywords"], 3) if picker else []
+    shown: set[str] = ctx.setdefault("_shown_category_urls", set())
+    try:
+        stories = picker(ctx.get("news", []), cat["keywords"], 3, exclude_urls=shown) if picker else []
+    except TypeError:  # sélecteur ancien sans exclusion
+        stories = picker(ctx.get("news", []), cat["keywords"], 3) if picker else []
+    shown.update(item.get("url", "") for item in stories)
     if stories:
         blocks.append({"kind": "h3", "text": "À la une pour cet univers"})
         for item in stories:
@@ -733,7 +745,10 @@ def _scenario_blocks(ctx: dict[str, Any], by: dict[str, Any]) -> list[dict[str, 
     # liste de surveillance
     watch = []
     rows = ctx.get("rows", [])
-    ranked = sorted([r for r in rows if _zscore(r) is not None and r.ticker != "^VIX"], key=lambda r: abs(_zscore(r)), reverse=True)
+    def material(r: Any) -> bool:
+        floor = 0.5 if r.asset_class.casefold() == "fx" else 1.0
+        return r.daily_pct is not None and abs(r.daily_pct) >= floor
+    ranked = sorted([r for r in rows if _zscore(r) is not None and r.ticker != "^VIX" and material(r)], key=lambda r: abs(_zscore(r)), reverse=True)
     seen: set[str] = set()
     for r in ranked[:6]:
         z = abs(_zscore(r))

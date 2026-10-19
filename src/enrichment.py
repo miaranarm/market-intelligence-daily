@@ -228,20 +228,103 @@ def fetch_mover_news(movers: list[dict[str, Any]], max_movers: int = 10) -> tupl
     return news, errors
 
 
-def attach_news_to_movers(movers: list[dict[str, Any]], news: list[dict[str, str]]) -> list[dict[str, Any]]:
-    """Associe à chaque mouvement ses actualités ; sans actualité trouvée, le dit explicitement."""
+MOVE_WORDS = ("fall", "fell", "drop", "slide", "slump", "plunge", "tumble", "sell-off", "selloff", "rout", "retreat", "sink",
+              "rally", "surge", "jump", "soar", "gain", "rise", "rose", "climb", "rebound", "spike", "lose", "lost", "weak", "strong")
+# Mots qui désignent un instrument dans le texte des articles généraux (indices, matières premières).
+ALIASES = {
+    "^KS11": ("kospi", "korea"), "^N225": ("nikkei",), "^HSI": ("hang seng",), "^IXIC": ("nasdaq",), "QQQ": ("nasdaq", "qqq"),
+    "NQ=F": ("nasdaq",), "^GSPC": ("s&p 500",), "SPY": ("s&p 500",), "XLK": ("tech stocks", "technology stocks", "tech sell"),
+    "XLE": ("energy stocks", "oil stocks"), "BZ=F": ("brent",), "CL=F": ("wti", "crude"), "KC=F": ("coffee",),
+    "GC=F": ("gold",), "SI=F": ("silver",), "HG=F": ("copper",), "EEM": ("emerging markets",), "005930.KS": ("samsung",),
+    "TSM": ("tsmc", "taiwan semiconductor"), "CAT": ("caterpillar",), "AVGO": ("broadcom",),
+}
+
+
+def is_recent(published: str, max_age_days: float = 4.0, now: datetime | None = None) -> bool:
+    """Faux seulement si la date est lisible et trop ancienne ; une date illisible reste acceptée."""
+    from email.utils import parsedate_to_datetime
+    if not published:
+        return True
+    try:
+        try:
+            when = parsedate_to_datetime(published)
+        except (TypeError, ValueError):
+            when = datetime.fromisoformat(published.replace("Z", "+00:00"))
+        if when.tzinfo is None:
+            when = when.replace(tzinfo=timezone.utc)
+        age = ((now or datetime.now(timezone.utc)) - when.astimezone(timezone.utc)).total_seconds() / 86400
+        return -1 <= age <= max_age_days
+    except Exception:  # noqa: BLE001
+        return True
+
+
+def _entity_words(mover: dict[str, Any]) -> tuple[str, ...]:
+    words = list(ALIASES.get(mover["ticker"], ()))
+    first = re.sub(r"\(.*?\)", "", mover["name"]).strip().casefold()
+    if first and len(first) > 3:
+        words.append(first)
+    ticker = mover["ticker"].casefold()
+    if re.fullmatch(r"[a-z]{2,5}", ticker):
+        words.append(ticker)
+    return tuple(dict.fromkeys(words))
+
+
+def relevance_score(item: dict[str, str], mover: dict[str, Any]) -> int:
+    """Une actualité explique un mouvement si elle nomme l'instrument et parle de hausse ou de baisse.
+    Exemple écarté : un article sur Moderna qui cite QQQ au passage."""
+    title, summary = item.get("title", "").casefold(), item.get("summary", "").casefold()
+    entities = _entity_words(mover)
+    in_title = any(e in title for e in entities)
+    in_summary = any(e in summary for e in entities)
+    move_title = any(w in title for w in MOVE_WORDS)
+    move_summary = any(w in summary for w in MOVE_WORDS)
+    score = 0
+    if in_title:
+        score += 2
+    elif in_summary:
+        score += 1
+    if move_title:
+        score += 2
+    elif move_summary:
+        score += 1
+    return score if (in_title or in_summary) else 0
+
+
+def attach_news_to_movers(movers: list[dict[str, Any]], news: list[dict[str, str]],
+                          general_news: list[dict[str, str]] | None = None) -> list[dict[str, Any]]:
+    """Associe à chaque mouvement ses actualités (flux par valeur + flux généraux déjà collectés),
+    récentes et pertinentes ; sans actualité trouvée, le rapport le dit explicitement."""
     enriched = []
     for m in movers:
-        related = [n for n in news if n.get("ticker") == m["ticker"]]
+        candidates = [n for n in news if n.get("ticker") == m["ticker"]] + list(general_news or [])
+        scored = []
         seen: set[str] = set()
-        unique = []
-        for n in related:
+        for n in candidates:
             key = re.sub(r"\W+", " ", n["title"].casefold()).strip()
-            if key not in seen:
+            if key in seen or not is_recent(n.get("published", "")):
+                continue
+            score = relevance_score(n, m)
+            if score >= 3:
                 seen.add(key)
-                unique.append(n)
-        enriched.append({**m, "news": unique[:2]})
+                scored.append((score, n))
+        scored.sort(key=lambda sn: sn[0], reverse=True)
+        enriched.append({**m, "news": [n for _, n in scored[:2]]})
     return enriched
+
+
+# --------------------------------------------------------------------------- nettoyage des extraits
+CHROME_PATTERNS = re.compile(r"(discover our|index offering|subscribe|sign up|newsletter|click here|read more|"
+                             r"all rights reserved|premium feature|key data points|advertisement)", re.I)
+
+
+def clean_summary(text: str) -> str:
+    """Retire les phrases d'habillage de page (offres, abonnements) et les fragments tronqués
+    qui commencent au milieu d'une date (« 9, the Wall Street Journal reported… »)."""
+    sentences = re.split(r"(?<=[.!?])\s+(?=[A-Z\"“‘'])", re.sub(r"\s+", " ", text or "").strip())
+    kept = [s for s in sentences
+            if s and not CHROME_PATTERNS.search(s) and not re.match(r"^\d{1,2}(,|\s+to\b|\s+and\b)", s)
+            and not re.match(r"^[a-z]", s)]
+    return " ".join(kept).strip()
 
 
 # --------------------------------------------------------------------------- cohérence des dates de cours
@@ -326,7 +409,7 @@ def parse_treasury_xml(content: bytes) -> list[dict[str, Any]]:
             text = (child.text or "").strip()
             if tag == "NEW_DATE" and text:
                 record["date"] = text[:10]
-            elif tag.startswith("BC_") and text:
+            elif tag.startswith(("BC_", "TC_")) and text:
                 try:
                     record[tag] = float(text)
                 except ValueError:
@@ -377,8 +460,9 @@ def fetch_treasury_curve(today: date | None = None) -> tuple[list[dict[str, Any]
         real_by_date = {d["date"]: d for d in real}
         def breakeven(d: dict[str, Any]) -> float | None:
             r = real_by_date.get(d["date"])
-            if r and d.get("BC_10YEAR") is not None and r.get("BC_10YEAR") is not None:
-                return round(d["BC_10YEAR"] - r["BC_10YEAR"], 3)
+            real10 = None if not r else (r.get("TC_10YEAR") if r.get("TC_10YEAR") is not None else r.get("BC_10YEAR"))
+            if d.get("BC_10YEAR") is not None and real10 is not None:
+                return round(d["BC_10YEAR"] - real10, 3)
             return None
         make("T10YIE", "Anticipations d'inflation à 10 ans (breakeven, nominal moins réel)", nominal, breakeven)
     return out, errors
