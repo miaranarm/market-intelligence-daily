@@ -96,6 +96,9 @@ jobs:
           SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
           REPORT_RECIPIENT: ${{ secrets.REPORT_RECIPIENT }}
           REPORT_TYPE: ${{ steps.report_type.outputs.value }}
+          # Enable the existing, fact-constrained editorial layer when its API key is configured.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
         run: python src/market_report.py --report-type "$REPORT_TYPE" --no-email
 
       - name: Commit report history

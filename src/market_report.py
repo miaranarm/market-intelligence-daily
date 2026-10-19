@@ -2119,7 +2119,7 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any], dict[str, A
     state = read_state()
     scenario = market_conviction(rows)
     calendar_days = 21 if report_type == "weekly" else 14
-    calendar, calendar_errors = calendar_events.collect_calendar(now_local.date(), calendar_days)
+    calendar, calendar_errors = calendar_events.collect_calendar(now_local, calendar_days)
     prior_assets = {a["ticker"]: a for a in (previous[-1] if previous else {}).get("assets", [])}
     ctx: dict[str, Any] = {
         "kind": report_type, "title": title, "now_local": now_local, "started": started,

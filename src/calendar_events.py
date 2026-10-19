@@ -104,14 +104,25 @@ def _localize(event: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def upcoming_events(events: list[dict[str, Any]], today: date, days: int = 7) -> list[dict[str, Any]]:
-    """Événements dont la date locale tombe entre aujourd'hui et aujourd'hui + days (inclus)."""
-    horizon = today + timedelta(days=days)
+def upcoming_events(events: list[dict[str, Any]], today: date | datetime, days: int = 7) -> list[dict[str, Any]]:
+    """Événements futurs dans la fenêtre locale; si l'heure actuelle est connue, exclut ceux déjà passés aujourd'hui."""
+    now_local: datetime | None = None
+    if isinstance(today, datetime):
+        now_local = today.astimezone(TZ) if today.tzinfo else today.replace(tzinfo=TZ)
+        start_day = now_local.date()
+    else:
+        start_day = today
+    horizon = start_day + timedelta(days=days)
     seen: set[tuple[str, str]] = set()
     selected: list[dict[str, Any]] = []
     for raw in events:
         event = _localize(raw)
-        if not event or not (today <= event["local_date"] <= horizon):
+        if not event or not (start_day <= event["local_date"] <= horizon):
+            continue
+        # Date-only callers retain the old behavior. Datetime callers can prevent a
+        # release that already happened earlier today from being advertised as upcoming.
+        if (now_local is not None and event["local_date"] == start_day and event.get("local_time")
+                and event["local_time"] <= now_local.strftime("%H:%M")):
             continue
         key = (str(event["local_date"]), str(event["title"]).casefold()[:40])
         if key in seen:
@@ -122,9 +133,10 @@ def upcoming_events(events: list[dict[str, Any]], today: date, days: int = 7) ->
     return selected
 
 
-def collect_calendar(today: date, days: int = 7) -> tuple[list[dict[str, Any]], list[str]]:
+def collect_calendar(today: date | datetime, days: int = 7) -> tuple[list[dict[str, Any]], list[str]]:
     manual = load_manual_events()
-    fred, errors = fetch_fred_release_events(today, today + timedelta(days=days))
+    start_day = today.date() if isinstance(today, datetime) else today
+    fred, errors = fetch_fred_release_events(start_day, start_day + timedelta(days=days))
     return upcoming_events(manual + fred, today, days), errors
 
 
