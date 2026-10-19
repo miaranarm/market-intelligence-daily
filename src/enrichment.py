@@ -69,12 +69,29 @@ MARKET_THEMES = (
 )
 
 
+def _matches_market_theme(text: str, theme: str) -> bool:
+    """Match un thème comme un mot ou une expression, pas comme une sous-chaîne accidentelle.
+
+    Les trois thèmes terminés par une racine (equit, commodit, unemploy) gardent une
+    recherche de préfixe de mot pour couvrir leurs variantes. Les autres acceptent le
+    pluriel anglais courant, sans faire correspondre par exemple « rate » à « corporate »
+    ou « war » à « awards ».
+    """
+    theme = theme.casefold().strip()
+    if theme in {"equit", "commodit", "unemploy"}:
+        pattern = r"(?<!\\w)" + re.escape(theme) + r"\\w*"
+    else:
+        suffix = r"(?:s|es)?" if re.fullmatch(r"[a-z]+", theme) else ""
+        pattern = r"(?<!\\w)" + re.escape(theme) + suffix + r"(?!\\w)"
+    return re.search(pattern, text, flags=re.UNICODE) is not None
+
+
 def is_market_relevant(item: dict[str, str]) -> bool:
     """Vrai si l'actualité touche à un thème de marché et n'est pas du hors-sujet évident."""
     text = f"{item.get('title', '')} {item.get('summary', '')}".casefold()
     if any(marker in text for marker in OFF_TOPIC_MARKERS):
         return False
-    return any(theme in text for theme in MARKET_THEMES)
+    return any(_matches_market_theme(text, theme) for theme in MARKET_THEMES)
 
 
 def has_substance(item: dict[str, str], min_chars: int = 60) -> bool:
