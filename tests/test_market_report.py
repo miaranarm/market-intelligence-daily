@@ -775,10 +775,6 @@ class FinalNewsRenderingGuardTests(unittest.TestCase):
         self.assertNotIn("49 billion in benchmarked assets", rendered)
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 class CleanSummaryRegressionTests(unittest.TestCase):
     def test_preserves_valid_lowercase_opening_sentence(self):
         source = "investors are watching the next inflation release closely."
@@ -789,3 +785,7 @@ class CleanSummaryRegressionTests(unittest.TestCase):
         cleaned = clean_summary(source)
         self.assertIn("& investors reassessed rates", cleaned)
         self.assertNotIn("Subscribe to our newsletter", cleaned)
+
+
+if __name__ == "__main__":
+    unittest.main()
