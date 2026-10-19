@@ -716,14 +716,14 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
         read = ("Cette actualité concerne les actifs numériques. Son effet de marché précis "
                 "n'est pas établi par le titre et l'extrait seuls; vérifier les détails de l'article "
                 "et la réaction des actifs concernés avant d'attribuer une cause.")
-    # Otherwise, a known excerpt mismatch outranks a speculative read-through.
-    elif item_summary_mismatch:
-        pass
     elif read_topics - source_topics:
         labels = {"crypto": "les actifs numériques", "ai_infrastructure": "l’IA ou les infrastructures de données", "oil": "le pétrole"}
         mismatched = " et ".join(labels[t] for t in sorted(read_topics - source_topics))
         read = (f"Interprétation écartée : le commentaire évoquait {mismatched}, sans lien explicite "
                 "établi par le titre et l'extrait. La conséquence de marché reste à vérifier dans l'article original.")
+    # If no distinct cross-topic mismatch was detected, keep the stronger excerpt warning.
+    elif item_summary_mismatch:
+        pass
 
     if read in seen:
         read = ""
