@@ -28,10 +28,11 @@ import requests
 import yfinance as yf
 
 try:  # import en tant que paquet (tests : src.market_report)
-    from . import calendar_events, editorial, llm_editor, render_report
+    from . import calendar_events, editorial, enrichment, llm_editor, render_report
 except ImportError:  # exécution en script : python src/market_report.py
     import calendar_events  # type: ignore[no-redef]
     import editorial  # type: ignore[no-redef]
+    import enrichment  # type: ignore[no-redef]
     import llm_editor  # type: ignore[no-redef]
     import render_report  # type: ignore[no-redef]
 
@@ -195,6 +196,9 @@ NEWS_FEEDS = [
     ("Google News — devises et obligations internationales (découverte)", "https://news.google.com/rss/search?q=forex+currency+markets+government+bonds+Treasury+yields&hl=en-US&gl=US&ceid=US:en"),
     ("Google News — actifs numériques et réglementation crypto (découverte)", "https://news.google.com/rss/search?q=cryptocurrency+bitcoin+ether+ETF+regulation+markets&hl=en-US&gl=US&ceid=US:en"),
 ]
+
+NEWS_FEEDS += enrichment.EXTRA_NEWS_FEEDS
+
 
 @dataclass
 class AssetRow:
@@ -731,6 +735,7 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
     errors: list[str] = []
     seen: set[str] = set()
     seen_titles: set[str] = set()
+    feed_counts: dict[str, int] = {}
     headers = {"User-Agent": USER_AGENT}
     for feed_name, url in NEWS_FEEDS:
         batch: list[dict[str, str]] = []
@@ -755,6 +760,12 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
             # provide alternative macro coverage without mislabeling search results as data.
             errors.append(f"{feed_name}: {type(exc).__name__}: {str(exc)[:120]}")
         feed_batches.append(batch)
+        feed_counts[feed_name] = len(batch)
+
+    empty_feeds = enrichment.feed_health(feed_counts)
+    if empty_feeds:
+        # Visible dans le journal GitHub Actions : une adresse de flux périmée se repère ici.
+        print(f"WARNING: {len(empty_feeds)} flux sans élément récent exploitable : " + " | ".join(empty_feeds), file=sys.stderr)
 
     # Round-robin interleaving keeps official sources and independent publishers visible together.
     items: list[dict[str, str]] = []
@@ -762,7 +773,7 @@ def fetch_news() -> tuple[list[dict[str, str]], list[str]]:
         for batch in feed_batches:
             if item_index < len(batch):
                 items.append(batch[item_index])
-    return items[:48], errors
+    return items[:84], errors
 
 
 
@@ -2077,8 +2088,18 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any], dict[str, A
     # An unresolved Google News redirect is a research lead, not a citable publisher source.
     # Exclude it from every section rather than letting aggregator URLs leak into regional or sector analysis.
     news = [item for item in news if not _is_google_news_url(item.get("url", ""))]
+    # Écarte le hors-sujet (appareils connectés, vol dérouté...) au lieu de remplir « Faits marquants ».
+    news = [item for item in news if enrichment.is_market_relevant(item)]
+    movers = enrichment.notable_movers(rows)
+    mover_news, mover_news_errors = enrichment.fetch_mover_news(movers)
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        mover_news = list(pool.map(_enrich_news_item, mover_news))
+    mover_news = [item for item in mover_news if not _is_google_news_url(item.get("url", ""))]
+    movers = enrichment.attach_news_to_movers(movers, mover_news)
     company_fundamentals, fundamentals_errors = fetch_company_fundamentals()
     macro_series, macro_errors = fetch_macro_series_with_fallback()
+    macro_series, extra_macro_errors = enrichment.complete_macro(macro_series)
+    macro_errors = macro_errors + extra_macro_errors
     rows.sort(key=lambda r: (r.asset_class, r.name))
     previous = read_state().get("forecasts", [])
     prior_morning = next((x for x in reversed(previous) if x.get("report_type") == "morning"), None)
@@ -2120,17 +2141,25 @@ def make_report(report_type: str) -> tuple[str, str, dict[str, Any], dict[str, A
     scenario = market_conviction(rows)
     calendar_days = 21 if report_type == "weekly" else 14
     calendar, calendar_errors = calendar_events.collect_calendar(now_local, calendar_days)
+    equity_names = {t: a["name"] for t, a in ASSETS.items() if a["class"] in ("US equity", "European equity", "Asian equity")}
+    earnings, earnings_errors = enrichment.fetch_earnings_events(equity_names, now_local.date(), calendar_days)
+    earnings = sorted(earnings, key=lambda e: e["date"])[:8]
+    calendar = calendar_events.upcoming_events(calendar + earnings, now_local, calendar_days)
+    calendar_errors = calendar_errors + earnings_errors
     prior_assets = {a["ticker"]: a for a in (previous[-1] if previous else {}).get("assets", [])}
     ctx: dict[str, Any] = {
         "kind": report_type, "title": title, "now_local": now_local, "started": started,
         "rows": rows, "sparks": collect_sparks(data), "news": news,
-        "priority_news": [display_news(n) for n in prioritize_news(news, 8)],
+        "priority_news": [display_news(n) for n in prioritize_news(
+            [n for n in news if enrichment.has_substance(n)] or news, 8)],
         "news_picker": news_for_keywords, "macro": macro_series, "fundamentals": company_fundamentals,
         "calendar": calendar, "calendar_days": calendar_days, "scenario": scenario,
+        "movers": movers, "freshness_note": enrichment.freshness_note(rows, now_local),
+        "frozen_prices": [r.name for r in enrichment.frozen_price_suspects(rows)],
         "forecast_eval": evaluate_forecasts({"forecasts": previous, "forecast_records": state.get("forecast_records", [])}),
         "scenario_eval": evaluate_scenario_forecasts(previous),
         "cross_lines": scenario_context(rows), "prior_assets": prior_assets,
-        "errors": {"prices": len(data_errors), "news": len(news_errors), "fundamentals": len(fundamentals_errors),
+        "errors": {"prices": len(data_errors), "news": len(news_errors) + len(mover_news_errors), "fundamentals": len(fundamentals_errors),
                    "macro": len(macro_errors), "calendar": len(calendar_errors)},
         "n_tracked": len(ASSETS), "weekend": now_local.weekday() >= 5, "legacy_text": legacy_plain,
     }

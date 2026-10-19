@@ -13,8 +13,10 @@ from typing import Any, Callable
 
 try:  # import en tant que paquet (tests : src.editorial)
     from . import calendar_events
+    from . import enrichment
 except ImportError:  # exécution en script (python src/market_report.py)
     import calendar_events  # type: ignore[no-redef]
+    import enrichment  # type: ignore[no-redef]
 
 NBSP = "\u00a0"
 NNBSP = "\u202f"
@@ -333,6 +335,11 @@ def _analyse_devises(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -
             text += f" Face aux {ups + downs} devises mesurées contre lui, le dollar progresse contre {ups} et recule contre {downs} : "
             text += "mouvement généralisé" if max(ups, downs) >= 0.75 * (ups + downs) else "mouvement partagé, sans tendance nette"
             text += "."
+        pair_days = {str(by[t].data_timestamp)[:10] for t in usd_quoted_second + usd_quoted_first if by.get(t) and by[t].data_timestamp}
+        dxy_day = str(dxy.data_timestamp)[:10] if dxy.data_timestamp else ""
+        if pair_days and dxy_day and dxy_day not in pair_days:
+            text += (f" Attention : l'indice du dollar est daté du {dxy_day[8:10]}/{dxy_day[5:7]} alors que les paires sont datées du "
+                     f"{'/'.join(sorted(d[8:10] + '/' + d[5:7] for d in pair_days))} : les deux lectures ne portent pas sur la même séance.")
         paragraphs.append(text)
     jpy, eur, gbp = by.get("USDJPY=X"), by.get("EURUSD=X"), by.get("GBPUSD=X")
     detail = []
@@ -380,17 +387,33 @@ def _analyse_obligations(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any
             slopes.append(f"30 ans moins 5 ans : {fr_num((tyx.price - fvx.price) * 100, 0, True)} points de base")
         macro = {m["id"]: m for m in ctx.get("macro") or []}
         if "DGS10" in macro and "DGS2" in macro:
-            slopes.append(f"10 ans moins 2 ans (séries FRED du {macro['DGS10']['date']}) : {fr_num((macro['DGS10']['value'] - macro['DGS2']['value']) * 100, 0, True)} points de base")
+            slopes.append(f"10 ans moins 2 ans ({macro['DGS10'].get('provider', 'FRED')}, {macro['DGS10']['date']}) : {fr_num((macro['DGS10']['value'] - macro['DGS2']['value']) * 100, 0, True)} points de base")
         if slopes:
             paragraphs.append("Pente de la courbe : " + " ; ".join(slopes) + ". Une pente négative (courbe inversée) a historiquement précédé les ralentissements ; une pente qui se redresse peut refléter des baisses de taux anticipées ou une prime de terme plus élevée : la pente seule ne tranche pas.")
     futs = [by.get("ZN=F"), by.get("ZB=F")]
     futs = [f for f in futs if f and f.daily_pct is not None]
     if futs:
         paragraphs.append("Contrats à terme sur emprunts du Trésor : " + ", ".join(f"{f.name} {_move(f)}" for f in futs) +
-                          ". Le prix d'une obligation évolue à l'inverse de son rendement : un contrat qui monte correspond à des taux qui baissent.")
+                          ". Le prix d'une obligation évolue à l'inverse de son rendement : un contrat qui monte correspond à des taux qui baissent."
+                          + (_bond_date_gap_note(by, futs) or ""))
     if not paragraphs:
         paragraphs.append(_breadth_paragraph(rows, "instruments"))
     return paragraphs
+
+
+def _bond_date_gap_note(by: dict[str, Any], futs: list[Any]) -> str | None:
+    """Les futures de taux cotent presque en continu, les rendements au comptant s'arrêtent à la clôture :
+    sans cet avertissement, « contrat en hausse » et « rendement en hausse » semblent se contredire."""
+    tnx = by.get("^TNX")
+    if not tnx or not tnx.data_timestamp:
+        return None
+    tnx_day = str(tnx.data_timestamp)[:10]
+    later = [f for f in futs if f.data_timestamp and str(f.data_timestamp)[:10] > tnx_day]
+    if not later:
+        return None
+    day = str(later[0].data_timestamp)[:10]
+    return (f" Les contrats sont datés du {day[8:10]}/{day[5:7]} et les rendements au comptant du {tnx_day[8:10]}/{tnx_day[5:7]} : "
+            "les futures intègrent déjà la réouverture, ce qui explique qu'ils puissent monter pendant que le dernier rendement coté était en hausse.")
 
 
 def _relative(by: dict[str, Any], a: str, b: str, attr: str = "five_day_pct") -> tuple[float, Any, Any] | None:
@@ -524,6 +547,11 @@ def _takeaways(ctx: dict[str, Any], by: dict[str, Any]) -> list[str]:
     btc = by.get("BTC-USD")
     if btc:
         items.append(f"Crypto : bitcoin à {fr_num(btc.price, 0)} dollars ({_move(btc)} sur 24 heures).")
+    deep = [m for m in (ctx.get("movers") or []) if m.get("five_day_pct") is not None and abs(m["five_day_pct"]) >= 5]
+    if deep:
+        items.append("Mouvements de fond à surveiller : " + " ; ".join(
+            f"{m['name']} {fr_pct(m['five_day_pct'])} sur cinq séances" + (f" et {fr_pct(m['one_month_pct'])} sur un mois" if m.get("one_month_pct") is not None and abs(m["one_month_pct"]) >= 5 else "")
+            for m in deep[:3]) + ".")
     top = next((e for e in ctx.get("calendar", []) if e["importance"] == "élevée"), None)
     if top:
         items.append("Prochain rendez-vous majeur : " + _event_line(top))
@@ -545,9 +573,11 @@ def _regime_blocks(ctx: dict[str, Any], by: dict[str, Any]) -> list[dict[str, An
     if cross:
         blocks.append({"kind": "h3", "text": "Interactions entre marchés"})
         blocks.append({"kind": "list", "items": cross})
+    if ctx.get("freshness_note"):
+        blocks.append({"kind": "note", "text": ctx["freshness_note"]})
     macro = ctx.get("macro") or []
     if macro:
-        blocks.append({"kind": "h3", "text": "Tableau de bord macroéconomique américain"})
+        blocks.append({"kind": "h3", "text": "Tableau de bord macroéconomique"})
         has_change = any(m.get("change") is not None for m in macro)
         rows = []
         for m in macro:
@@ -613,6 +643,27 @@ def _news_blocks(ctx: dict[str, Any], limit: int) -> list[dict[str, Any]]:
     return [_news_block(item, ctx) for item in (ctx.get("priority_news") or [])[:limit]]
 
 
+def _movers_blocks(ctx: dict[str, Any]) -> list[dict[str, Any]]:
+    """Mouvements inhabituels (séance, cinq séances, un mois) et, pour chacun, ce que la presse en dit.
+    Sans actualité propre trouvée, le rapport le dit : la cause n'est alors pas établie."""
+    movers = ctx.get("movers") or []
+    blocks: list[dict[str, Any]] = [{"kind": "p", "text": (
+        "Un mouvement est retenu quand il est à la fois inhabituel au regard de la volatilité propre de l'instrument "
+        "et assez ample pour compter, sur une séance, cinq séances ou un mois (ou franchement extrême en valeur absolue). Chaque ligne cite les actualités propres à l'instrument quand les flux en ont fourni ; "
+        "à défaut, la cause n'est pas établie et le rapport s'abstient de l'inventer.")}]
+    for m in movers:
+        blocks.append({"kind": "h3", "text": f"{m['name']} ({m['ticker']})"})
+        blocks.append({"kind": "p", "text": "Écart observé : " + " ; ".join(m["reasons"]) + "."})
+        stories = m.get("news") or []
+        if stories:
+            for item in stories:
+                summary = re.sub(r"\s+", " ", item.get("summary", "")).strip()
+                blocks.append(_news_block({**item, "summary_short": summary[:320], "readthrough": ""}, ctx))
+        else:
+            blocks.append({"kind": "note", "text": "Aucune actualité propre à cet instrument dans les flux collectés : cause non établie."})
+    return blocks
+
+
 def _category_section(cat: dict[str, Any], rows: list[Any], by_all: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     blocks: list[dict[str, Any]] = [{"kind": "p", "text": cat["intro"], "cls": "intro"}]
     if not rows:
@@ -655,7 +706,7 @@ def _scenario_blocks(ctx: dict[str, Any], by: dict[str, Any]) -> list[dict[str, 
             f"Le recul récent se prolonge : le VIX reste au-dessus de {vix_level}, les rendements restent élevés autour de {tnx_level} et le dollar se maintient près de {dxy_level}. "
             "Les indices actions testent alors de nouveaux plus bas de la période et les valeurs de croissance sont les plus exposées.")
         alt_title, alt_body = "Scénario B — rebond technique et retour au centre", (
-            f"La volatilité reflue sous {vix_level}, les rendements se détendent et le S&P 500 efface une partie de la baisse. Ce scénario est le plus probable après un mouvement brusque, mais il n'indique pas à lui seul la fin de la correction.")
+            f"La volatilité reflue sous {vix_level}, les rendements se détendent et le S&P 500 efface une partie de la baisse. Les mouvements brusques sont souvent suivis d'un rebond partiel, mais un tel rebond n'indiquerait pas à lui seul la fin de la correction ; il reste moins probable que le scénario A selon nos probabilités expérimentales.")
     elif score >= 1:
         main_title, main_body = "Scénario A — poursuite de la hausse", (
             f"Le momentum se prolonge : le VIX reste contenu autour de {vix_level}, les rendements ne dépassent pas {tnx_level} et le dollar reste stable près de {dxy_level}. "
@@ -757,10 +808,13 @@ def _method_blocks(ctx: dict[str, Any]) -> list[dict[str, Any]]:
     items = [
         f"Couverture : {len(rows)} actifs reçus sur {ctx.get('n_tracked', len(rows))} suivis.",
         "Prix : Yahoo Finance via la bibliothèque yfinance (source non officielle, données parfois retardées ou révisées).",
-        "Macroéconomie : séries FRED avec repli sur l'API publique du BLS ; publications officielles de la Réserve fédérale, du BEA, du Census Bureau, de la BCE, de l'EIA, de la Banque d'Angleterre et de la Banque du Japon ; presse financière (CNBC, Yahoo Finance, Financial Times, Guardian) et recherches Google Actualités à titre de piste seulement.",
+        "Macroéconomie : séries FRED avec replis officiels (BLS ; Réserve fédérale de New York pour le taux effectif ; Trésor américain pour les rendements 2 ans, 10 ans et anticipations d'inflation ; BCE pour le taux de dépôt) ; publications officielles de la Réserve fédérale, du BEA, du Census Bureau, de la BCE, de l'EIA, de la Banque d'Angleterre et de la Banque du Japon ; presse financière (CNBC, Yahoo Finance, Financial Times, Guardian) et recherches Google Actualités à titre de piste seulement.",
         "Fondamentaux d'entreprise : API XBRL de la SEC (EDGAR) pour un échantillon de sociétés américaines ; chiffres publiés, sans consensus.",
         "Calendrier : fichier data/calendar_manual.json tenu à la main (statut « confirmé » ou « à confirmer ») et, si la clé est fournie, dates officielles relayées par FRED.",
     ]
+    if ctx.get("frozen_prices"):
+        items.append("Cours à vérifier : variation de séance exactement nulle pour " + ", ".join(ctx["frozen_prices"]) +
+                     " (séance en cours, jour férié ou cours non rafraîchi : ne pas lire cette immobilité comme un signal).")
     problems = []
     for key, label in (("prices", "cours"), ("news", "flux d'actualités"), ("fundamentals", "données d'entreprise"), ("macro", "séries macroéconomiques"), ("calendar", "calendrier")):
         if err.get(key):
@@ -872,6 +926,9 @@ def build_report(ctx: dict[str, Any]) -> dict[str, Any]:
     news_blocks = _news_blocks(ctx, 8)
     if news_blocks:
         sections.append({"id": "faits", "title": "Faits marquants", "blocks": news_blocks})
+
+    if ctx.get("movers"):
+        sections.append({"id": "mouvements", "title": "Pourquoi ça bouge", "blocks": _movers_blocks(ctx)})
 
     for cat in CATEGORIES:
         members = [r for r in rows if cat["match"](r)]
