@@ -708,7 +708,9 @@ def append_priority_news(lines: list[str], news: list[dict[str, str]]) -> None:
     factual_items = []
     headline_only_items = []
     for item in enriched:
-        summary = re.sub(r"\s+", " ", item.get("summary", "")).strip()
+        # Defense in depth: never let a publisher's subscription/marketing boilerplate
+        # become the factual basis of a market read-through, even if an upstream feed slips through.
+        summary = re.sub(r"\s+", " ", enrichment.clean_summary(item.get("summary", ""))).strip()
         title = item.get("title", "").casefold()
         if not title or any(phrase in title for phrase in low_value_headlines):
             continue
