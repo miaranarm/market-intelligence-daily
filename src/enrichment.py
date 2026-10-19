@@ -253,7 +253,7 @@ def is_recent(published: str, max_age_days: float = 4.0, now: datetime | None = 
         if when.tzinfo is None:
             when = when.replace(tzinfo=timezone.utc)
         age = ((now or datetime.now(timezone.utc)) - when.astimezone(timezone.utc)).total_seconds() / 86400
-        return -1 <= age <= max_age_days
+        return -0.25 <= age <= max_age_days
     except Exception:  # noqa: BLE001
         return True
 
