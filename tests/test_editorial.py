@@ -394,6 +394,33 @@ class NewsExcerptCoherenceTests(unittest.TestCase):
         self.assertIn("actifs numériques", block["readthrough"])
         self.assertNotIn("centres de données", block["readthrough"])
 
+    def test_oil_story_does_not_inherit_crypto_commentary(self):
+        item = {
+            "title": "Oil prices slide after sanctions relief raises supply hopes",
+            "summary": "Brent crude futures fell as traders assessed additional Russian supplies following sanctions relief.",
+            "readthrough": "Le bitcoin et les stablecoins réagissent à l'appétit pour le risque sur les actifs numériques.",
+            "source": "Example",
+            "published": "2026-10-19",
+            "url": "https://example.com/oil-story",
+        }
+        block = editorial._news_block(item, {})
+        self.assertIn("Interprétation écartée", block["readthrough"])
+        self.assertIn("actifs numériques", block["readthrough"])
+        self.assertNotIn("bitcoin et les stablecoins réagissent", block["readthrough"])
+
+    def test_oil_story_can_still_discuss_its_direct_inflation_channel(self):
+        item = {
+            "title": "Oil prices slide after sanctions relief raises supply hopes",
+            "summary": "Brent crude futures fell as traders assessed additional Russian supplies following sanctions relief.",
+            "readthrough": "Le pétrole peut peser sur les anticipations d'inflation et les coûts de transport.",
+            "source": "Example",
+            "published": "2026-10-19",
+            "url": "https://example.com/oil-story",
+        }
+        block = editorial._news_block(item, {})
+        self.assertIn("anticipations d'inflation", block["readthrough"])
+        self.assertNotIn("Interprétation écartée", block["readthrough"])
+
     def test_excerpt_with_headline_entity_is_retained(self):
         item = {
             "title": "XRP Ledger expands lending",
