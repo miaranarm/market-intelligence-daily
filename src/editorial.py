@@ -723,10 +723,10 @@ def _scenario_blocks(ctx: dict[str, Any], by: dict[str, Any]) -> list[dict[str, 
     event_txt = f" Le prochain test majeur est : {_event_line(top_event)}" if top_event else ""
     if score <= -1:
         main_title, main_body = "Scénario A — prolongement de la prudence", (
-            f"Le recul récent se prolonge : le VIX reste au-dessus de {vix_level}, les rendements restent élevés autour de {tnx_level} et le dollar se maintient près de {dxy_level}. "
-            "Les indices actions testent alors de nouveaux plus bas de la période et les valeurs de croissance sont les plus exposées.")
+            f"Le scénario de baisse serait renforcé si le VIX dépasse durablement son niveau actuel de {vix_level}, si les rendements à 10 ans remontent au-dessus de {tnx_level} et si le dollar se raffermit près ou au-dessus de {dxy_level}. "
+            "La confirmation la plus directe serait une nouvelle clôture des indices sous leurs récents creux ; sans ces confirmations, le biais reste une hypothèse et non un fait établi.")
         alt_title, alt_body = "Scénario B — rebond technique et retour au centre", (
-            f"La volatilité reflue sous {vix_level}, les rendements se détendent et le S&P 500 efface une partie de la baisse. Les mouvements brusques sont souvent suivis d'un rebond partiel, mais un tel rebond n'indiquerait pas à lui seul la fin de la correction ; il reste moins probable que le scénario A selon nos probabilités expérimentales.")
+            f"Le scénario de rebond gagnerait en crédibilité si le VIX repasse sous son niveau actuel de {vix_level}, si les rendements à 10 ans se détendent et si le S&P 500 reprend une partie de sa baisse. Un rebond isolé ne suffirait pas à établir la fin de la correction : il faudrait aussi observer une amélioration durable des clôtures et de la participation des marchés.")
     elif score >= 1:
         main_title, main_body = "Scénario A — poursuite de la hausse", (
             f"Le momentum se prolonge : le VIX reste contenu autour de {vix_level}, les rendements ne dépassent pas {tnx_level} et le dollar reste stable près de {dxy_level}. "
