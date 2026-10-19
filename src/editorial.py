@@ -699,7 +699,7 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     # market interpretation matches the story. Guard against cross-topic leakage
     # (observed: an XRP/stablecoin story receiving an AI-infrastructure explanation).
     source_text = f"{title} {summary}".casefold()
-    read_text = read.casefold()
+    read_text = str(item.get("readthrough", read)).casefold()
     crypto_source = any(term in source_text for term in (
         "crypto", "bitcoin", "ethereum", "stablecoin", "blockchain", "xrp", "digital asset", "tokenized"
     ))
