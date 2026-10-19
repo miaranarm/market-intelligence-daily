@@ -271,11 +271,11 @@ def _entity_words(mover: dict[str, Any]) -> tuple[str, ...]:
 
 def _contains_term(text: str, term: str) -> bool:
     """Recherche un terme entier, pas une sous-chaîne accidentelle (CAT dans education, rise dans enterprise)."""
-    term = re.sub(r"\\s+", " ", term.strip().casefold())
+    term = re.sub(r"\s+", " ", term.strip().casefold())
     if not term:
         return False
     # Les limites \w respectent les noms composés tout en empêchant les correspondances au milieu d'un mot.
-    return re.search(r"(?<!\\w)" + re.escape(term) + r"(?!\\w)", text.casefold(), flags=re.UNICODE) is not None
+    return re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text.casefold(), flags=re.UNICODE) is not None
 
 
 def relevance_score(item: dict[str, str], mover: dict[str, Any]) -> int:
