@@ -163,6 +163,31 @@ class NewsFeedSummaryTests(unittest.TestCase):
         self.assertNotIn("Create free account", summary)
 
     @patch("src.market_report.requests.get")
+    def test_enrichment_rejects_page_text_missing_distinctive_headline_entity(self, get_mock):
+        class FakeResponse:
+            url = "https://publisher.example/xrp-lending"
+            text = (
+                "<html><body>"
+                "<meta property='og:description' content='GENIUS Act stablecoin issuers may offer "
+                "off-chain yields through tokenized real-world assets, according to market participants.'>"
+                "<p>GENIUS Act stablecoin issuers may offer off-chain yields through tokenized "
+                "real-world assets, according to market participants and analysts.</p>"
+                "</body></html>"
+            )
+            def raise_for_status(self):
+                return None
+        get_mock.return_value = FakeResponse()
+        item = {
+            "title": "XRP Ledger is set to fix its lending code before anyone can use it",
+            "url": "https://publisher.example/xrp-lending",
+            "published": "2026-10-19T04:00:00Z",
+            "source": "CoinDesk",
+            "summary": "",
+        }
+        result = _enrich_news_item(item)
+        self.assertEqual(result["summary"], "")
+
+    @patch("src.market_report.requests.get")
     def test_enrichment_extracts_factual_publisher_paragraphs(self, get_mock):
         class FakeResponse:
             url = "https://publisher.example/article"

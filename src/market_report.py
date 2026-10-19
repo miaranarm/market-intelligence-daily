@@ -557,8 +557,24 @@ def _enrich_news_item(item: dict[str, str]) -> dict[str, str]:
         remainder = normalized_summary[len(normalized_title):].strip()
         if len(remainder) < 100:
             summary = ""
+    # A headline that names a distinctive ticker/acronym must not inherit an
+    # unrelated page description or sidebar paragraph that omits that entity.
+    # An empty summary is safer than attaching facts to the wrong story.
+    common_acronyms = {"US", "UK", "EU", "GDP", "CPI", "PCE", "ETF", "CEO", "IPO", "AI",
+                       "SEC", "FOMC", "ECB", "BOJ", "OPEC", "PMI", "WTI", "NYSE", "NASDAQ"}
+    title_acronyms = {token.casefold() for token in re.findall(r"\b[A-Z]{2,6}\b", title)
+                      if token not in common_acronyms}
+    def has_title_anchor(candidate: str) -> bool:
+        if not title_acronyms:
+            return True
+        normalized_candidate = re.sub(r"[^a-z0-9]+", " ", candidate.casefold())
+        return any(re.search(rf"\b{re.escape(token)}\b", normalized_candidate)
+                   for token in title_acronyms)
+
     def is_useful_summary(candidate: str) -> bool:
         candidate = re.sub(r"\s+", " ", candidate).strip()
+        if not has_title_anchor(candidate):
+            return False
         normalized = re.sub(r"[^a-z0-9]+", " ", candidate.casefold()).strip()
         generic_patterns = (
             "is the central bank of", "our main task is to maintain price stability",
