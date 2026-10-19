@@ -201,15 +201,23 @@ def _vix_reading(vix: Any) -> str:
     if vix is None or vix.price is None:
         return ""
     level = vix.price
+    daily = getattr(vix, "daily_pct", None)
     if level < 15:
-        zone = "zone de calme : les investisseurs paient peu pour se protéger"
+        zone = "niveau historiquement bas : la protection est relativement peu demandée"
     elif level < 20:
-        zone = "zone normale"
+        zone = "niveau inférieur au seuil conventionnel de 20"
     elif level < 30:
-        zone = "zone de tension : la demande de protection augmente"
+        zone = "niveau de tension : la demande de protection est élevée"
     else:
-        zone = "zone de stress : les marchés paient cher la protection"
-    return f"Le VIX, indice de volatilité implicite du S&P 500, s'établit à {fr_num(level, 2)} ({_move(vix)} sur la séance) : {zone}."
+        zone = "niveau de stress : la protection est chère"
+    text = f"Le VIX, mesure de la volatilité implicite attendue du S&P 500, s'établit à {fr_num(level, 2)} : {zone}."
+    if daily is not None and daily >= 15:
+        text += f" Attention toutefois : il bondit de {fr_pct(daily)} sur la dernière séance disponible, mouvement rapide qui signale une remontée nette de la demande de protection malgré un niveau encore sous 20."
+    elif daily is not None and daily <= -15:
+        text += f" Il recule de {fr_pct(daily)} sur la dernière séance disponible, signe d'une détente rapide de la demande de protection."
+    else:
+        text += f" Variation sur la séance : {_move(vix)}."
+    return text
 
 
 def _analyse_indices(rows: list[Any], by: dict[str, Any], ctx: dict[str, Any]) -> list[str]:
