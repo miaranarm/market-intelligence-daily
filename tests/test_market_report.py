@@ -756,5 +756,23 @@ class PublisherBoilerplateTests(unittest.TestCase):
         self.assertIn("Bitcoin fell 8 percent", result["summary"])
 
 
+class FinalNewsRenderingGuardTests(unittest.TestCase):
+    def test_boilerplate_is_not_rendered_as_a_factual_market_summary(self):
+        lines = []
+        news = [{
+            "title": "Bitcoin market outlook after a sharp decline",
+            "source": "CoinDesk",
+            "published": "Mon, 19 Oct 2026 04:54:31 +0000",
+            "summary": "Index Offering Discover our index offerings with $49 billion in benchmarked assets, trusted by 100+ global partners.",
+            "url": "https://www.coindesk.com/markets/example",
+        }]
+        append_priority_news(lines, news)
+        rendered = "\\n".join(lines)
+        self.assertIn("TITRES À VÉRIFIER", rendered)
+        self.assertIn("Bitcoin market outlook after a sharp decline", rendered)
+        self.assertNotIn("Discover our index offerings", rendered)
+        self.assertNotIn("49 billion in benchmarked assets", rendered)
+
+
 if __name__ == "__main__":
     unittest.main()
