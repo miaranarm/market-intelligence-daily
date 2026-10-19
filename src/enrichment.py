@@ -192,23 +192,40 @@ THEMATIC_QUERIES = {
 
 
 def _parse_rss_items(content: bytes, source: str, ticker: str, limit: int = 4) -> list[dict[str, str]]:
+    """Parse RSS 2.0 and Atom feeds, including namespaced Atom links and dates."""
     root = ET.fromstring(content)
     items: list[dict[str, str]] = []
-    for node in root.iter("item"):
-        title = (node.findtext("title") or "").strip()
-        link = (node.findtext("link") or "").strip()
-        if not title or not link:
+    # Match local tag names so XML namespace prefixes do not silently turn a healthy
+    # Atom feed into zero headlines.
+    nodes = [node for node in root.iter() if node.tag.split("}")[-1].casefold() in {"item", "entry"}]
+    for node in nodes:
+        children = {child.tag.split("}")[-1].casefold(): child for child in node}
+        title_node = children.get("title")
+        title = "".join(title_node.itertext()).strip() if title_node is not None else ""
+        link_node = children.get("link")
+        link = ""
+        if link_node is not None:
+            if link_node.attrib:
+                links = [child for child in node if child.tag.split("}")[-1].casefold() == "link"]
+                preferred = next((child for child in links if child.attrib.get("rel", "alternate") == "alternate"), links[0] if links else None)
+                link = (preferred.attrib.get("href", "") if preferred is not None else "").strip()
+            else:
+                link = (link_node.text or "").strip()
+        if not title or not link or not link.startswith(("https://", "http://")):
             continue
-        desc = re.sub(r"<[^>]+>", " ", node.findtext("description") or "")
+        desc_node = children.get("description") or children.get("summary") or children.get("content")
+        desc = "".join(desc_node.itertext()) if desc_node is not None else ""
+        date_node = children.get("pubdate") or children.get("published") or children.get("updated") or children.get("date")
+        published = "".join(date_node.itertext()).strip() if date_node is not None else ""
         items.append({
-            "title": title, "url": link, "source": source,
-            "published": (node.findtext("pubDate") or "").strip(),
-            "summary": re.sub(r"\s+", " ", desc).strip(), "ticker": ticker,
+            "title": html.unescape(title), "url": link, "source": source,
+            "published": published,
+            "summary": re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", desc))).strip(),
+            "ticker": ticker,
         })
         if len(items) >= limit:
             break
     return items
-
 
 def _fetch_one_mover(mover: dict[str, Any]) -> tuple[list[dict[str, str]], str | None]:
     ticker = mover["ticker"]
