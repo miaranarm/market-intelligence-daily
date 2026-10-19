@@ -35,7 +35,7 @@ class MoverTests(unittest.TestCase):
 
     def test_attach_news_states_absence(self):
         movers = [{"ticker": "AVGO", "name": "Broadcom"}, {"ticker": "TSLA", "name": "Tesla"}]
-        news = [{"ticker": "AVGO", "title": "Broadcom falls", "url": "u1", "published": "Mon, 19 Oct 2026 08:00:00 GMT"}, {"ticker": "AVGO", "title": "Broadcom falls", "url": "u2", "published": "Mon, 19 Oct 2026 08:01:00 GMT"}]
+        news = [{"ticker": "AVGO", "title": "Broadcom shares plunge", "summary": "Broadcom shares fell after earnings guidance.", "url": "u1", "published": "Mon, 19 Oct 2026 08:00:00 GMT"}, {"ticker": "AVGO", "title": "Broadcom shares plunge", "summary": "Broadcom shares fell after earnings guidance.", "url": "u2", "published": "Mon, 19 Oct 2026 08:01:00 GMT"}]
         out = enrichment.attach_news_to_movers(movers, news)
         self.assertEqual(len(out[0]["news"]), 1)  # doublon de titre écarté
         self.assertEqual(out[1]["news"], [])
