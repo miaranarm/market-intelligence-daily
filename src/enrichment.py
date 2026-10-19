@@ -384,7 +384,7 @@ def freshness_note(rows: list[Any], now_local: datetime) -> str | None:
     parts = [f"{day[8:10]}/{day[5:7]} : {len(t)} instrument{'s' if len(t) > 1 else ''}" for day, t in ordered]
     return ("Les cours n'ont pas tous la même date de séance (" + " ; ".join(parts) +
             "). Les moyennes et comparaisons entre marchés mélangent donc des séances différentes : "
-            "les places asiatiques et les devises datées d'aujourd'hui précèdent la séance américaine.")
+            "les observations ne sont pas synchronisées : une variation observée sur un marché ne doit pas être interprétée comme une réaction simultanée sur les autres marchés. Comparer les actifs exige de tenir compte de la date propre à chaque cotation.")
 
 
 # --------------------------------------------------------------------------- macro : replis officiels
