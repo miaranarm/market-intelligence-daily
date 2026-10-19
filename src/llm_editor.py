@@ -75,8 +75,23 @@ def build_facts(ctx: dict[str, Any]) -> dict[str, Any]:
                    "variation": m.get("change"), "inflation_sur_un_an_pct": m.get("yoy_pct")} for m in ctx.get("macro") or []],
         "calendrier": [{"date": str(e["local_date"]), "heure_madagascar": e.get("local_time"), "evenement": e["title"],
                         "importance": e["importance"], "statut": e["status"]} for e in ctx.get("calendar") or []],
+        "fondamentaux_entreprises": [{
+            "ticker": f.get("ticker"), "entreprise": f.get("name"), "periode": f.get("period"),
+            "chiffre_affaires_usd": f.get("revenue"), "croissance_ca_annuelle_pct": f.get("revenue_yoy_pct"),
+            "bpa_dilue_usd": f.get("eps"), "croissance_bpa_annuelle_pct": f.get("eps_yoy_pct"),
+            "resultat_operationnel_usd": f.get("operating_income"),
+            "marge_operationnelle_pct": f.get("operating_margin_pct"),
+            "flux_tresorerie_exploitation_usd": f.get("operating_cash_flow"),
+            "investissements_capex_usd": f.get("capex"), "flux_tresorerie_libre_usd": f.get("free_cash_flow"),
+            "source_officielle": f.get("source"),
+        } for f in (ctx.get("fundamentals") or [])],
         "actualites": [{"id": f"n{i + 1}", "titre": n.get("title"), "source": n.get("source"), "date": n.get("published"),
-                        "resume": (n.get("summary") or "")[:420]} for i, n in enumerate((ctx.get("priority_news") or [])[:12])],
+                        "resume": (n.get("summary_short") or n.get("summary") or "")[:520],
+                        "lecture_marche_existante": n.get("readthrough"), "url": n.get("url") or n.get("link")}
+                       for i, n in enumerate((ctx.get("priority_news") or [])[:12])],
+        "evaluation_previsions": ctx.get("forecast_eval"),
+        "evaluation_scenarios": ctx.get("scenario_eval"),
+        "liens_interactifs_entre_actifs": ctx.get("cross_lines") or [],
     }
 
 
