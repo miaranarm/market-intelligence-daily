@@ -486,10 +486,10 @@ class NewsFreshnessTests(unittest.TestCase):
         now = datetime(2026, 10, 16, 12, 0, tzinfo=timezone.utc)
         self.assertFalse(_is_recent_news_item("Thu, 23 Jul 2026 07:00:00 GMT", now=now))
 
-    def test_undated_or_unparseable_headlines_are_preserved(self):
+    def test_undated_or_unparseable_headlines_are_rejected(self):
         now = datetime(2026, 10, 16, 12, 0, tzinfo=timezone.utc)
-        self.assertTrue(_is_recent_news_item("", now=now))
-        self.assertTrue(_is_recent_news_item("date unavailable", now=now))
+        self.assertFalse(_is_recent_news_item("", now=now))
+        self.assertFalse(_is_recent_news_item("date unavailable", now=now))
 
     def test_implausibly_future_dated_headlines_are_rejected(self):
         now = datetime(2026, 10, 16, 12, 0, tzinfo=timezone.utc)
