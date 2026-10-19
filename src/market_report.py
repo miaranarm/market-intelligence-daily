@@ -320,9 +320,13 @@ def analyse_asset(ticker: str, frame: pd.DataFrame) -> AssetRow:
     )
 
 def _is_recent_news_item(published: str, now: datetime | None = None, max_age_days: int = 3) -> bool:
-    """Reject dated headlines older than the freshness window; keep undated/unparseable items transparently."""
-    if not published:
-        return True
+    """Accept only dated headlines inside the freshness window and reject implausibly future dates.
+
+    Undated or unparseable feed entries are not reliable evidence of a current event.
+    A six-hour future tolerance absorbs small publisher clock/time-zone inconsistencies.
+    """
+    if not published or not published.strip():
+        return False
     try:
         try:
             published_at = parsedate_to_datetime(published)
@@ -338,10 +342,9 @@ def _is_recent_news_item(published: str, now: datetime | None = None, max_age_da
         if reference.tzinfo is None:
             reference = reference.replace(tzinfo=timezone.utc)
         age_days = (reference - published_at.astimezone(timezone.utc)).total_seconds() / 86400
-        return -1 <= age_days <= max_age_days
+        return -(6 / 24) <= age_days <= max_age_days
     except (TypeError, ValueError, OverflowError):
-        # Preserve malformed/undated headlines transparently; valid ISO dates are filtered above.
-        return True
+        return False
 
 
 def _feed_entries(root: ET.Element, default_source: str) -> list[dict[str, str]]:
