@@ -267,6 +267,8 @@ MOVE_WORDS = (
     # Anglais : titres des flux internationaux.
     "fall", "fell", "drop", "slide", "slump", "plunge", "tumble", "sell-off", "selloff", "rout", "retreat", "sink",
     "rally", "surge", "jump", "soar", "gain", "rise", "rose", "climb", "rebound", "spike", "lose", "lost", "weak", "strong",
+    # Formes dont le radical change (rallies, sank, slipped, crashed...).
+    "rallies", "rallied", "sank", "slip", "slipped", "dip", "dipped", "crash", "crashed", "tank", "tanked", "collapse",
     # Français : notamment Le Monde et les flux francophones.
     "baisse", "baisses", "recul", "recule", "reculent", "chute", "chute de", "chutent", "plonge", "plongent",
     "dévisse", "dévissent", "s'effondre", "s'effondrent", "fléchit", "fléchissent", "perd", "perdent",
@@ -328,6 +330,19 @@ def _contains_term(text: str, term: str) -> bool:
     return re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text.casefold(), flags=re.UNICODE) is not None
 
 
+def _contains_move(text: str, word: str) -> bool:
+    """Mot de variation, avec ses flexions régulières : « plunge » reconnaît plunges, plunged, plunging.
+    Sans cela, la recherche en mots entiers ratait la plupart des titres (« Broadcom slides », « Nvidia falls »)."""
+    word = re.sub(r"\s+", " ", word.strip().casefold())
+    if not word:
+        return False
+    if " " in word or not word.isascii():
+        return _contains_term(text, word)  # expressions et formes françaises : mot entier
+    stem = word[:-1] if word.endswith("e") else word
+    pattern = r"(?<!\w)" + re.escape(stem) + r"(?:e|es|ed|d|s|ing|ings)?(?!\w)"
+    return re.search(pattern, text.casefold()) is not None
+
+
 def relevance_score(item: dict[str, str], mover: dict[str, Any]) -> int:
     """Une actualité explique un mouvement si elle nomme réellement l'instrument et décrit une variation.
     Les limites de mots évitent les faux positifs de tickers courts et de verbes inclus dans d'autres mots."""
@@ -335,8 +350,8 @@ def relevance_score(item: dict[str, str], mover: dict[str, Any]) -> int:
     entities = _entity_words(mover)
     in_title = any(_contains_term(title, e) for e in entities)
     in_summary = any(_contains_term(summary, e) for e in entities)
-    move_title = any(_contains_term(title, w) for w in MOVE_WORDS)
-    move_summary = any(_contains_term(summary, w) for w in MOVE_WORDS)
+    move_title = any(_contains_move(title, w) for w in MOVE_WORDS)
+    move_summary = any(_contains_move(summary, w) for w in MOVE_WORDS)
     score = 0
     if in_title:
         score += 2
