@@ -42,3 +42,26 @@ def test_substring_false_positives_stay_rejected():
     mover = {"ticker": "CAT", "name": "Caterpillar", "asset_class": "equity"}
     item = {"title": "Higher education enterprise software", "summary": "Rising enrolment in education."}
     assert relevance_score(item, mover) == 0
+
+
+def test_rebound_headline_does_not_explain_a_decline():
+    from src.enrichment import attach_news_to_movers
+    mover = {"ticker": "QQQ", "name": "Invesco Nasdaq 100 ETF", "asset_class": "ETF",
+             "daily_pct": -2.5, "five_day_pct": -5.52, "one_month_pct": -0.89}
+    bounce = {"title": "Bitcoin extends bounce as Nasdaq stocks rebound", "summary": "Gains across crypto.", "url": "b", "published": "", "ticker": "QQQ"}
+    selloff = {"title": "Nasdaq sell-off deepens as tech stocks fall", "summary": "Shares fell.", "url": "s", "published": "", "ticker": "QQQ"}
+    from src import enrichment
+    from unittest.mock import patch
+    with patch.object(enrichment, "is_recent", return_value=True):
+        out = attach_news_to_movers([mover], [bounce, selloff])
+    assert [n["url"] for n in out[0]["news"]] == ["s"]
+
+
+def test_rise_headline_explains_a_rise_and_mixed_text_is_kept():
+    from src import enrichment
+    from unittest.mock import patch
+    mover = {"ticker": "XLE", "name": "Energy Select Sector SPDR ETF", "asset_class": "ETF", "daily_pct": 2.5, "five_day_pct": 4.9}
+    mixed = {"title": "Energy stocks rise even as tech falls", "summary": "Energy stocks rose.", "url": "m", "published": "", "ticker": "XLE"}
+    with patch.object(enrichment, "is_recent", return_value=True):
+        out = enrichment.attach_news_to_movers([mover], [mixed])
+    assert len(out[0]["news"]) == 1
