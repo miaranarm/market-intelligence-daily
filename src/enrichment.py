@@ -79,10 +79,10 @@ def _matches_market_theme(text: str, theme: str) -> bool:
     """
     theme = theme.casefold().strip()
     if theme in {"equit", "commodit", "unemploy"}:
-        pattern = r"(?<!\\w)" + re.escape(theme) + r"\\w*"
+        pattern = r"(?<!\w)" + re.escape(theme) + r"\w*"
     else:
         suffix = r"(?:s|es)?" if re.fullmatch(r"[a-z]+", theme) else ""
-        pattern = r"(?<!\\w)" + re.escape(theme) + suffix + r"(?!\\w)"
+        pattern = r"(?<!\w)" + re.escape(theme) + suffix + r"(?!\w)"
     return re.search(pattern, text, flags=re.UNICODE) is not None
 
 
