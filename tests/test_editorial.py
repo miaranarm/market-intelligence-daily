@@ -60,7 +60,7 @@ class VixInterpretationTests(unittest.TestCase):
     def test_sub20_vix_with_large_jump_is_not_described_as_ordinary(self):
         vix = make_row("^VIX", daily=21.45, price=19.99)
         text = editorial._vix_reading(vix)
-        self.assertIn("sous 20", text)
+        self.assertIn("inférieur au seuil conventionnel de 20", text)
         self.assertIn("bondit de +21,45", text)
         self.assertIn("remontée nette de la demande de protection", text)
 
