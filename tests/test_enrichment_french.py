@@ -29,3 +29,16 @@ def test_english_headline_matching_is_preserved():
     }
 
     assert relevance_score(item, mover) >= 3
+
+
+def test_inflected_english_move_verbs_are_recognised():
+    mover = {"ticker": "AVGO", "name": "Broadcom Inc.", "asset_class": "equity"}
+    for verb in ("slides", "falls", "plunged", "rallies", "surging", "tumbles"):
+        item = {"title": f"Broadcom {verb} on AI chip worries", "summary": "Shares moved."}
+        assert relevance_score(item, mover) >= 3, verb
+
+
+def test_substring_false_positives_stay_rejected():
+    mover = {"ticker": "CAT", "name": "Caterpillar", "asset_class": "equity"}
+    item = {"title": "Higher education enterprise software", "summary": "Rising enrolment in education."}
+    assert relevance_score(item, mover) == 0
