@@ -645,7 +645,20 @@ def _norm(text: str) -> str:
     return re.sub(r"\W+", " ", text.casefold()).strip()
 
 
-def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
+def _shorten(text: str, limit: int) -> str:
+    """Coupe à la fin d'une phrase si possible (sinon à un mot) pour garder un extrait lisible."""
+    text = re.sub(r"\s+", " ", text or "").strip()
+    if len(text) <= limit:
+        return text
+    cut = text[:limit]
+    sentence_end = max(cut.rfind(". "), cut.rfind("! "), cut.rfind("? "))
+    if sentence_end >= limit * 0.5:
+        return cut[:sentence_end + 1]
+    return cut[:cut.rfind(" ")].rstrip(" ,;:") + "…"
+
+
+def _news_block(item: dict[str, Any], ctx: dict[str, Any], max_summary: int | None = None,
+                keep_readthrough: bool = True) -> dict[str, Any]:
     """Bloc d'actualité sans redite : pas de résumé qui répète le titre, pas deux fois la même lecture de marché."""
     seen: set[str] = ctx.setdefault("_seen_readthrough", set())
     title = item.get("title", "")
@@ -725,36 +738,65 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     elif item_summary_mismatch:
         pass
 
-    if read in seen:
+    if not keep_readthrough:
+        read = ""
+    elif read in seen:
         read = ""
     elif read:
         seen.add(read)
+    if max_summary:
+        summary = _shorten(summary, max_summary)
     return {"kind": "news", "title": title, "source": item.get("source", "source non précisée"),
             "published": item.get("published", "date non fournie"), "summary": summary, "readthrough": read, "url": item.get("url", "")}
 
 
+FACTS_LIMIT = 5          # articles dans « Faits marquants » (8 auparavant)
+FACTS_EXCERPT_CHARS = 240  # extrait : une à deux phrases
+FACTS_READTHROUGH_COUNT = 3  # « Lecture marché » seulement pour les articles les plus importants
+
+
 def _news_blocks(ctx: dict[str, Any], limit: int) -> list[dict[str, Any]]:
-    return [_news_block(item, ctx) for item in (ctx.get("priority_news") or [])[:limit]]
+    blocks = [_news_block(item, ctx, max_summary=FACTS_EXCERPT_CHARS, keep_readthrough=index < FACTS_READTHROUGH_COUNT)
+              for index, item in enumerate((ctx.get("priority_news") or [])[:limit])]
+    ctx["_faits_urls"] = {b["url"] for b in blocks if b.get("url")}
+    return blocks
+
+
+MOVERS_LIMIT = 8            # instruments détaillés (12 auparavant)
+MOVERS_EXCERPT_CHARS = 200
 
 
 def _movers_blocks(ctx: dict[str, Any]) -> list[dict[str, Any]]:
-    """Mouvements inhabituels (séance, cinq séances, un mois) et, pour chacun, ce que la presse en dit.
-    Sans actualité propre trouvée, le rapport le dit : la cause n'est alors pas établie."""
-    movers = ctx.get("movers") or []
+    """Mouvements inhabituels, en version condensée : une ligne et au plus un article par mouvement
+    expliqué ; les mouvements sans explication sont regroupés en une seule ligne ; un article déjà cité
+    dans « Faits marquants » ou pour un autre instrument n'est pas répété."""
+    movers = (ctx.get("movers") or [])[:MOVERS_LIMIT]
     blocks: list[dict[str, Any]] = [{"kind": "p", "text": (
-        "Un mouvement est retenu quand il est à la fois inhabituel au regard de la volatilité propre de l'instrument "
-        "et assez ample pour compter, sur une séance, cinq séances ou un mois (ou franchement extrême en valeur absolue). Chaque ligne cite les actualités propres à l'instrument quand les flux en ont fourni ; "
-        "à défaut, la cause n'est pas établie et le rapport s'abstient de l'inventer.")}]
+        "Mouvements à la fois inhabituels au regard de la volatilité de l'instrument et assez amples pour compter "
+        "(séance, cinq séances ou un mois). Sans actualité propre trouvée, la cause n'est pas établie et le rapport "
+        "s'abstient de l'inventer.")}]
+    already_cited: set[str] = set(ctx.get("_faits_urls") or set())
+    unexplained: list[dict[str, Any]] = []
     for m in movers:
-        blocks.append({"kind": "h3", "text": f"{m['name']} ({m['ticker']})"})
-        blocks.append({"kind": "p", "text": "Écart observé : " + " ; ".join(m["reasons"]) + "."})
-        stories = m.get("news") or []
-        if stories:
-            for item in stories:
-                summary = re.sub(r"\s+", " ", item.get("summary", "")).strip()
-                blocks.append(_news_block({**item, "summary_short": summary[:320], "readthrough": ""}, ctx))
-        else:
-            blocks.append({"kind": "note", "text": "Aucune actualité propre à cet instrument dans les flux collectés : cause non établie."})
+        stories = [st for st in (m.get("news") or [])]
+        if not stories:
+            unexplained.append(m)
+            continue
+        reasons = " ; ".join(m["reasons"][:2])
+        blocks.append({"kind": "p", "text": f"{m['name']} ({m['ticker']}) : {reasons}."})
+        item = stories[0]
+        url = item.get("url", "")
+        if url and url in already_cited:
+            blocks.append({"kind": "note", "text": f"Actualité déjà citée plus haut : « {item.get('title', '')} »."})
+            continue
+        if url:
+            already_cited.add(url)
+        summary = re.sub(r"\s+", " ", item.get("summary", "")).strip()
+        blocks.append(_news_block({**item, "summary_short": summary}, ctx, max_summary=MOVERS_EXCERPT_CHARS,
+                                  keep_readthrough=False))
+    if unexplained:
+        listing = " ; ".join(f"{m['name']} ({m['reasons'][0]})" for m in unexplained)
+        blocks.append({"kind": "note", "text": f"Sans actualité propre dans les flux collectés, cause non établie : {listing}."})
     return blocks
 
 
@@ -1025,7 +1067,7 @@ def build_report(ctx: dict[str, Any]) -> dict[str, Any]:
         agenda += [{"kind": "p", "text": t} for t in llm["agenda"]]
     sections.append({"id": "agenda", "title": "La semaine à venir" if weekly else "Agenda", "blocks": agenda})
 
-    news_blocks = _news_blocks(ctx, 8)
+    news_blocks = _news_blocks(ctx, FACTS_LIMIT)
     if news_blocks:
         sections.append({"id": "faits", "title": "Faits marquants", "blocks": news_blocks})
 
