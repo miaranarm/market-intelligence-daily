@@ -15,7 +15,7 @@ class MarketReadthroughTests(unittest.TestCase):
             "summary": "Crypto funding changes as stablecoin and token lending activity expands.",
         }
         _, impact = market_report._news_fact_and_market_readthrough(item)
-        self.assertIn("actifs numériques", impact)
+        self.assertIn("liquidations", impact)
         self.assertNotIn("centres de données", impact)
 
 
