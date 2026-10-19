@@ -425,9 +425,9 @@ def freshness_note(rows: list[Any], now_local: datetime) -> str | None:
         return None
     ordered = sorted(cohorts.items(), key=lambda kv: kv[0])
     parts = [f"{day[8:10]}/{day[5:7]} : {len(t)} instrument{'s' if len(t) > 1 else ''}" for day, t in ordered]
-    return ("Les cours n'ont pas tous la même date de séance (" + " ; ".join(parts) +
-            "). Les moyennes et comparaisons entre marchés mélangent donc des séances différentes : "
-            "les observations ne sont pas synchronisées : une variation observée sur un marché ne doit pas être interprétée comme une réaction simultanée sur les autres marchés. Comparer les actifs exige de tenir compte de la date propre à chaque cotation.")
+    return ("Attention : les cours ne sont pas synchronisés (" + " ; ".join(parts) +
+            "). Les comparaisons entre marchés portent sur des séances différentes ; "
+            "elles ne permettent pas, à elles seules, d'établir qu'un actif a réagi simultanément à un autre.")
 
 
 # --------------------------------------------------------------------------- macro : replis officiels
