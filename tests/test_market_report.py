@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 from src.enrichment import clean_summary
-from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, _summarize_news_text, _enrich_news_item, _is_google_news_url, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename, fmt, send_email
+from src.market_report import ASSETS, AssetRow, NEWS_FEEDS, FRED_SERIES, _parse_fred_csv, _fetch_one_fred_series, fetch_fred_macro_series, fetch_bls_macro_fallback, fetch_macro_series_with_fallback, append_macro_series, _news_dedupe_key, _feed_entries, _is_recent_news_item, _summarize_news_text, _news_fact_and_market_readthrough, _enrich_news_item, _is_google_news_url, prioritize_news, append_priority_news, _price_freshness_note, _quarterly_fact_points, _quarterly_or_q4_fact_points, evaluate_forecasts, infer_macro_impact, market_conviction, evaluate_scenario_forecasts, render_professional_html, report_archive_filename, fmt, send_email
 
 
 
@@ -60,6 +60,26 @@ class PriorityNewsTests(unittest.TestCase):
         self.assertIn("source", selected[0])
         self.assertIn("published", selected[0])
 
+
+
+class NewsMarketReadthroughTests(unittest.TestCase):
+    def test_headline_topic_wins_over_incidental_topics_in_long_excerpt(self):
+        item = {
+            "title": "Federal Reserve signals interest-rate outlook",
+            "summary": "Officials discussed the outlook for policy. The article also mentions artificial intelligence, semiconductor spending and data centres as examples in a broader economic discussion.",
+        }
+        _, impact = _news_fact_and_market_readthrough(item)
+        self.assertIn("Les rendements modifient le coût du crédit", impact)
+        self.assertNotIn("revenus liés à l’IA", impact)
+
+    def test_company_headline_is_not_reclassified_by_macro_excerpt_mentions(self):
+        item = {
+            "title": "Nvidia shares fall after company outlook",
+            "summary": "The company updated its revenue outlook. The article briefly notes inflation and the Federal Reserve in background context.",
+        }
+        _, impact = _news_fact_and_market_readthrough(item)
+        self.assertIn("revenus liés à l’IA", impact)
+        self.assertNotIn("Les rendements modifient le coût du crédit", impact)
 
 
 class PriorityNewsRenderingTests(unittest.TestCase):
