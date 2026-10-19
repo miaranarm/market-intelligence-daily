@@ -365,6 +365,19 @@ class NewsExcerptCoherenceTests(unittest.TestCase):
         self.assertIn("ne correspond pas suffisamment", block["readthrough"])
         self.assertNotIn("centres de données", block["readthrough"])
 
+    def test_unrelated_plain_language_headline_excerpt_is_suppressed(self):
+        item = {
+            "title": "Apple shares plunge after iPhone demand warning",
+            "summary": "Tesla deliveries exceeded analyst estimates as the electric car maker expanded in Europe.",
+            "readthrough": "Une lecture des résultats de Tesla est nécessaire.",
+            "source": "Example",
+            "published": "2026-10-19",
+            "url": "https://example.com/story",
+        }
+        block = editorial._news_block(item, {})
+        self.assertEqual(block["summary"], "")
+        self.assertIn("ne correspond pas suffisamment", block["readthrough"])
+
     def test_excerpt_with_headline_entity_is_retained(self):
         item = {
             "title": "XRP Ledger expands lending",
