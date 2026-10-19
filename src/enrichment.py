@@ -213,9 +213,9 @@ def _parse_rss_items(content: bytes, source: str, ticker: str, limit: int = 4) -
                 link = (link_node.text or "").strip()
         if not title or not link or not link.startswith(("https://", "http://")):
             continue
-        desc_node = children.get("description") or children.get("summary") or children.get("content")
+        desc_node = next((children[key] for key in ("description", "summary", "content") if key in children), None)
         desc = "".join(desc_node.itertext()) if desc_node is not None else ""
-        date_node = children.get("pubdate") or children.get("published") or children.get("updated") or children.get("date")
+        date_node = next((children[key] for key in ("pubdate", "published", "updated", "date") if key in children), None)
         published = "".join(date_node.itertext()).strip() if date_node is not None else ""
         items.append({
             "title": html.unescape(title), "url": link, "source": source,
