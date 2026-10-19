@@ -269,15 +269,24 @@ def _entity_words(mover: dict[str, Any]) -> tuple[str, ...]:
     return tuple(dict.fromkeys(words))
 
 
+def _contains_term(text: str, term: str) -> bool:
+    """Recherche un terme entier, pas une sous-chaîne accidentelle (CAT dans education, rise dans enterprise)."""
+    term = re.sub(r"\\s+", " ", term.strip().casefold())
+    if not term:
+        return False
+    # Les limites \w respectent les noms composés tout en empêchant les correspondances au milieu d'un mot.
+    return re.search(r"(?<!\\w)" + re.escape(term) + r"(?!\\w)", text.casefold(), flags=re.UNICODE) is not None
+
+
 def relevance_score(item: dict[str, str], mover: dict[str, Any]) -> int:
-    """Une actualité explique un mouvement si elle nomme l'instrument et parle de hausse ou de baisse.
-    Exemple écarté : un article sur Moderna qui cite QQQ au passage."""
-    title, summary = item.get("title", "").casefold(), item.get("summary", "").casefold()
+    """Une actualité explique un mouvement si elle nomme réellement l'instrument et décrit une variation.
+    Les limites de mots évitent les faux positifs de tickers courts et de verbes inclus dans d'autres mots."""
+    title, summary = item.get("title", ""), item.get("summary", "")
     entities = _entity_words(mover)
-    in_title = any(e in title for e in entities)
-    in_summary = any(e in summary for e in entities)
-    move_title = any(w in title for w in MOVE_WORDS)
-    move_summary = any(w in summary for w in MOVE_WORDS)
+    in_title = any(_contains_term(title, e) for e in entities)
+    in_summary = any(_contains_term(summary, e) for e in entities)
+    move_title = any(_contains_term(title, w) for w in MOVE_WORDS)
+    move_summary = any(_contains_term(summary, w) for w in MOVE_WORDS)
     score = 0
     if in_title:
         score += 2
