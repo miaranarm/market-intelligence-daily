@@ -661,14 +661,35 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                        "SEC", "FOMC", "ECB", "BOJ", "OPEC", "PMI", "WTI", "NYSE", "NASDAQ"}
     title_acronyms = {token.casefold() for token in re.findall(r"\b[A-Z]{2,6}\b", html.unescape(title))
                       if token not in common_acronyms}
-    if summary and title_acronyms and not any(
+    acronym_mismatch = bool(summary and title_acronyms and not any(
         re.search(rf"\b{re.escape(token)}\b", html.unescape(summary).casefold())
         for token in title_acronyms
-    ):
+    ))
+
+    # Also catch unrelated excerpts when the headline has no distinctive acronym.
+    # Conservative by design: if several meaningful headline terms are all absent
+    # from the excerpt, suppress the excerpt rather than infer a causal link.
+    stopwords = {
+        "about", "after", "amid", "among", "before", "being", "could", "from", "have",
+        "into", "over", "says", "said", "than", "that", "their", "there", "these",
+        "they", "this", "through", "under", "when", "where", "which", "while", "with",
+        "will", "would", "your", "dans", "avec", "pour", "chez", "vers", "alors",
+        "apres", "avant", "mais", "comme", "contre", "dans", "dont", "elle", "elles",
+        "entre", "leur", "leurs", "plus", "pour", "sans", "sera", "sont", "sous",
+        "tout", "tous", "une", "des", "les", "aux", "sur", "par", "pas", "qui",
+        "que", "quoi", "est", "ont", "son", "ses", "the", "and", "for", "its",
+        "not", "are", "was", "were", "has", "had", "but", "how", "why", "what",
+        "new", "more", "less", "high", "low", "rise", "falls", "fall", "says",
+    }
+    title_terms = {
+        token for token in _norm(html.unescape(title)).split()
+        if len(token) >= 4 and token not in stopwords
+    }
+    summary_terms = set(_norm(html.unescape(summary)).split()) if summary else set()
+    no_meaningful_overlap = len(title_terms) >= 3 and not (title_terms & summary_terms)
+    item_summary_mismatch = acronym_mismatch or bool(summary and no_meaningful_overlap)
+    if item_summary_mismatch:
         summary = ""
-        item_summary_mismatch = True
-    else:
-        item_summary_mismatch = False
     read = item.get("readthrough", "")
     if item_summary_mismatch:
         read = ("Le résumé disponible ne correspond pas suffisamment à l'entité du titre; "
