@@ -347,3 +347,33 @@ class MacroVariationUnitTests(unittest.TestCase):
         self.assertIn("Variation vs observation précédente", table["headers"])
         values = [row[3]["t"] for row in table["rows"]]
         self.assertEqual(values, ["+1,96 pt d'indice", "+29,00 milliers", "−0,01 pt de %"])
+
+
+
+class NewsExcerptCoherenceTests(unittest.TestCase):
+    def test_unrelated_excerpt_cannot_drive_news_readthrough(self):
+        item = {
+            "title": "XRP Ledger is set to fix its lending code before anyone can use it",
+            "summary": "GENIUS pushes yield off-chain; TAM grows to $4B in 3 years. Diversified RWA stablecoins sustain 5-7% yield from real credit as crypto funding compresses to ~4%.",
+            "readthrough": "Le marché arbitre entre la croissance attendue des revenus liés à l'IA et le coût du financement des infrastructures.",
+            "source": "CoinDesk",
+            "published": "2026-10-19",
+            "url": "https://example.com/story",
+        }
+        block = editorial._news_block(item, {})
+        self.assertEqual(block["summary"], "")
+        self.assertIn("ne correspond pas suffisamment", block["readthrough"])
+        self.assertNotIn("centres de données", block["readthrough"])
+
+    def test_excerpt_with_headline_entity_is_retained(self):
+        item = {
+            "title": "XRP Ledger expands lending",
+            "summary": "XRP Ledger developers are changing the lending code before launch.",
+            "readthrough": "Distinguer les facteurs propres au secteur crypto.",
+            "source": "CoinDesk",
+            "published": "2026-10-19",
+            "url": "https://example.com/story",
+        }
+        block = editorial._news_block(item, {})
+        self.assertIn("XRP Ledger developers", block["summary"])
+        self.assertEqual(block["readthrough"], item["readthrough"])
