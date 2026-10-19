@@ -2028,9 +2028,9 @@ def append_funnel_report(
         lines.append(f"{r.name} ({r.ticker}) | {r.asset_class} | {fmt(r.price)} | {fmt(r.daily_pct, '%')} | {fmt(r.five_day_pct, '%')} | {fmt(r.one_month_pct, '%')} | https://finance.yahoo.com/quote/{r.ticker}/")
     lines += ["", "NIVEAU 7 — DÉCISION, INVALIDATION ET AUDIT",
               "Plan de surveillance :",
-              f"- Scénario dominant expérimental : {conviction['stance']} (hausse {probs['haussier']} %, central {probs['central']} %, baisse {probs['baissier']} %).",
+              f"- Scénario de surveillance : {conviction['stance']}. Il s'agit d'un biais qualitatif, pas d'une probabilité mesurée.",
               "- Confirmation : vérifier la prochaine clôture des grands indices, la réaction du VIX et la cohérence avec les rendements obligataires; ne pas agir sur un seul titre de presse.",
-              "- Invalidation : si les indices et la volatilité évoluent à l'opposé des signaux ayant produit le score, réduire la conviction et recalculer les probabilités au prochain rapport.",
+              "- Invalidation : si les indices et la volatilité évoluent à l'opposé des signaux ayant produit le score, réévaluer le biais au prochain rapport.",
               "- Publications d'entreprises : vérifier le communiqué officiel, les chiffres par rapport au consensus, les prévisions de direction et la réaction du titre après publication.",
               "- Aucun niveau d'entrée, stop ou objectif de cours n'est inventé; ces niveaux exigent des données de prix et de risque adaptées à l'instrument et à l'horizon."]
     if report_type == "audit":
