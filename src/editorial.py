@@ -710,13 +710,14 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     }
     source_topics = {topic for topic, terms in topic_terms.items() if any(term in source_text for term in terms)}
     read_topics = {topic for topic, terms in topic_terms.items() if any(term in read_text for term in terms)}
-    # A known excerpt mismatch is more important than a speculative read-through.
-    if item_summary_mismatch:
-        pass
-    elif "crypto" in source_topics and "ai_infrastructure" in read_topics and "crypto" not in read_topics:
+    # Keep the topic-specific crypto warning even when the excerpt was also rejected.
+    if "crypto" in source_topics and "ai_infrastructure" in read_topics and "crypto" not in read_topics:
         read = ("Cette actualité concerne les actifs numériques. Son effet de marché précis "
                 "n'est pas établi par le titre et l'extrait seuls; vérifier les détails de l'article "
                 "et la réaction des actifs concernés avant d'attribuer une cause.")
+    # Otherwise, a known excerpt mismatch outranks a speculative read-through.
+    elif item_summary_mismatch:
+        pass
     elif read_topics - source_topics:
         labels = {"crypto": "les actifs numériques", "ai_infrastructure": "l’IA ou les infrastructures de données", "oil": "le pétrole"}
         mismatched = " et ".join(labels[t] for t in sorted(read_topics - source_topics))
