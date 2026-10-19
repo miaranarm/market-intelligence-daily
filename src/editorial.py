@@ -703,6 +703,7 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     topic_terms = {
         "crypto": ("crypto", "bitcoin", "ethereum", "stablecoin", "blockchain", "xrp", "digital asset", "tokenized", "actifs numériques"),
         "ai_infrastructure": ("artificial intelligence", "intelligence artificielle", "generative ai",
+                              " ai ", " l’ia", " l'ia", "revenus liés à l’ia", "revenus liés à l'ia",
                               "semi-conducteur", "semi conduct", "semiconductor", "data center", "data centre",
                               "centre de données", "centre de donnees", "nvidia", "openai", "broadcom",
                               "infrastructures d’ia", "infrastructures d'ia", "centres de données", "centres de donnees"),
