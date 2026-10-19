@@ -51,7 +51,10 @@ class FreshnessTests(unittest.TestCase):
     def test_mixed_dates_are_flagged(self):
         rows = [row("^GSPC", "S&P", "US equity index", stamp="2026-10-16"), row("^N225", "Nikkei", "Japanese equity index", stamp="2026-10-19")]
         note = enrichment.freshness_note(rows, datetime(2026, 10, 19, tzinfo=timezone.utc))
-        self.assertIn("même date", note)
+        self.assertIn("pas synchronisés", note)
+        self.assertIn("16/10", note)
+        self.assertIn("19/10", note)
+        self.assertIn("ne permettent pas", note)
         self.assertIsNone(enrichment.freshness_note(rows[:1], datetime(2026, 10, 19, tzinfo=timezone.utc)))
 
     def test_frozen_prices_exclude_funds(self):
