@@ -696,33 +696,33 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                 "aucune conséquence de marché n'est attribuée sans vérifier l'article original.")
 
     # A matching headline/excerpt does not guarantee that a separately generated
-    # market interpretation matches the story. Guard against cross-topic leakage
-    # (observed: an XRP/stablecoin story receiving an AI-infrastructure explanation).
+    # market interpretation matches the story. Check a few distinctive topics
+    # whose vocabulary is unlikely to be a legitimate synonym for another topic.
     source_text = f"{title} {summary}".casefold()
     read_text = str(item.get("readthrough", read)).casefold()
-    crypto_source = any(term in source_text for term in (
-        "crypto", "bitcoin", "ethereum", "stablecoin", "blockchain", "xrp", "digital asset", "tokenized"
-    ))
-    ai_readthrough = any(term in read_text for term in (
-        "intelligence artificielle", "revenus liés à l’ia", "revenus liés à l'ia",
-        "semi-conducteurs", "semi conducteurs", "centres de données", "centres de donnees",
-        "infrastructures d’ia", "infrastructures d'ia"
-    ))
-    crypto_readthrough = any(term in read_text for term in (
-        "crypto", "bitcoin", "ethereum", "stablecoin", "blockchain", "xrp", "actifs numériques"
-    ))
-    ai_source = any(term in source_text for term in (
-        "artificial intelligence", "intelligence artificielle", " ai ", "generative ai",
-        "semiconductor", "semi-conducteur", "semi conduct", "data center", "data centre",
-        "centre de données", "centre de donnees", "nvidia", "openai", "amd", "broadcom"
-    ))
-    # Do not let a stale/template-generated AI read-through leak into an unrelated story.
-    # This applies to every news topic, not only crypto headlines.
-    if crypto_source and ai_readthrough and not crypto_readthrough:
+    topic_terms = {
+        "crypto": ("crypto", "bitcoin", "ethereum", "stablecoin", "blockchain", "xrp", "digital asset", "tokenized", "actifs numériques"),
+        "ai_infrastructure": ("artificial intelligence", "intelligence artificielle", "generative ai",
+                              "semi-conducteur", "semi conduct", "semiconductor", "data center", "data centre",
+                              "centre de données", "centre de donnees", "nvidia", "openai", "broadcom",
+                              "infrastructures d’ia", "infrastructures d'ia", "centres de données", "centres de donnees"),
+        "oil": ("crude oil", "oil prices", "brent crude", "wti", "pétrole", "petrole", "baril de pétrole", "baril de petrole"),
+    }
+    source_topics = {topic for topic, terms in topic_terms.items() if any(term in source_text for term in terms)}
+    read_topics = {topic for topic, terms in topic_terms.items() if any(term in read_text for term in terms)}
+    # A known excerpt mismatch is more important than a speculative read-through.
+    if item_summary_mismatch:
+        pass
+    elif "crypto" in source_topics and "ai_infrastructure" in read_topics and "crypto" not in read_topics:
         read = ("Cette actualité concerne les actifs numériques. Son effet de marché précis "
                 "n'est pas établi par le titre et l'extrait seuls; vérifier les détails de l'article "
                 "et la réaction des actifs concernés avant d'attribuer une cause.")
-    elif ai_readthrough and not ai_source:
+    elif read_topics and source_topics and read_topics.isdisjoint(source_topics):
+        labels = {"crypto": "les actifs numériques", "ai_infrastructure": "l’IA ou les infrastructures de données", "oil": "le pétrole"}
+        mismatched = " et ".join(labels[t] for t in sorted(read_topics))
+        read = (f"Interprétation écartée : le commentaire évoquait {mismatched}, sans lien explicite "
+                "établi par le titre et l'extrait. La conséquence de marché reste à vérifier dans l'article original.")
+    elif "ai_infrastructure" in read_topics and "ai_infrastructure" not in source_topics:
         read = ("Interprétation écartée : le commentaire évoquait l'IA ou les infrastructures "
                 "de données, sans lien explicite établi par le titre et l'extrait. "
                 "La conséquence de marché reste à vérifier dans l'article original.")
