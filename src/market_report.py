@@ -461,30 +461,48 @@ def _news_fact_and_market_readthrough(item: dict[str, str]) -> tuple[str, str]:
     title = item.get("title", "").strip()
     summary = re.sub(r"\s+", " ", item.get("summary", "")).strip()
     text = f"{title} {summary}".casefold()
+    # The headline normally states the event's primary subject; a long excerpt may
+    # mention other topics incidentally. Prefer the headline for classification when
+    # it contains a recognizable market theme, and use the excerpt only as fallback.
+    title_market_terms = (
+        "artificial intelligence", "semiconductor", "chip stocks", "data centre", "data center",
+        "nvidia", "broadcom", "treasury yield", "bond yield", "government bonds",
+        "sovereign yields", "interest rate", "rate hike", "federal reserve", "central bank",
+        "monetary policy", "crude", "brent", "oil prices", "oil price", "opec",
+        "energy prices", "inflation", "consumer price", "cpi", "ppi", "producer prices",
+        "earnings", "quarterly results", "revenue", "profit", "guidance", "cash flow",
+        "margin", "bitcoin", "ethereum", "crypto", "digital asset", "gdp",
+        "gross domestic product", "pmi", "retail sales", "industrial production",
+        "economic growth", "recession", "employment", "payroll", "unemployment",
+        "jobless", "china", "tariff", "trade", "sanction", "export restriction",
+        "supply chain", "war", "conflict", "attack", "geopolitical", "ceasefire",
+        "iran", "ukraine",
+    )
+    topic_text = title.casefold() if any(term in title.casefold() for term in title_market_terms) else text
     fact = summary or title
     if summary and len(fact) > 620:
         fact = fact[:617].rsplit(" ", 1)[0] + "…"
 
     if not summary:
         impact = "Le titre seul ne suffit pas à établir un effet sur les marchés. L’article et les actifs directement concernés n’ont pas été vérifiés : aucune direction ni cause de marché n’est inférée."
-    elif (any(k in text for k in ("artificial intelligence", " ai ", "semiconductor", "chip stocks", "data centre", "data center", "nvidia", "broadcom"))
-          and not any(k in text for k in ("bitcoin", "ethereum", "crypto", "digital asset", "stablecoin", "xrp", "token", "blockchain"))):
+    elif (any(k in topic_text for k in ("artificial intelligence", " ai ", "semiconductor", "chip stocks", "data centre", "data center", "nvidia", "broadcom"))
+          and not any(k in topic_text for k in ("bitcoin", "ethereum", "crypto", "digital asset", "stablecoin", "xrp", "token", "blockchain"))):
         impact = "Le marché arbitre entre la croissance attendue des revenus liés à l’IA et le coût du financement des infrastructures. À suivre : prévisions de ventes, dépenses d’investissement, dette des opérateurs de centres de données et réaction des semi-conducteurs."
-    elif any(k in text for k in ("treasury yield", "bond yield", "government bonds", "sovereign yields", "interest rate", "rate hike", "federal reserve", "central bank", "monetary policy")):
+    elif any(k in topic_text for k in ("treasury yield", "bond yield", "government bonds", "sovereign yields", "interest rate", "rate hike", "federal reserve", "central bank", "monetary policy")):
         impact = "Les rendements modifient le coût du crédit et les valorisations. Une hausse pénalise généralement les obligations déjà émises et les actions à valorisation élevée; une détente peut les soutenir. Le prochain test est l’écart entre les données d’inflation/activité et les attentes de taux."
-    elif any(k in text for k in ("crude", "brent", "oil prices", "oil price", "strait of hormuz", "opec", "energy prices")):
+    elif any(k in topic_text for k in ("crude", "brent", "oil prices", "oil price", "strait of hormuz", "opec", "energy prices")):
         impact = "Le pétrole transmet le choc aux anticipations d’inflation, aux coûts de transport et aux marges. Les producteurs peuvent en bénéficier; les compagnies aériennes, consommateurs et pays importateurs sont plus exposés. Vérifier si le mouvement vient d’une rupture d’offre durable ou d’une prime géopolitique."
-    elif any(k in text for k in ("inflation", "consumer price", "cpi", "ppi", "producer prices")):
+    elif any(k in topic_text for k in ("inflation", "consumer price", "cpi", "ppi", "producer prices")):
         impact = "Le point décisif est la surprise par rapport au consensus et au chiffre précédent. Une inflation plus forte peut retarder l’assouplissement monétaire et maintenir les rendements élevés; une désinflation crédible peut produire l’effet inverse. Le titre seul ne suffit pas sans les chiffres."
-    elif any(k in text for k in ("earnings", "quarterly results", "revenue", "profit", "guidance", "forecast", "sales", "cash flow", "margin")):
+    elif any(k in topic_text for k in ("earnings", "quarterly results", "revenue", "profit", "guidance", "forecast", "sales", "cash flow", "margin")):
         impact = "Pour l’action concernée, comparer chiffre d’affaires, bénéfice, marges et prévisions de direction aux attentes, puis regarder la réaction du cours. Une publication en hausse peut faire baisser le titre si les attentes étaient plus élevées; l’effet sur l’indice dépend du poids de l’entreprise."
-    elif any(k in text for k in ("bitcoin", "ethereum", "crypto", "digital asset")):
+    elif any(k in topic_text for k in ("bitcoin", "ethereum", "crypto", "digital asset")):
         impact = "Distinguer les facteurs propres au secteur (réglementation, ETF, liquidations, sécurité) du mouvement général d’appétit pour le risque. Vérifier les flux d’ETF et l’évolution simultanée du dollar, des rendements et des actifs risqués avant d’attribuer une cause."
-    elif any(k in text for k in ("gdp", "gross domestic product", "pmi", "retail sales", "industrial production", "economic growth", "recession", "employment", "payroll", "unemployment", "jobless")):
+    elif any(k in topic_text for k in ("gdp", "gross domestic product", "pmi", "retail sales", "industrial production", "economic growth", "recession", "employment", "payroll", "unemployment", "jobless")):
         impact = "La surprise par rapport aux attentes est plus informative que le chiffre isolé. Une activité robuste peut soutenir les secteurs cycliques mais repousser les baisses de taux; une faiblesse peut soutenir les obligations si elle réduit les taux anticipés, tout en pénalisant les actions sensibles à la croissance."
-    elif any(k in text for k in ("china", "tariff", "trade", "sanction", "export restriction", "supply chain")):
+    elif any(k in topic_text for k in ("china", "tariff", "trade", "sanction", "export restriction", "supply chain")):
         impact = "Les effets passent par les entreprises exposées aux échanges, les coûts d’importation et les chaînes d’approvisionnement, puis les devises et matières premières. Identifier la mesure exacte, son calendrier et les représailles éventuelles avant d’en déduire un scénario."
-    elif any(k in text for k in ("war", "conflict", "attack", "geopolitical", "ceasefire", "iran", "ukraine")):
+    elif any(k in topic_text for k in ("war", "conflict", "attack", "geopolitical", "ceasefire", "iran", "ukraine")):
         impact = "Les actifs directement exposés et les matières premières concernées sont à surveiller. Une escalade peut accroître la prime de risque et les prix de l’énergie; une désescalade peut l’effacer rapidement. La réaction dépend de la durée du choc et de son effet réel sur l’offre."
     else:
         impact = "La portée de cette nouvelle dépend de ses détails et de la surprise par rapport aux attentes. Identifier les entreprises ou pays concernés, puis vérifier la réaction des prix et les prochaines données qui confirmeraient ou invalideraient l’interprétation."
