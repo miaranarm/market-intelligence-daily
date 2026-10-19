@@ -263,19 +263,19 @@ def fetch_mover_news(movers: list[dict[str, Any]], max_movers: int = 10) -> tupl
     return news, errors
 
 
-MOVE_WORDS = (
-    # Anglais : titres des flux internationaux.
-    "fall", "fell", "drop", "slide", "slump", "plunge", "tumble", "sell-off", "selloff", "rout", "retreat", "sink",
-    "rally", "surge", "jump", "soar", "gain", "rise", "rose", "climb", "rebound", "spike", "lose", "lost", "weak", "strong",
-    # Formes dont le radical change (rallies, sank, slipped, crashed...).
-    "rallies", "rallied", "sank", "slip", "slipped", "dip", "dipped", "crash", "crashed", "tank", "tanked", "collapse",
-    # Français : notamment Le Monde et les flux francophones.
-    "baisse", "baisses", "recul", "recule", "reculent", "chute", "chute de", "chutent", "plonge", "plongent",
-    "dévisse", "dévissent", "s'effondre", "s'effondrent", "fléchit", "fléchissent", "perd", "perdent",
-    "perte", "pertes", "hausse", "hausses", "bondit", "bondissent", "grimpe", "grimpent", "progresse",
-    "progressent", "gagne", "gagnent", "rebond", "rebondit", "rebondissent", "se redresse", "en baisse",
-    "en hausse", "en repli",
+DOWN_WORDS = (
+    "fall", "fell", "drop", "slide", "slump", "plunge", "tumble", "sell-off", "selloff", "rout", "retreat", "sink", "lose", "lost", "weak",
+    "sank", "slip", "slipped", "dip", "dipped", "crash", "crashed", "tank", "tanked", "collapse",
+    "baisse", "baisses", "recul", "recule", "reculent", "chute", "chute de", "chutent", "plonge", "plongent", "dévisse", "dévissent",
+    "s'effondre", "s'effondrent", "fléchit", "fléchissent", "perd", "perdent", "perte", "pertes", "en baisse", "en repli",
 )
+UP_WORDS = (
+    "rally", "surge", "jump", "soar", "gain", "rise", "rose", "climb", "rebound", "spike", "strong", "bounce",
+    "rallies", "rallied",
+    "hausse", "hausses", "bondit", "bondissent", "grimpe", "grimpent", "progresse", "progressent", "gagne", "gagnent", "rebond",
+    "rebondit", "rebondissent", "se redresse", "en hausse",
+)
+MOVE_WORDS = DOWN_WORDS + UP_WORDS
 # Mots qui désignent un instrument dans le texte des articles généraux (indices, matières premières).
 ALIASES = {
     "^KS11": ("kospi", "korea"), "^N225": ("nikkei",), "^HSI": ("hang seng",), "^IXIC": ("nasdaq",), "QQQ": ("nasdaq", "qqq"),
@@ -364,6 +364,29 @@ def relevance_score(item: dict[str, str], mover: dict[str, Any]) -> int:
     return score if (in_title or in_summary) else 0
 
 
+def _mover_direction(mover: dict[str, Any]) -> int:
+    """+1 si l'instrument monte, −1 s'il baisse (horizon au plus fort mouvement), 0 si inconnu."""
+    moves = [mover.get("daily_pct"), mover.get("five_day_pct"), mover.get("one_month_pct")]
+    moves = [m for m in moves if m is not None]
+    if not moves:
+        return 0
+    main = max(moves, key=abs)
+    return 1 if main > 0 else -1 if main < 0 else 0
+
+
+def direction_consistent(item: dict[str, str], mover: dict[str, Any]) -> bool:
+    """Une actualité qui ne parle que de hausse n'explique pas une baisse (et inversement).
+    Exemple écarté : « Bitcoin extends bounce as stocks rebound » rattaché à un Nasdaq en chute."""
+    direction = _mover_direction(mover)
+    if direction == 0:
+        return True
+    text = f"{item.get('title', '')} {item.get('summary', '')}"
+    same, opposite = (UP_WORDS, DOWN_WORDS) if direction > 0 else (DOWN_WORDS, UP_WORDS)
+    has_same = any(_contains_move(text, w) for w in same)
+    has_opposite = any(_contains_move(text, w) for w in opposite)
+    return has_same or not has_opposite
+
+
 def attach_news_to_movers(movers: list[dict[str, Any]], news: list[dict[str, str]],
                           general_news: list[dict[str, str]] | None = None) -> list[dict[str, Any]]:
     """Associe à chaque mouvement ses actualités (flux par valeur + flux généraux déjà collectés),
@@ -378,7 +401,7 @@ def attach_news_to_movers(movers: list[dict[str, Any]], news: list[dict[str, str
             if key in seen or not is_recent(n.get("published", "")):
                 continue
             score = relevance_score(n, m)
-            if score >= 3:
+            if score >= 3 and direction_consistent(n, m):
                 seen.add(key)
                 scored.append((score, n))
         scored.sort(key=lambda sn: sn[0], reverse=True)
