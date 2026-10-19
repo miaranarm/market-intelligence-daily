@@ -177,6 +177,20 @@ class RealReportRegressionTests(unittest.TestCase):
         with patch.object(enrichment, "is_recent", wraps=lambda p, **k: False):
             self.assertEqual(enrichment.attach_news_to_movers([mover], [old])[0]["news"], [])
 
+    def test_ai_readthrough_is_suppressed_for_unrelated_oil_story(self):
+        from src import editorial
+        story = {
+            "title": "Oil prices slide as sanctions relief raises hopes of increased supply",
+            "summary": "Brent crude futures fell as traders weighed possibly higher Russian supplies.",
+            "readthrough": "Le marché arbitre entre la croissance attendue des revenus liés à l’IA et le coût du financement des infrastructures.",
+            "source": "CNBC",
+            "published": "Mon, 19 Oct 2026 04:51:56 GMT",
+            "url": "https://example.org/oil",
+        }
+        block = editorial._news_block(story, {})
+        self.assertIn("Interprétation écartée", block["readthrough"])
+        self.assertNotIn("revenus liés à l’IA", block["readthrough"])
+
     def test_general_news_explains_index_without_network(self):
         mover = {"ticker": "^KS11", "name": "KOSPI", "asset_class": "South Korean equity index"}
         general = [{"title": "Bitcoin, Korea's Kospi and Nasdaq futures rally as China GDP beats estimates", "published": "Mon, 19 Oct 2026 08:00:00 GMT",
