@@ -730,5 +730,31 @@ class ForecastEvaluationTests(unittest.TestCase):
         self.assertIn("Temps de lecture estimé : 1 min", html)
 
 
+class PublisherBoilerplateTests(unittest.TestCase):
+    @patch("src.market_report.requests.get", side_effect=RuntimeError("network disabled in test"))
+    def test_marketing_copy_is_not_accepted_as_a_market_news_summary(self, _get):
+        item = {
+            "title": "Market outlook for Bitcoin",
+            "source": "CoinDesk",
+            "published": "Mon, 19 Oct 2026 04:54:31 +0000",
+            "summary": "Index Offering Discover our index offerings with $49 billion in benchmarked assets, trusted by 100+ global partners.",
+            "url": "https://example.org/bitcoin-market-outlook",
+        }
+        result = _enrich_news_item(item)
+        self.assertEqual(result["summary"], "")
+
+    @patch("src.market_report.requests.get", side_effect=RuntimeError("network disabled in test"))
+    def test_real_market_fact_summary_is_not_removed_as_boilerplate(self, _get):
+        item = {
+            "title": "Bitcoin market outlook after a sharp decline",
+            "source": "Publisher",
+            "published": "Mon, 19 Oct 2026 04:54:31 +0000",
+            "summary": "Bitcoin fell 8 percent as investors reduced exposure to digital assets. Trading volumes increased and several major tokens underperformed broader risk assets.",
+            "url": "https://example.org/bitcoin-facts",
+        }
+        result = _enrich_news_item(item)
+        self.assertIn("Bitcoin fell 8 percent", result["summary"])
+
+
 if __name__ == "__main__":
     unittest.main()
