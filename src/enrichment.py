@@ -241,21 +241,27 @@ ALIASES = {
 
 
 def is_recent(published: str, max_age_days: float = 4.0, now: datetime | None = None) -> bool:
-    """Faux seulement si la date est lisible et trop ancienne ; une date illisible reste acceptée."""
+    """Vrai uniquement si la date est lisible, récente et pas anormalement future.
+
+    Pour rattacher une actualité à un mouvement de marché, une date absente ou illisible
+    n'est pas une preuve de fraîcheur : on l'écarte plutôt que de risquer une causalité
+    fondée sur un article ancien. Une tolérance de six heures absorbe les décalages d'horloge
+    et de fuseau des flux.
+    """
     from email.utils import parsedate_to_datetime
-    if not published:
-        return True
+    if not published or not published.strip():
+        return False
     try:
         try:
             when = parsedate_to_datetime(published)
-        except (TypeError, ValueError):
-            when = datetime.fromisoformat(published.replace("Z", "+00:00"))
+        except (TypeError, ValueError, OverflowError):
+            when = datetime.fromisoformat(published.strip().replace("Z", "+00:00"))
         if when.tzinfo is None:
             when = when.replace(tzinfo=timezone.utc)
         age = ((now or datetime.now(timezone.utc)) - when.astimezone(timezone.utc)).total_seconds() / 86400
         return -0.25 <= age <= max_age_days
-    except Exception:  # noqa: BLE001
-        return True
+    except (TypeError, ValueError, OverflowError):
+        return False
 
 
 def _entity_words(mover: dict[str, Any]) -> tuple[str, ...]:
