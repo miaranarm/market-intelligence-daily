@@ -248,6 +248,19 @@ class AssetUniverseTests(unittest.TestCase):
         self.assertEqual(ASSETS["AGG"]["class"], "Bond ETF")
 
 
+class PublicScenarioDisplayTests(unittest.TestCase):
+    def test_report_does_not_publish_uncalibrated_heuristic_as_probabilities(self):
+        import src.market_report as report_module
+        lines = []
+        report_module.append_funnel_report(
+            lines, "morning", [], [], [], None, None, [], [], []
+        )
+        rendered = "\\n".join(lines)
+        self.assertNotIn("Probabilités directionnelles expérimentales", rendered)
+        self.assertNotIn("hausse 30 %", rendered)
+        self.assertIn("Les pourcentages de probabilité ne sont pas publiés", rendered)
+
+
 class PriceFormattingTests(unittest.TestCase):
     def test_raw_prices_are_unsigned_but_percentage_changes_keep_sign(self):
         self.assertEqual(fmt(19.99), "19.99")
