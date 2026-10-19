@@ -32,9 +32,9 @@ class ScenarioWordingTests(unittest.TestCase):
         blocks = editorial._scenario_blocks(ctx, by)
         scenario_a = next(block["body"] for block in blocks if block.get("title", "").startswith("Scénario A"))
         scenario_b = next(block["body"] for block in blocks if block.get("title", "").startswith("Scénario B"))
-        self.assertIn("dépasse durablement son niveau actuel de 19,99", scenario_a)
-        self.assertNotIn("VIX reste au-dessus de 19,99", scenario_a)
-        self.assertIn("repasse sous son niveau actuel de 19,99", scenario_b)
+        self.assertIn("dépasse durablement son niveau actuel de 20,0", scenario_a)
+        self.assertNotIn("VIX reste au-dessus de 20,0", scenario_a)
+        self.assertIn("repasse sous son niveau actuel de 20,0", scenario_b)
         self.assertNotIn("probabilités expérimentales", scenario_b)
         self.assertIn("hypothèse et non un fait établi", scenario_a)
 
