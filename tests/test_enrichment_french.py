@@ -1,5 +1,3 @@
-from datetime import datetime, timezone
-
 from src.enrichment import relevance_score
 
 
