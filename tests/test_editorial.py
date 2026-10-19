@@ -56,6 +56,21 @@ class NineCategoriesTests(unittest.TestCase):
             self.assertIn(ticker, ASSETS)
 
 
+class VixInterpretationTests(unittest.TestCase):
+    def test_sub20_vix_with_large_jump_is_not_described_as_ordinary(self):
+        vix = make_row("^VIX", daily=21.45, price=19.99)
+        text = editorial._vix_reading(vix)
+        self.assertIn("sous 20", text)
+        self.assertIn("bondit de +21,45", text)
+        self.assertIn("remontée nette de la demande de protection", text)
+
+    def test_vix_level_and_daily_move_are_both_reported(self):
+        vix = make_row("^VIX", daily=2.0, price=24.0)
+        text = editorial._vix_reading(vix)
+        self.assertIn("niveau de tension", text)
+        self.assertIn("Variation sur la séance", text)
+
+
 class FormattingTests(unittest.TestCase):
     def test_french_numbers(self):
         self.assertEqual(editorial.fr_num(-1.95), "−1,95")
