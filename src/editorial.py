@@ -6,6 +6,7 @@ données arrivent par le dictionnaire `ctx`, ce qui le rend entièrement testabl
 """
 from __future__ import annotations
 
+import html
 import math
 import re
 from datetime import date
