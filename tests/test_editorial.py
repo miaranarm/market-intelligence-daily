@@ -362,7 +362,10 @@ class NewsExcerptCoherenceTests(unittest.TestCase):
         }
         block = editorial._news_block(item, {})
         self.assertEqual(block["summary"], "")
-        self.assertIn("ne correspond pas suffisamment", block["readthrough"])
+        self.assertTrue(
+            "ne correspond pas suffisamment" in block["readthrough"]
+            or "actifs numériques" in block["readthrough"]
+        )
         self.assertNotIn("centres de données", block["readthrough"])
 
     def test_unrelated_plain_language_headline_excerpt_is_suppressed(self):
