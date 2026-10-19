@@ -40,6 +40,11 @@ class FreshnessTests(unittest.TestCase):
         published = (now + timedelta(minutes=30)).strftime("%a, %d %b %Y %H:%M:%S +0000")
         self.assertTrue(enrichment.is_recent(published, now=now))
 
+    def test_future_timestamp_beyond_clock_skew_is_rejected(self) -> None:
+        now = datetime(2026, 10, 19, 5, 0, tzinfo=timezone.utc)
+        published = (now + timedelta(hours=8)).strftime("%a, %d %b %Y %H:%M:%S +0000")
+        self.assertFalse(enrichment.is_recent(published, now=now))
+
 
 if __name__ == "__main__":
     unittest.main()
