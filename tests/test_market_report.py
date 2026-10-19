@@ -131,6 +131,26 @@ class PriorityNewsRenderingTests(unittest.TestCase):
 
 
 
+class RecentNewsTimestampTests(unittest.TestCase):
+    def setUp(self):
+        self.now = datetime(2026, 10, 19, 12, 0, tzinfo=timezone.utc)
+
+    def test_accepts_recent_iso_and_rss_dates(self):
+        self.assertTrue(_is_recent_news_item("2026-10-19T11:00:00Z", now=self.now))
+        self.assertTrue(_is_recent_news_item("Mon, 19 Oct 2026 11:00:00 GMT", now=self.now))
+
+    def test_rejects_undated_or_unparseable_news(self):
+        self.assertFalse(_is_recent_news_item("", now=self.now))
+        self.assertFalse(_is_recent_news_item("date unavailable", now=self.now))
+
+    def test_rejects_stale_news(self):
+        self.assertFalse(_is_recent_news_item("2026-10-15T11:00:00Z", now=self.now))
+
+    def test_rejects_far_future_news_but_allows_small_clock_skew(self):
+        self.assertFalse(_is_recent_news_item("2026-10-19T20:00:00Z", now=self.now))
+        self.assertTrue(_is_recent_news_item("2026-10-19T16:00:00Z", now=self.now))
+
+
 class NewsFeedSummaryTests(unittest.TestCase):
     def test_google_news_url_is_detected_until_resolved_to_publisher(self):
         self.assertTrue(_is_google_news_url("https://news.google.com/rss/articles/example"))
