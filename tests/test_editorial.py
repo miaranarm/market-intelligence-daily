@@ -88,6 +88,16 @@ class CalendarTests(unittest.TestCase):
         self.assertEqual(found[0]["status"], "à confirmer")
         self.assertEqual(str(found[0]["local_date"]), "2026-10-21")
 
+    def test_datetime_window_excludes_events_already_elapsed_today(self):
+        now = datetime(2026, 10, 19, 5, 59, tzinfo=calendar_events.TZ)
+        events = [
+            {"date": "2026-10-19", "time_utc": "02:00", "title": "Déjà publié", "importance": "élevée"},
+            {"date": "2026-10-19", "time_utc": "08:00", "title": "Plus tard", "importance": "moyenne"},
+            {"date": "2026-10-20", "time_utc": "02:00", "title": "Demain", "importance": "moyenne"},
+        ]
+        found = calendar_events.upcoming_events(events, now, 7)
+        self.assertEqual([e["title"] for e in found], ["Plus tard", "Demain"])
+
     def test_shipped_calendar_never_claims_confirmed_without_official_source(self):
         for event in calendar_events.load_manual_events():
             if event.get("status") == "confirmé":
