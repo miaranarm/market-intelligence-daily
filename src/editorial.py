@@ -711,7 +711,18 @@ def _news_block(item: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     crypto_readthrough = any(term in read_text for term in (
         "crypto", "bitcoin", "ethereum", "stablecoin", "blockchain", "xrp", "actifs numériques"
     ))
-    if crypto_source and ai_readthrough and not crypto_readthrough:
+    ai_source = any(term in source_text for term in (
+        "artificial intelligence", "intelligence artificielle", " ai ", "generative ai",
+        "semiconductor", "semi-conducteur", "semi conduct", "data center", "data centre",
+        "centre de données", "centre de donnees", "nvidia", "openai", "amd", "broadcom"
+    ))
+    # Do not let a stale/template-generated AI read-through leak into an unrelated story.
+    # This applies to every news topic, not only crypto headlines.
+    if ai_readthrough and not ai_source:
+        read = ("Interprétation écartée : le commentaire évoquait l'IA ou les infrastructures "
+                "de données, sans lien explicite établi par le titre et l'extrait. "
+                "La conséquence de marché reste à vérifier dans l'article original.")
+    elif crypto_source and ai_readthrough and not crypto_readthrough:
         read = ("Cette actualité concerne les actifs numériques. Son effet de marché précis "
                 "n'est pas établi par le titre et l'extrait seuls; vérifier les détails de l'article "
                 "et la réaction des actifs concernés avant d'attribuer une cause.")
