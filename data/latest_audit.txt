@@ -1,48 +1,50 @@
 BILAN DE LA SÉANCE
-Marchés sans direction tranchée : le S&P 500 affiche +0,66 % sur cinq séances, le VIX −3,9 % sur la dernière.
+Aversion au risque : le S&P 500 cède 1,20 % sur cinq séances et le VIX bondit de 15,7 %.
 
-Léger avantage haussier. Probabilités expérimentales à un horizon de une à cinq séances : hausse 40 %, zone centrale 35 %, baisse 25 %. Elles sont issues d'une règle simple et n'ont pas été calibrées statistiquement.
+Biais baissier à confirmer. Probabilités expérimentales à un horizon de une à cinq séances : hausse 18 %, zone centrale 27 %, baisse 55 %. Elles sont issues d'une règle simple et n'ont pas été calibrées statistiquement.
 
-Édition du mercredi 21 octobre 2026, 21:17 (heure de Madagascar). Lecture estimée : 24 min.
+Édition du jeudi 22 octobre 2026, 21:16 (heure de Madagascar). Lecture estimée : 26 min.
 
 
 L'ESSENTIEL
 (lecture : 1 min)
 
-- Actions américaines : S&P 500 +0,74 % sur la séance et +0,66 % sur cinq séances ; Nasdaq +1,28 % puis +0,26 %.
-- Le VIX, mesure de la volatilité implicite attendue du S&P 500, s'établit à 16,64 : niveau inférieur au seuil conventionnel de 20. Variation sur la séance : −3,87 %.
-- Taux : le rendement américain à 10 ans s'établit à 5,109 % (−0,8 point de base) ; l'indice du dollar est à 101,65 (−0,08 %).
-- Matières premières : Brent crude oil futures −0,05 %, or +0,33 % sur la séance.
-- Crypto : bitcoin à 84 669 dollars (+2,08 % sur 24 heures).
-- Mouvements de fond à surveiller : KOSPI −8,00 % sur cinq séances et −16,21 % sur un mois ; Natural gas futures −12,70 % sur cinq séances et −5,83 % sur un mois ; SAP +5,95 % sur cinq séances et +14,44 % sur un mois.
+- Actions américaines : S&P 500 −1,37 % sur la séance et −1,20 % sur cinq séances ; Nasdaq −2,64 % puis −2,68 %.
+- Le VIX, mesure de la volatilité implicite attendue du S&P 500, s'établit à 19,30 : niveau inférieur au seuil conventionnel de 20. Attention toutefois : il bondit de +15,71 % sur la dernière séance disponible, mouvement rapide qui signale une remontée nette de la demande de protection malgré un niveau encore sous 20.
+- Taux : le rendement américain à 10 ans s'établit à 4,947 % (−19,1 points de base) ; l'indice du dollar est à 101,59 (−0,18 %).
+- Matières premières : Brent crude oil futures +3,90 %, or −2,23 % sur la séance.
+- Crypto : bitcoin à 81 001 dollars (−3,58 % sur 24 heures).
+- Mouvements de fond à surveiller : Meta Platforms −12,39 % sur cinq séances et −13,26 % sur un mois ; Natural gas futures −13,29 % sur cinq séances et −7,18 % sur un mois.
 - Prochain rendez-vous majeur : mercredi 28 octobre à 21:00 (heure de Madagascar) : Décision de politique monétaire de la Réserve fédérale (FOMC) (confirmé).
 
 
 RÉGIME DE MARCHÉ
 (lecture : 1 min)
 
-Notre règle de lecture croise le momentum des grands indices américains et le mouvement du VIX pour dégager un diagnostic : léger avantage haussier (score +1).
+Notre règle de lecture croise le momentum des grands indices américains et le mouvement du VIX pour dégager un diagnostic : biais baissier à confirmer (score −4).
 
-Hausse 40 % ; zone centrale 35 % ; baisse 25 %.
+Hausse 18 % ; zone centrale 27 % ; baisse 55 %.
 Probabilités expérimentales, non calibrées. La zone centrale désigne un mouvement du S&P 500 inférieur à une demi-volatilité quotidienne, dans un sens ou dans l'autre.
 
-Interactions entre marchés :
-- Les grands indices US ont progressé sur cinq séances : biais de momentum positif à court terme, à confirmer par les prochaines clôtures.
-- Bitcoin : variation de la dernière séance disponible +2,08 %; la crypto cote en continu, contrairement à la plupart des marchés traditionnels.
+- S&P 500 en baisse sur cinq séances (−1,20 %).
+- Nasdaq en baisse sur cinq séances (−2,68 %).
+- VIX en hausse marquée sur la dernière séance (+15,71 %).
 
-Attention : les cours ne sont pas synchronisés (20/10 : 15 instruments ; 21/10 : 82 instruments). Les comparaisons entre marchés portent sur des séances différentes ; elles ne permettent pas, à elles seules, d'établir qu'un actif a réagi simultanément à un autre.
+Interactions entre marchés :
+- Les grands indices US ont reculé sur cinq séances : momentum récent négatif, sans que cela suffise à établir une prévision directionnelle.
+- Le VIX a fortement progressé sur la dernière séance disponible : surveiller une hausse de l'aversion au risque.
+- Bitcoin : variation de la dernière séance disponible −3,58 %; la crypto cote en continu, contrairement à la plupart des marchés traditionnels.
+
+Attention : les cours ne sont pas synchronisés (21/10 : 15 instruments ; 22/10 : 82 instruments). Les comparaisons entre marchés portent sur des séances différentes ; elles ne permettent pas, à elles seules, d'établir qu'un actif a réagi simultanément à un autre.
 
 Tableau de bord macroéconomique :
 Indicateurs macroéconomiques
 Indicateur | Valeur | Observation du | Variation vs observation précédente | Source
-Indice CPI-U non désaisonnalisé (BLS) | 336,9 (inflation sur un an : +3,74 %) | 2026-09-01 | +1,96 pt d'indice | BLS — source officielle de repli
-Taux de chômage américain (BLS) | 4,20 % | 2026-09-01 | +0,10 pt de % | BLS — source officielle de repli
-Emploi salarié non agricole (BLS) | 159 044 milliers | 2026-09-01 | +29,00 milliers | BLS — source officielle de repli
-Taux effectif des fonds fédéraux | 3,88 % | 2026-10-20 | 0,00 pt de % | NY Fed
-Rendement du Treasury à 2 ans | 4,79 % | 2026-10-20 | +0,02 pt de % | Trésor américain
-Rendement du Treasury à 10 ans | 5,12 % | 2026-10-20 | −0,03 pt de % | Trésor américain
-Anticipations d'inflation à 10 ans (breakeven, nominal moins réel) | 2,35 % | 2026-10-20 | 0,00 pt de % | Trésor américain
-Taux de la facilité de dépôt de la BCE | 2,50 % | 2026-10-21 | 0,00 pt de % | BCE
+Taux effectif des fonds fédéraux | 3,88 % | 2026-10-21 | 0,00 pt de % | NY Fed
+Rendement du Treasury à 2 ans | 4,81 % | 2026-10-21 | +0,02 pt de % | Trésor américain
+Rendement du Treasury à 10 ans | 5,13 % | 2026-10-21 | +0,01 pt de % | Trésor américain
+Anticipations d'inflation à 10 ans (breakeven, nominal moins réel) | 2,37 % | 2026-10-21 | +0,02 pt de % | Trésor américain
+Taux de la facilité de dépôt de la BCE | 2,50 % | 2026-10-22 | 0,00 pt de % | BCE
 
 Ces séries sont publiées avec un décalage (mensuel pour l'inflation et l'emploi) : elles décrivent le fond de l'économie, pas la séance du jour.
 
@@ -52,12 +54,6 @@ AGENDA
 
 Voici les rendez-vous des 14 prochains jours, avec les heures converties en heure de Madagascar. Un événement « à confirmer » doit être vérifié sur le site de l'institution avant toute décision.
 
-- mercredi 21 octobre : Résultats trimestriels : Meta Platforms (META) [à confirmer, impact moyen]
-  Date estimée par Yahoo Finance; vérifier le communiqué de l'entreprise. L'heure (avant ou après séance) n'est pas fournie.
-- mercredi 21 octobre : Résultats trimestriels : Tesla (TSLA) [à confirmer, impact moyen]
-  Date estimée par Yahoo Finance; vérifier le communiqué de l'entreprise. L'heure (avant ou après séance) n'est pas fournie.
-- mercredi 21 octobre : Résultats trimestriels : SAP (SAP.DE) [à confirmer, impact moyen]
-  Date estimée par Yahoo Finance; vérifier le communiqué de l'entreprise. L'heure (avant ou après séance) n'est pas fournie.
 - mercredi 28 octobre à 21:00 : Décision de politique monétaire de la Réserve fédérale (FOMC) [confirmé, impact élevé]
   Réunion des 27 et 28 octobre; communiqué à 14:00 heure de New York (18:00 UTC), conférence de presse à 18:30 UTC.
 - mercredi 28 octobre : Résultats trimestriels : Microsoft (MSFT) [à confirmer, impact moyen]
@@ -74,45 +70,55 @@ Voici les rendez-vous des 14 prochains jours, avec les heures converties en heur
   Date estimée par Yahoo Finance; vérifier le communiqué de l'entreprise. L'heure (avant ou après séance) n'est pas fournie.
 - jeudi 29 octobre : Résultats trimestriels : Eli Lilly (LLY) [à confirmer, impact moyen]
   Date estimée par Yahoo Finance; vérifier le communiqué de l'entreprise. L'heure (avant ou après séance) n'est pas fournie.
+- jeudi 29 octobre : Résultats trimestriels : Caterpillar (CAT) [à confirmer, impact moyen]
+  Date estimée par Yahoo Finance; vérifier le communiqué de l'entreprise. L'heure (avant ou après séance) n'est pas fournie.
+- jeudi 29 octobre : Résultats trimestriels : TotalEnergies (TTE.PA) [à confirmer, impact moyen]
+  Date estimée par Yahoo Finance; vérifier le communiqué de l'entreprise. L'heure (avant ou après séance) n'est pas fournie.
 - vendredi 30 octobre à 15:30 : États-Unis : indice du coût de l'emploi (ECI), troisième trimestre [confirmé, impact moyen]
   BLS : publication officielle à 08:30 heure de l'Est; mesure des coûts salariaux et avantages.
 - vendredi 30 octobre : Banque du Japon : décision de politique monétaire et rapport trimestriel de perspectives [confirmé, impact élevé]
   Réunion des 29 et 30 octobre confirmée par le calendrier officiel; heure de la décision non publiée dans le calendrier consulté.
+- vendredi 30 octobre : Résultats trimestriels : Exxon Mobil (XOM) [à confirmer, impact moyen]
+  Date estimée par Yahoo Finance; vérifier le communiqué de l'entreprise. L'heure (avant ou après séance) n'est pas fournie.
 - mardi 3 novembre à 18:00 : États-Unis : offres d'emploi JOLTS pour septembre [confirmé, impact élevé]
   BLS : publication officielle à 10:00 heure de l'Est, après le passage à l'heure standard américaine.
 - mercredi 4 novembre à 16:30 : États-Unis : balance commerciale des biens et services pour septembre [confirmé, impact moyen]
   BEA : publication officielle à 08:30 heure de l'Est, après le passage à l'heure standard américaine.
+- jeudi 5 novembre à 15:00 : Banque d'Angleterre : décision de politique monétaire [confirmé, impact élevé]
+  Date officielle du MPC; publication du communiqué et des minutes à 12:00 UTC.
+- jeudi 5 novembre à 16:30 : États-Unis : productivité et coûts unitaires du travail, estimation préliminaire du T3 [confirmé, impact moyen]
+  BLS : publication officielle à 08:30 heure de l'Est.
 
 
 FAITS MARQUANTS
 (lecture : 1 min)
 
-* SpaceX stock jumps 10% after earnings beat and Musk hints at Tesla tie-up
-  CNBC — actualités principales (flux éditeur), Wed, 21 Oct 2026 16:08:50 GMT
-  SpaceX shares jumped after the company reported surging revenue growth in its third quarter, and owner Elon Musk floated a potential SpaceX-Tesla merger.
-  Lecture marché : Pour l’action concernée, comparer chiffre d’affaires, bénéfice, marges et prévisions de direction aux attentes, puis regarder la réaction du cours. Une publication en hausse peut faire baisser le titre si les attentes étaient plus élevées; l’effet sur l’indice dépend du poids de l’entreprise.
-  https://www.cnbc.com/2026/10/21/spacex-spcx-stock-musk-merger-tesla.html
+* Bill Ackman says 2027 will be an amazing year for stocks as wars, inflation ease
+  CNBC — actualités principales (flux éditeur), Thu, 22 Oct 2026 17:53:08 GMT
+  U.S. oil is up 72% in 2026, while Brent crude has surged 83%. The streaming stock dropped more than 5% on Wednesday after reporting lackluster advertising and revenue guidance. Consumer prices rose 3.7% year over year in September.
+  Lecture marché : Le point décisif est la surprise par rapport au consensus et au chiffre précédent. Une inflation plus forte peut retarder l’assouplissement monétaire et maintenir les rendements élevés; une désinflation crédible peut produire l’effet inverse. Le titre seul ne suffit pas sans les chiffres.
+  https://www.cnbc.com/2026/10/22/bill-ackman-talks-meta-and-markets-with-cnbc.html
 
-* Futures orbit around SpaceX as Tesla merger talk cheers investors
-  CNBC — technologie, Wed, 21 Oct 2026 12:44:19 GMT
-  SpaceX shares are spiking in premarket trade after Elon Musk unveiled a special committee had been put in place to merge the rocket group with Tesla, in a move he called a "good idea." It would be the largest merger in history, creating a…
-  https://www.cnbc.com/2026/10/21/futures-orbit-around-spacex-as-tesla-merger-talk-cheers-investors.html
+* U.S. pulls diplomats from Saudi Arabia as it reportedly readies Iran strikes after midterms
+  CNBC — énergie, Thu, 22 Oct 2026 04:35:54 GMT
+  Lecture marché : Le résumé disponible ne correspond pas suffisamment à l'entité du titre; aucune conséquence de marché n'est attribuée sans vérifier l'article original.
+  https://www.cnbc.com/2026/10/22/us-iran-trump-hormuz-.html
 
-* Japan exports post huge miss in September as growth slows to 16.7%
-  CNBC — Asie-Pacifique, Wed, 21 Oct 2026 00:44:16 GMT
-  Japan's exports in September rose 16.7% from a year earlier, missing market expectations by a huge margin. In terms of destinations, shipments to mainland China — Japan's largest trading partner — rose 8.6%, while exports to the U.S.
-  Lecture marché : Les rendements modifient le coût du crédit et les valorisations. Une hausse pénalise généralement les obligations déjà émises et les actions à valorisation élevée; une détente peut les soutenir. Le prochain test est l’écart entre les données d’inflation/activité et les attentes de taux.
-  https://www.cnbc.com/2026/10/21/japan-trade-exports-semiconductor-yen.html
+* Developments in Real Exports and Real Imports
+  Bank of Japan — actualités, politique monétaire et statistiques, Thu, 22 Oct 2026 16:00:00 +0900
+  For the April 2026 data onward, the data will, in principle, be released at 4:00 p.m., one business day after the release of the Ministry of Finance's "Trade Statistics (Provisional)." The release schedule is subject to change.
+  Lecture marché : La surprise par rapport aux attentes est plus informative que le chiffre isolé. Une activité robuste peut soutenir les secteurs cycliques mais repousser les baisses de taux; une faiblesse peut soutenir les obligations si elle réduit les taux anticipés, tout en pénalisant les actions sensibles à la croissance.
+  https://www.boj.or.jp/en/research/research_data/reri/index.htm
 
-* This Janus Henderson fund manager owns CoreWeave debt — here's why he's sticking with it
-  CNBC — marchés et investissement, Wed, 21 Oct 2026 00:12:44 GMT
-  Revenue and Ebitda will ramp up next year, hitting $26.5 billion and $16.7 billion respectively, analysts estimate. The company has roughly $51.6 billion in total debt, including about $35 billion in notes, bonds and loans.
-  https://www.cnbc.com/2026/10/20/coreweave-debt-janus-henderson-lloyd.html
+* CNBC Daily Open: War worries meet AI anxiety
+  CNBC — Asie-Pacifique, Thu, 22 Oct 2026 01:49:18 GMT
+  EBay said it will cut about 1,000 jobs as AI and jobs top central bankers' worries. Daily Open CNBC Daily Open: War worries meet AI anxiety Published Wed, Oct 21 2026 9:49 PM EDT Anniek Bao @in/anniek-bao-460a48107/ @anniekbyx WATCH LIVE…
+  https://www.cnbc.com/2026/10/22/trump-iran-musk-tesla-spacex-merger-.html
 
-* Saudi Crude Exports Hit Five-Month High as Production Falls to Record Low
-  OilPrice — pétrole et énergie (flux éditeur), Wed, 21 Oct 2026 12:30:00 -0500
-  Saudi Arabia's crude exports rose about 7.9% in August from July to 4.451 million barrels per day, the highest since March, while its oil production fell to a record low of 6.24 million bpd, the Joint Organizations Data Initiative (JODI)…
-  https://oilprice.com/Latest-Energy-News/World-News/Saudi-Crude-Exports-Hit-Five-Month-High-as-Production-Falls-to-Record-Low.html
+* BlackRock's Rick Rieder sees 'historic' opportunity in high-quality bonds
+  CNBC — marchés et investissement, Wed, 21 Oct 2026 19:54:16 GMT
+  Hypothetically, it's now possible for investors to build a diversified portfolio that yields more than 7% with less than three years of duration and an average credit quality of A-, he said.
+  https://www.cnbc.com/2026/10/21/rick-rieder-investment-grade-bonds.html
 
 
 POURQUOI ÇA BOUGE
@@ -120,51 +126,57 @@ POURQUOI ÇA BOUGE
 
 Mouvements à la fois inhabituels au regard de la volatilité de l'instrument et assez amples pour compter (séance, cinq séances ou un mois). Sans actualité propre trouvée, la cause n'est pas établie et le rapport s'abstient de l'inventer.
 
-WTI crude oil futures (CL=F) : séance −4,65 % (1,7 écart-type).
+Meta Platforms (META) : séance −7,47 % (2,2 écart-type) ; cinq séances −12,39 % (1,6 écart-type).
 
-Actualité déjà citée plus haut : « Saudi Crude Exports Hit Five-Month High as Production Falls to Record Low ».
+* Meta stock sinks 6% as AI spend pushes free cash flow negative
+  CNBC — actualités principales (flux éditeur), Thu, 22 Oct 2026 17:48:43 GMT
+  https://www.cnbc.com/2026/10/22/meta-stock-q3-earnings-free-cash-flow.html
 
-Tesla (TSLA) : séance +3,48 % (1,8 écart-type).
+Technology Select Sector SPDR ETF (XLK) : séance −3,33 % (2,2 écart-type).
 
-* Update: Equities Rise Intraday as Markets Parse SpaceX Earnings, Potential Merger With Tesla
-  Yahoo Finance — actualités Tesla, Wed, 21 Oct 2026 18:11:51 +0000
-  Super Micro Computer (SMCI) shares surged 10% intraday, the biggest gainer on the S&P 500. West Texas Intermediate crude oil fell 1.3% to $96.58 a barrel, while Brent edged down 0.3% to $108.50.
-  https://finance.yahoo.com/markets/stocks/articles/equities-rise-intraday-markets-parse-181151669.html
+* Meta sell-off drags US tech stocks lower as AI spending fears flare up
+  Financial Times — actualités mondiales (flux éditeur), Thu, 22 Oct 2026 18:15:32 GMT
+  https://www.ft.com/content/6e318b81-a771-4842-9754-e265fef2852f?syn-25a6b1a6=1
 
-Sans actualité propre dans les flux collectés, cause non établie : KOSPI (séance −3,73 % (1,5 écart-type)) ; Natural gas futures (séance −5,77 % (1,9 écart-type)) ; SAP (séance +3,52 % (2,0 écart-type)) ; XRP (séance +4,63 % (2,0 écart-type)).
+Sans actualité propre dans les flux collectés, cause non établie : KOSPI (séance +3,29 % (1,2 écart-type)) ; Emerging markets equity ETF (séance −2,99 % (2,2 écart-type)) ; Nasdaq 100 E-mini futures (séance −2,96 % (2,3 écart-type)) ; Natural gas futures (cinq séances −13,29 % (1,9 écart-type)) ; Samsung Electronics (séance +5,67 % (1,6 écart-type)) ; Invesco Nasdaq 100 ETF (séance −2,82 % (2,3 écart-type)).
 
 
 INDICES BOURSIERS
-(lecture : 1 min)
+(lecture : 2 min)
 
 Les grands indices donnent la température du marché actions : direction, leadership entre régions et niveau de nervosité mesuré par le VIX.
 
 Instruments suivis
 Instrument | Dernier | 1 séance | 5 séances | 1 mois | 30 jours | Cours du
-Euro Stoxx 50 (^STOXX50E) | 6 207,52 | +1,40 % | +0,28 % | −1,85 % | tendance | 2026-10-21
-DAX 40 (^GDAXI) | 25 645,04 | +1,35 % | +1,37 % | +0,26 % | tendance | 2026-10-21
-Nasdaq Composite (^IXIC) | 26 762,61 | +1,28 % | +0,26 % | −1,77 % | tendance | 2026-10-21
-CAC 40 (^FCHI) | 7 921,68 | +1,06 % | +0,62 % | −2,86 % | tendance | 2026-10-21
-S&P/TSX Composite (^GSPTSE) | 36 394,68 | +0,79 % | +2,28 % | +1,07 % | tendance | 2026-10-21
-S&P 500 (^GSPC) | 7 769,81 | +0,74 % | +0,66 % | +0,07 % | tendance | 2026-10-21
-Dow Jones (^DJI) | 52 808,42 | +0,60 % | +2,30 % | +1,82 % | tendance | 2026-10-21
-FTSE 100 (^FTSE) | 10 752,88 | +0,19 % | +0,26 % | +0,42 % | tendance | 2026-10-21
-S&P/ASX 200 (^AXJO) | 8 831,30 | +0,16 % | +1,18 % | +0,84 % | tendance | 2026-10-21
-Nifty 50 (^NSEI) | 22 811,35 | −0,34 % | +0,39 % | −2,29 % | tendance | 2026-10-21
-Nikkei 225 (^N225) | 64 075,42 | −1,30 % | −5,46 % | +0,93 % | tendance | 2026-10-20
-Hang Seng (^HSI) | 23 867,74 | −1,32 % | −1,66 % | −2,99 % | tendance | 2026-10-20
-KOSPI (^KS11) | 5 552,74 | −3,73 % | −8,00 % | −16,21 % | tendance | 2026-10-20
-VIX volatility index (^VIX) | 16,64 | −3,87 % | −1,36 % | +17,10 % | tendance | 2026-10-21
+VIX volatility index (^VIX) | 19,30 | +15,71 % | +17,25 % | +27,14 % | tendance | 2026-10-22
+KOSPI (^KS11) | 5 735,66 | +3,29 % | −4,55 % | −14,62 % | tendance | 2026-10-21
+Nikkei 225 (^N225) | 64 621,24 | +0,85 % | −4,61 % | +1,09 % | tendance | 2026-10-21
+Dow Jones (^DJI) | 52 774,19 | −0,15 % | +1,14 % | +2,45 % | tendance | 2026-10-22
+FTSE 100 (^FTSE) | 10 725,03 | −0,26 % | −1,06 % | +0,18 % | tendance | 2026-10-22
+S&P/ASX 200 (^AXJO) | 8 793,20 | −0,43 % | +0,84 % | +0,32 % | tendance | 2026-10-22
+Nifty 50 (^NSEI) | 22 687,65 | −0,54 % | +0,29 % | −3,10 % | tendance | 2026-10-22
+Hang Seng (^HSI) | 23 651,87 | −0,90 % | −2,85 % | −4,44 % | tendance | 2026-10-21
+S&P/TSX Composite (^GSPTSE) | 35 966,67 | −0,99 % | −0,47 % | −1,02 % | tendance | 2026-10-22
+DAX 40 (^GDAXI) | 25 371,75 | −1,07 % | −0,04 % | −0,15 % | tendance | 2026-10-22
+S&P 500 (^GSPC) | 7 651,02 | −1,37 % | −1,20 % | −0,71 % | tendance | 2026-10-22
+CAC 40 (^FCHI) | 7 811,26 | −1,39 % | −1,56 % | −3,84 % | tendance | 2026-10-22
+Euro Stoxx 50 (^STOXX50E) | 6 087,01 | −1,94 % | −1,32 % | −3,38 % | tendance | 2026-10-22
+Nasdaq Composite (^IXIC) | 25 998,39 | −2,64 % | −2,68 % | −3,48 % | tendance | 2026-10-22
 
-Sur les 13 indices suivis, 9 progressent et 4 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à +0,07 %. Euro Stoxx 50 mène le groupe (+1,40 %) et KOSPI ferme la marche (−3,73 %). Sur cinq séances, 10 sur 13 sont en hausse ; sur un mois, 7 sur 13.
+Sur les 13 indices suivis, 2 progressent et 11 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à −0,58 %. KOSPI mène le groupe (+3,29 %) et Nasdaq Composite ferme la marche (−2,64 %). Sur cinq séances, 3 sur 13 sont en hausse ; sur un mois, 4 sur 13.
 
-Aux États-Unis, le S&P 500 progresse sur la séance (+0,74 %) et +0,66 % sur cinq séances ; le Nasdaq Composite affiche +1,28 % puis +0,26 %, le Dow Jones +0,60 % puis +2,30 %.
+Aux États-Unis, le S&P 500 recule nettement sur la séance (−1,37 %) et −1,20 % sur cinq séances ; le Nasdaq Composite affiche −2,64 % puis −2,68 %, le Dow Jones −0,15 % puis +1,14 %. Le Nasdaq fait moins bien que le S&P 500 de 1,48 point de pourcentage sur cinq séances : la technologie pèse sur l'ensemble.
 
-Ailleurs dans le monde, les indices européens +1,00 % en moyenne et les indices asiatiques et océaniens −1,31 %, contre +0,74 % pour le S&P 500. Les fuseaux horaires diffèrent : les séances asiatiques précèdent les séances américaines et n'en intègrent pas encore les mouvements.
+Ailleurs dans le monde, les indices européens −1,17 % en moyenne et les indices asiatiques et océaniens +0,45 %, contre −1,37 % pour le S&P 500. Les fuseaux horaires diffèrent : les séances asiatiques précèdent les séances américaines et n'en intègrent pas encore les mouvements.
 
-Le VIX, mesure de la volatilité implicite attendue du S&P 500, s'établit à 16,64 : niveau inférieur au seuil conventionnel de 20. Variation sur la séance : −3,87 %.
+Le VIX, mesure de la volatilité implicite attendue du S&P 500, s'établit à 19,30 : niveau inférieur au seuil conventionnel de 20. Attention toutefois : il bondit de +15,71 % sur la dernière séance disponible, mouvement rapide qui signale une remontée nette de la demande de protection malgré un niveau encore sous 20.
 
-Aucune nouvelle suffisamment ciblée n'a été identifiée dans les flux collectés ; ce silence ne dit rien du risque.
+À la une pour cet univers :
+* China's stock market sinks into bear territory as CSI 300 extends 10-week rout
+  CNBC — Asie-Pacifique, Thu, 22 Oct 2026 04:02:18 GMT
+  China's benchmark CSI 300 index has entered bear-market territory, falling 20% from its June peak, as a prolonged selloff in mainland equities deepens.
+  Lecture marché : Les effets passent par les entreprises exposées aux échanges, les coûts d’importation et les chaînes d’approvisionnement, puis les devises et matières premières. Identifier la mesure exacte, son calendrier et les représailles éventuelles avant d’en déduire un scénario.
+  https://www.cnbc.com/2026/10/22/chinas-stock-market-csi-300-bear-market.html
 
 À l'agenda :
 - mercredi 28 octobre à 21:00 (heure de Madagascar) : Décision de politique monétaire de la Réserve fédérale (FOMC) (confirmé).
@@ -178,14 +190,14 @@ Les contrats à terme cotent presque en continu : ils signalent l'humeur à l'ou
 
 Instruments suivis
 Instrument | Dernier | 1 séance | 5 séances | 1 mois | 30 jours | Cours du
-Nasdaq 100 E-mini futures (NQ=F) | 30 057,50 | +1,29 % | −0,41 % | −3,13 % | tendance | 2026-10-21
-S&P 500 E-mini futures (ES=F) | 7 805,75 | +0,65 % | +0,46 % | −0,33 % | tendance | 2026-10-21
-Dow Jones E-mini futures (YM=F) | 52 997,00 | +0,53 % | +2,20 % | +1,37 % | tendance | 2026-10-21
-Russell 2000 E-mini futures (RTY=F) | 2 799,80 | +0,46 % | +2,00 % | −3,92 % | tendance | 2026-10-21
+Dow Jones E-mini futures (YM=F) | 52 936,00 | −0,23 % | +0,97 % | +2,05 % | tendance | 2026-10-22
+Russell 2000 E-mini futures (RTY=F) | 2 785,10 | −0,33 % | +0,12 % | −2,63 % | tendance | 2026-10-22
+S&P 500 E-mini futures (ES=F) | 7 684,75 | −1,48 % | −1,36 % | −1,13 % | tendance | 2026-10-22
+Nasdaq 100 E-mini futures (NQ=F) | 29 119,75 | −2,96 % | −3,40 % | −5,35 % | tendance | 2026-10-22
 
-Sur les 4 contrats suivis, 4 progressent et 0 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à +0,73 %. Nasdaq 100 E-mini futures mène le groupe (+1,29 %) et Russell 2000 E-mini futures ferme la marche (+0,46 %). Sur cinq séances, 3 sur 4 sont en hausse ; sur un mois, 1 sur 4.
+Sur les 4 contrats suivis, 0 progressent et 4 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à −1,25 %. Dow Jones E-mini futures mène le groupe (−0,23 %) et Nasdaq 100 E-mini futures ferme la marche (−2,96 %). Sur cinq séances, 2 sur 4 sont en hausse ; sur un mois, 1 sur 4.
 
-Comparaison avec le marché au comptant : S&P 500 : contrat +0,65 % contre +0,74 % pour l'indice ; Nasdaq : contrat +1,29 % contre +1,28 % pour l'indice ; Dow Jones : contrat +0,53 % contre +0,60 % pour l'indice. Un écart peut venir de l'heure de clôture ou d'un mouvement survenu après la fin de la séance : il se lit à l'ouverture, pas avant.
+Comparaison avec le marché au comptant : S&P 500 : contrat −1,48 % contre −1,37 % pour l'indice ; Nasdaq : contrat −2,96 % contre −2,64 % pour l'indice (écart de 0,32 point de pourcentage, les contrats annoncent un départ plus faible) ; Dow Jones : contrat −0,23 % contre −0,15 % pour l'indice. Un écart peut venir de l'heure de clôture ou d'un mouvement survenu après la fin de la séance : il se lit à l'ouverture, pas avant.
 
 Aucune nouvelle suffisamment ciblée n'a été identifiée dans les flux collectés ; ce silence ne dit rien du risque.
 
@@ -201,35 +213,35 @@ Les valeurs individuelles révèlent ce que les indices moyennent : leadership s
 
 Instruments suivis
 Instrument | Dernier | 1 séance | 5 séances | 1 mois | 30 jours | Cours du
-SAP (SAP.DE) | 208,65 | +3,52 % | +5,95 % | +14,44 % | tendance | 2026-10-21
-Tesla (TSLA) | 386,71 | +3,48 % | +5,33 % | +2,06 % | tendance | 2026-10-21
-ASML (ASML.AS) | 1 493,80 | +2,64 % | −2,25 % | −0,90 % | tendance | 2026-10-21
-Nvidia (NVDA) | 221,83 | +2,48 % | +0,24 % | −3,08 % | tendance | 2026-10-21
-Caterpillar (CAT) | 742,15 | +2,33 % | −0,91 % | −8,15 % | tendance | 2026-10-21
-Meta Platforms (META) | 707,74 | +1,94 % | −4,04 % | −3,92 % | tendance | 2026-10-21
-Apple (AAPL) | 344,87 | +1,58 % | +0,56 % | +1,51 % | tendance | 2026-10-21
-TSMC (ADR) (TSM) | 430,68 | +1,32 % | +0,16 % | −4,72 % | tendance | 2026-10-21
-Broadcom (AVGO) | 338,66 | +1,28 % | −2,19 % | −7,10 % | tendance | 2026-10-21
-TotalEnergies (TTE.PA) | 80,90 | +1,20 % | +0,91 % | +4,73 % | tendance | 2026-10-21
-Amazon (AMZN) | 264,23 | +0,61 % | +3,99 % | +3,63 % | tendance | 2026-10-21
-Bank of America (BAC) | 50,94 | +0,59 % | −0,88 % | −9,36 % | tendance | 2026-10-21
-LVMH (MC.PA) | 388,60 | +0,48 % | −0,24 % | −3,32 % | tendance | 2026-10-21
-Costco (COST) | 997,27 | +0,27 % | +1,56 % | +10,88 % | tendance | 2026-10-21
-Microsoft (MSFT) | 532,77 | +0,17 % | −0,17 % | +6,98 % | tendance | 2026-10-21
-Toyota Motor (7203.T) | 3 102,00 | 0,00 % | +3,95 % | +4,43 % | tendance | 2026-10-20
-Walmart (WMT) | 117,74 | −0,09 % | +1,36 % | +6,92 % | tendance | 2026-10-21
-Exxon Mobil (XOM) | 177,56 | −0,17 % | +0,31 % | +11,88 % | tendance | 2026-10-21
-JPMorgan Chase (JPM) | 334,44 | −0,24 % | −0,25 % | −1,14 % | tendance | 2026-10-21
-Eli Lilly (LLY) | 1 270,97 | −0,99 % | +5,15 % | +8,62 % | tendance | 2026-10-21
-Alphabet (GOOGL) | 335,00 | −1,55 % | −3,64 % | −4,60 % | tendance | 2026-10-21
-Tencent (0700.HK) | 410,40 | −1,77 % | −3,62 % | −3,66 % | tendance | 2026-10-20
-Samsung Electronics (005930.KS) | 211 500,00 | −2,98 % | −8,84 % | −14,89 % | tendance | 2026-10-20
+Samsung Electronics (005930.KS) | 223 500,00 | +5,67 % | −3,66 % | −11,83 % | tendance | 2026-10-21
+SAP (SAP.DE) | 215,35 | +3,21 % | +7,01 % | +15,49 % | tendance | 2026-10-22
+Eli Lilly (LLY) | 1 310,71 | +3,14 % | +4,72 % | +13,88 % | tendance | 2026-10-22
+Walmart (WMT) | 120,50 | +2,29 % | +2,23 % | +9,02 % | tendance | 2026-10-22
+Costco (COST) | 1 014,43 | +1,61 % | +3,72 % | +12,13 % | tendance | 2026-10-22
+Apple (AAPL) | 346,69 | +0,79 % | +1,37 % | +2,87 % | tendance | 2026-10-22
+Bank of America (BAC) | 51,02 | +0,48 % | −1,31 % | −8,88 % | tendance | 2026-10-22
+JPMorgan Chase (JPM) | 335,23 | +0,01 % | −0,09 % | −0,19 % | tendance | 2026-10-22
+LVMH (MC.PA) | 387,80 | −0,21 % | −2,64 % | −2,29 % | tendance | 2026-10-22
+Toyota Motor (7203.T) | 3 094,00 | −0,26 % | +2,76 % | +4,33 % | tendance | 2026-10-21
+Exxon Mobil (XOM) | 177,29 | −0,45 % | +1,50 % | +9,96 % | tendance | 2026-10-22
+TotalEnergies (TTE.PA) | 79,98 | −1,14 % | −0,29 % | +1,62 % | tendance | 2026-10-22
+Microsoft (MSFT) | 524,07 | −1,67 % | −2,85 % | +4,69 % | tendance | 2026-10-22
+Tesla (TSLA) | 378,18 | −2,15 % | +4,34 % | −0,51 % | tendance | 2026-10-22
+Alphabet (GOOGL) | 324,50 | −3,06 % | −7,08 % | −3,95 % | tendance | 2026-10-22
+Broadcom (AVGO) | 324,54 | −3,93 % | −5,75 % | −8,58 % | tendance | 2026-10-22
+Tencent (0700.HK) | 393,80 | −4,04 % | −7,38 % | −6,01 % | tendance | 2026-10-21
+Nvidia (NVDA) | 212,41 | −4,31 % | −2,22 % | −5,81 % | tendance | 2026-10-22
+Amazon (AMZN) | 250,21 | −4,63 % | −1,79 % | +0,38 % | tendance | 2026-10-22
+TSMC (ADR) (TSM) | 411,37 | −4,75 % | −2,58 % | −7,88 % | tendance | 2026-10-22
+ASML (ASML.AS) | 1 419,60 | −4,97 % | −3,05 % | −6,35 % | tendance | 2026-10-22
+Caterpillar (CAT) | 700,00 | −5,43 % | −4,84 % | −13,80 % | tendance | 2026-10-22
+Meta Platforms (META) | 645,42 | −7,47 % | −12,39 % | −13,26 % | tendance | 2026-10-22
 
-Sur les 23 valeurs suivies, 15 progressent et 7 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à +0,70 %. SAP mène le groupe (+3,52 %) et Samsung Electronics ferme la marche (−2,98 %). Sur cinq séances, 12 sur 23 sont en hausse ; sur un mois, 11 sur 23.
+Sur les 23 valeurs suivies, 8 progressent et 15 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à −1,36 %. Samsung Electronics mène le groupe (+5,67 %) et Meta Platforms ferme la marche (−7,47 %). Sur cinq séances, 8 sur 23 sont en hausse ; sur un mois, 10 sur 23.
 
-Par région, la variation moyenne de séance est de : américaines +0,78 % (15 valeurs) ; européennes +1,96 % (4 valeurs) ; asiatiques −0,86 % (4 valeurs). L'échantillon est restreint (une trentaine de valeurs phares) : il illustre la tendance des grandes capitalisations, pas celle de tout le marché.
+Par région, la variation moyenne de séance est de : américaines −1,65 % (15 valeurs) ; européennes −0,78 % (4 valeurs) ; asiatiques −0,84 % (4 valeurs). L'échantillon est restreint (une trentaine de valeurs phares) : il illustre la tendance des grandes capitalisations, pas celle de tout le marché.
 
-Les mouvements les plus inhabituels par rapport à la volatilité propre de chaque titre : SAP (+3,52 %, soit +2,0 écart-type) ; Tesla (+3,48 %, soit +1,8 écart-type) ; Nvidia (+2,48 %, soit +1,5 écart-type).
+Les mouvements les plus inhabituels par rapport à la volatilité propre de chaque titre : Caterpillar (−5,43 %, soit −2,5 écart-type) ; Amazon (−4,63 %, soit −2,4 écart-type) ; Nvidia (−4,31 %, soit −2,4 écart-type).
 
 Apple, dernier trimestre publié à la SEC (clôturé le 2026-06-27) : chiffre d'affaires +16,4 % sur un an, bénéfice par action dilué +28,7 %, marge opérationnelle de 32,6 %. Ce sont des chiffres publiés, pas des surprises par rapport au consensus.
 
@@ -241,31 +253,17 @@ Amazon, dernier trimestre publié à la SEC (clôturé le 2026-06-30) : chiffre 
 
 Alphabet, dernier trimestre publié à la SEC (clôturé le 2026-06-30) : chiffre d'affaires +12,0 % sur un an, bénéfice par action dilué +294,4 %. Ce sont des chiffres publiés, pas des surprises par rapport au consensus.
 
-Meta Platforms, dernier trimestre publié à la SEC (clôturé le 2026-06-30) : chiffre d'affaires +28,0 % sur un an, bénéfice par action dilué −13,4 %, marge opérationnelle de 30,9 %. Ce sont des chiffres publiés, pas des surprises par rapport au consensus.
+Meta Platforms, dernier trimestre publié à la SEC (clôturé le 2026-09-30) : chiffre d'affaires +26,1 % sur un an, bénéfice par action dilué +264,8 %, marge opérationnelle de 20,1 %. Ce sont des chiffres publiés, pas des surprises par rapport au consensus.
 
-Tesla, dernier trimestre publié à la SEC (clôturé le 2026-06-30) : chiffre d'affaires +25,5 % sur un an, bénéfice par action dilué −3,0 %, marge opérationnelle de 1,4 %. Ce sont des chiffres publiés, pas des surprises par rapport au consensus.
+Tesla, dernier trimestre publié à la SEC (clôturé le 2026-09-30) : chiffre d'affaires −0,2 % sur un an, bénéfice par action dilué −43,6 %, marge opérationnelle de 2,6 %. Ce sont des chiffres publiés, pas des surprises par rapport au consensus.
 
 Broadcom, dernier trimestre publié à la SEC (clôturé le 2026-08-02) : chiffre d'affaires +85,5 % sur un an, bénéfice par action dilué +215,3 %, marge opérationnelle de 53,9 %. Ce sont des chiffres publiés, pas des surprises par rapport au consensus.
 
-À la une pour cet univers :
-* SpaceX stock jumps 10% after earnings beat and Musk hints at Tesla tie-up
-  CNBC — actualités principales (flux éditeur), Wed, 21 Oct 2026 16:08:50 GMT
-  SpaceX shares jumped after the company reported surging revenue growth in its third quarter, and owner Elon Musk floated a potential SpaceX-Tesla merger.
-  https://www.cnbc.com/2026/10/21/spacex-spcx-stock-musk-merger-tesla.html
-
-* Tesla earnings loom after Musk calls SpaceX merger a 'good idea'
-  CNBC — technologie, Wed, 21 Oct 2026 16:01:25 GMT
-  A day after Elon Musk's SpaceX reported third-quarter results, Tesla is scheduled to update investors.
-  https://www.cnbc.com/2026/10/21/tesla-tsla-q3-2026-earnings-report.html
-
-* UK financial watchdog opens consultations for DeFi guidance, crypto laws
-  Cointelegraph — crypto (flux éditeur), Wed, 21 Oct 2026 17:25:00 +0000
-  The UK’s Financial Conduct Authority (FCA) announced two consultation periods for how companies using decentralized finance can comply with its guidance, and exclusions for certain crypto assets following “recent legislative changes.” In a Wednesday notice, the FCA opened consultation periods for helping DeFi companies comply with the financial watchdog’s rules on money laundering and financial crime.
-  https://cointelegraph.com/news/uk-fca-consultations-defi-crypto-laws
+Aucune nouvelle suffisamment ciblée n'a été identifiée dans les flux collectés ; ce silence ne dit rien du risque.
 
 À l'agenda :
-- mercredi 21 octobre : Résultats trimestriels : Meta Platforms (META) (à confirmer).
-- mercredi 21 octobre : Résultats trimestriels : Tesla (TSLA) (à confirmer).
+- mercredi 28 octobre : Résultats trimestriels : Microsoft (MSFT) (à confirmer).
+- mercredi 28 octobre : Résultats trimestriels : Alphabet (GOOGL) (à confirmer).
 
 
 MATIÈRES PREMIÈRES
@@ -275,37 +273,40 @@ MATIÈRES PREMIÈRES
 
 Instruments suivis
 Instrument | Dernier | 1 séance | 5 séances | 1 mois | 30 jours | Cours du
-Coffee futures (KC=F) | 316,65 | +1,72 % | +6,24 % | +16,29 % | tendance | 2026-10-21
-Corn futures (ZC=F) | 464,25 | +0,49 % | −3,43 % | −13,51 % | tendance | 2026-10-21
-Copper futures (HG=F) | 6,5890 | +0,34 % | −0,34 % | −2,52 % | tendance | 2026-10-21
-Gold futures (GC=F) | 4 156,40 | +0,33 % | +1,18 % | −5,03 % | tendance | 2026-10-21
-Silver futures (SI=F) | 57,84 | +0,24 % | +4,13 % | −12,27 % | tendance | 2026-10-21
-Brent crude oil futures (BZ=F) | 108,74 | −0,05 % | +2,53 % | +9,56 % | tendance | 2026-10-21
-Soybean futures (ZS=F) | 1 245,50 | −0,22 % | −2,49 % | −6,04 % | tendance | 2026-10-21
-Wheat futures (ZW=F) | 629,50 | −2,14 % | −6,50 % | −12,23 % | tendance | 2026-10-21
-WTI crude oil futures (CL=F) | 97,06 | −4,65 % | +2,07 % | +2,61 % | tendance | 2026-10-21
-Natural gas futures (NG=F) | 2,7920 | −5,77 % | −12,70 % | −5,83 % | tendance | 2026-10-21
+Brent crude oil futures (BZ=F) | 113,06 | +3,90 % | +6,74 % | +9,68 % | tendance | 2026-10-22
+WTI crude oil futures (CL=F) | 99,49 | +2,41 % | +1,55 % | +7,95 % | tendance | 2026-10-22
+Soybean futures (ZS=F) | 1 254,50 | +0,74 % | −0,67 % | −4,82 % | tendance | 2026-10-22
+Natural gas futures (NG=F) | 2,8060 | +0,57 % | −13,29 % | −7,18 % | tendance | 2026-10-22
+Wheat futures (ZW=F) | 626,00 | −0,36 % | −6,57 % | −11,64 % | tendance | 2026-10-22
+Corn futures (ZC=F) | 460,75 | −0,54 % | −3,61 % | −12,90 % | tendance | 2026-10-22
+Coffee futures (KC=F) | 311,40 | −1,50 % | +5,63 % | +12,87 % | tendance | 2026-10-22
+Copper futures (HG=F) | 6,4045 | −2,12 % | −1,64 % | −4,10 % | tendance | 2026-10-22
+Gold futures (GC=F) | 4 057,60 | −2,23 % | −2,70 % | −6,04 % | tendance | 2026-10-22
+Silver futures (SI=F) | 54,94 | −4,32 % | −3,34 % | −14,67 % | tendance | 2026-10-22
 
-Sur les 10 matières premières suivies, 5 progressent et 5 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à −0,97 %. Coffee futures mène le groupe (+1,72 %) et Natural gas futures ferme la marche (−5,77 %). Sur cinq séances, 5 sur 10 sont en hausse ; sur un mois, 3 sur 10.
+Sur les 10 matières premières suivies, 4 progressent et 6 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à −0,35 %. Brent crude oil futures mène le groupe (+3,90 %) et Silver futures ferme la marche (−4,32 %). Sur cinq séances, 3 sur 10 sont en hausse ; sur un mois, 3 sur 10.
 
-Énergie : le Brent cote 108,74 dollars (−0,05 %) et le WTI 97,06 dollars (−4,65 %) ; l'écart Brent–WTI est de 11,68 dollars le baril. Un écart qui s'élargit signale une tension propre au marché mondial plutôt qu'américain.
+Énergie : le Brent cote 113,06 dollars (+3,90 %) et le WTI 99,49 dollars (+2,41 %) ; l'écart Brent–WTI est de 13,57 dollars le baril. Un écart qui s'élargit signale une tension propre au marché mondial plutôt qu'américain.
 
-Métaux : le rapport or/argent s'établit à 71,9 (une hausse du ratio traduit une préférence pour le refuge sur le métal industriel) ; l'or progresse (+0,33 %) ; le cuivre, baromètre de la demande industrielle, progresse (+0,34 %).
+Métaux : le rapport or/argent s'établit à 73,9 (une hausse du ratio traduit une préférence pour le refuge sur le métal industriel) ; l'or recule nettement (−2,23 %) ; le cuivre, baromètre de la demande industrielle, recule nettement (−2,12 %).
 
-Produits agricoles : variation moyenne de −0,04 % sur la séance pour 4 contrats (maïs, blé, soja, café).
+Produits agricoles : variation moyenne de −0,42 % sur la séance pour 4 contrats (maïs, blé, soja, café).
 
 À la une pour cet univers :
-* Saudi Crude Exports Hit Five-Month High as Production Falls to Record Low
-  OilPrice — pétrole et énergie (flux éditeur), Wed, 21 Oct 2026 12:30:00 -0500
-  Saudi Arabia's crude exports rose about 7.9% in August from July to 4.451 million barrels per day, the highest since March, while its oil production fell to a record low of 6.24 million bpd, the Joint Organizations Data Initiative (JODI) showed Wednesday, Reuters reported. Refinery crude throughput fell by 181,000 bpd to 2.297 million bpd in August from 2.478 million bpd in… Production was 8.135 million bpd in July and 6.560 million bpd in May. In March, they were 4.974 million bpd, JODI data showed in May.
-  Lecture marché : Interprétation écartée : le commentaire évoquait le pétrole, sans lien explicite établi par le titre et l'extrait. La conséquence de marché reste à vérifier dans l'article original.
-  https://oilprice.com/Latest-Energy-News/World-News/Saudi-Crude-Exports-Hit-Five-Month-High-as-Production-Falls-to-Record-Low.html
-
-* Oil prices fall as traders hope for diplomatic progress in Middle East
-  CNBC — énergie, Tue, 20 Oct 2026 19:40:51 GMT
-  West Texas Intermediate futures for November fell 1.8% to close at $101.79 per barrel, pulling back dramatically from a session high of $110.48. Global benchmark Brent crude futures for December delivery fell 0.7% to settle at $108.79 per barrel, well off a session high of $111.99. Crude oil prices fell Tuesday as traders hoped for diplomatic progress between the U.S. and Iran, though attacks on tankers and strikes against Saudi Arabia have escalated recently.
+* Brent crude tops $113, highest level since May, after Trump hints at action on Iran
+  CNBC — énergie, Thu, 22 Oct 2026 18:08:39 GMT
+  The Middle East conflict could flare up again as the U.S. reportedly plans to resume strikes against Iran.
   Lecture marché : Le pétrole transmet le choc aux anticipations d’inflation, aux coûts de transport et aux marges. Les producteurs peuvent en bénéficier; les compagnies aériennes, consommateurs et pays importateurs sont plus exposés. Vérifier si le mouvement vient d’une rupture d’offre durable ou d’une prime géopolitique.
-  https://www.cnbc.com/2026/10/20/oil-price-wti-brent-crude.html
+  https://www.cnbc.com/2026/10/22/oil-prices-today-wti-brent-saudi-arabia.html
+
+* Citi’s $60 Oil Call Meets $112 Brent
+  OilPrice — pétrole et énergie (flux éditeur), Thu, 22 Oct 2026 12:30:00 -0500
+  More than 1 million barrels per day of Gulf crude was transferred between vessels in… Citi sees more upside risk for oil prices despite recovering Middle Eastern crude exports, a considerably less bearish assessment from the bank that predicted $60-to-$65 Brent by year-end just three months ago. Brent December futures traded at $111.70 on Thursday, up $2.88, or 2.65%, after touching $112.68 earlier in the session.
+  https://oilprice.com/Latest-Energy-News/World-News/Citis-60-Oil-Call-Meets-112-Brent.html
+
+* Under-the-radar stocks to play the next leg of the energy trade with oil prices jumping again
+  CNBC — énergie, Thu, 22 Oct 2026 15:16:05 GMT
+  https://www.cnbc.com/2026/10/22/under-the-radar-stocks-to-play-the-next-leg-of-the-energy-trade-with-oil-prices-jumping-again.html
 
 À l'agenda :
 - mercredi 28 octobre à 21:00 (heure de Madagascar) : Décision de politique monétaire de la Réserve fédérale (FOMC) (confirmé).
@@ -313,35 +314,36 @@ Produits agricoles : variation moyenne de −0,04 % sur la séance pour 4 contr
 
 
 DEVISES
-(lecture : 1 min)
+(lecture : 2 min)
 
 Le change arbitre entre écarts de taux, croissance relative et demande de valeurs refuges ; le dollar en est le pivot.
 
 Instruments suivis
 Instrument | Dernier | 1 séance | 5 séances | 1 mois | 30 jours | Cours du
-AUD/USD (AUDUSD=X) | 0,7034 | +0,74 % | +0,70 % | −1,19 % | tendance | 2026-10-21
-GBP/USD (GBPUSD=X) | 1,3401 | +0,70 % | +1,09 % | +0,23 % | tendance | 2026-10-21
-NZD/USD (NZDUSD=X) | 0,5705 | +0,69 % | +1,62 % | −0,11 % | tendance | 2026-10-21
-EUR/USD (EURUSD=X) | 1,1241 | +0,22 % | +0,33 % | −1,95 % | tendance | 2026-10-21
-US Dollar Index (DX-Y.NYB) | 101,65 | −0,08 % | −0,88 % | +1,05 % | tendance | 2026-10-21
-USD/JPY (USDJPY=X) | 158,12 | −0,25 % | −0,13 % | +0,48 % | tendance | 2026-10-21
-USD/CHF (USDCHF=X) | 0,8240 | −0,35 % | −1,04 % | +0,39 % | tendance | 2026-10-21
-USD/CNY (USDCNY=X) | 6,6642 | −0,40 % | −0,42 % | −0,46 % | tendance | 2026-10-21
-USD/CAD (USDCAD=X) | 1,4045 | −0,43 % | −1,21 % | +0,09 % | tendance | 2026-10-21
-EUR/GBP (EURGBP=X) | 0,8386 | −0,47 % | −0,75 % | −2,19 % | tendance | 2026-10-21
-USD/INR (USDINR=X) | 94,45 | −0,57 % | −0,88 % | −1,32 % | tendance | 2026-10-21
+GBP/USD (GBPUSD=X) | 1,3403 | +0,22 % | +1,31 % | +0,45 % | tendance | 2026-10-22
+AUD/USD (AUDUSD=X) | 0,7021 | +0,21 % | +0,62 % | −1,27 % | tendance | 2026-10-22
+NZD/USD (NZDUSD=X) | 0,5686 | +0,15 % | +1,36 % | −0,67 % | tendance | 2026-10-22
+USD/INR (USDINR=X) | 94,81 | +0,10 % | −0,36 % | −0,92 % | tendance | 2026-10-22
+EUR/USD (EURUSD=X) | 1,1226 | −0,01 % | +0,28 % | −1,94 % | tendance | 2026-10-22
+US Dollar Index (DX-Y.NYB) | 101,59 | −0,18 % | −0,40 % | +0,49 % | tendance | 2026-10-22
+USD/CNY (USDCNY=X) | 6,6641 | −0,21 % | −0,43 % | −0,53 % | tendance | 2026-10-22
+EUR/GBP (EURGBP=X) | 0,8373 | −0,25 % | −1,04 % | −2,40 % | tendance | 2026-10-22
+USD/CAD (USDCAD=X) | 1,4003 | −0,45 % | −1,48 % | −0,45 % | tendance | 2026-10-22
+USD/CHF (USDCHF=X) | 0,8209 | −0,57 % | −1,28 % | +0,02 % | tendance | 2026-10-22
+USD/JPY (USDJPY=X) | 156,95 | −0,83 % | −0,64 % | −0,33 % | tendance | 2026-10-22
 
-Sur les 10 paires suivies, 4 progressent et 6 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à −0,01 %. AUD/USD mène le groupe (+0,74 %) et USD/INR ferme la marche (−0,57 %). Sur cinq séances, 4 sur 10 sont en hausse ; sur un mois, 4 sur 10.
+Sur les 10 paires suivies, 4 progressent et 6 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à −0,16 %. GBP/USD mène le groupe (+0,22 %) et USD/JPY ferme la marche (−0,83 %). Sur cinq séances, 4 sur 10 sont en hausse ; sur un mois, 2 sur 10.
 
-L'indice du dollar s'établit à 101,65 (−0,08 % sur la séance, −0,88 % sur cinq séances). Face aux 9 devises mesurées contre lui, le dollar progresse contre 0 et recule contre 9 : mouvement généralisé. Incohérence à noter : les paires qui composent l'indice impliquent environ −0,30 %, contre −0,08 % affichés : la cotation de l'indice est probablement décalée ; se fier aux paires.
+L'indice du dollar s'établit à 101,59 (−0,18 % sur la séance, −0,40 % sur cinq séances). Face aux 9 devises mesurées contre lui, le dollar progresse contre 2 et recule contre 7 : mouvement généralisé.
 
-Principales paires : EUR/USD à 1,1241 (+0,22 %), GBP/USD à 1,3401 (+0,70 %), USD/JPY à 158,12 (−0,25 %). Sur le yen, le risque d'intervention officielle limite l'intérêt de poursuivre un mouvement de hausse du dollar.
+Principales paires : EUR/USD à 1,1226 (−0,01 %), GBP/USD à 1,3403 (+0,22 %), USD/JPY à 156,95 (−0,83 %). Sur le yen, le risque d'intervention officielle limite l'intérêt de poursuivre un mouvement de hausse du dollar.
 
 À la une pour cet univers :
 * Philip R. Lane: Euro liquidity lines and the international monetary system
   Banque centrale européenne — communiqués, Wed, 21 Oct 2026 06:15:00 +0200
   The maximum line size per individual central bank is €50 billion. It also encourages the holdings of longer-duration bonds, since it enhances the liquidity of these bonds: the liquidity enhancement is considerable as EUREP offers same day liquidity of up to €50 billion off-market in a single transaction.
-  https://www.ecb.europa.eu/press/key/date/2026/html/ecb.sp261021~401d6c4b70.en.html
+  Lecture marché : Les rendements modifient le coût du crédit et les valorisations. Une hausse pénalise généralement les obligations déjà émises et les actions à valorisation élevée; une détente peut les soutenir. Le prochain test est l’écart entre les données d’inflation/activité et les attentes de taux.
+  https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261021~401d6c4b70.en.html
 
 À l'agenda :
 - mercredi 28 octobre à 21:00 (heure de Madagascar) : Décision de politique monétaire de la Réserve fédérale (FOMC) (confirmé).
@@ -349,55 +351,75 @@ Principales paires : EUR/USD à 1,1241 (+0,22 %), GBP/USD à 1,3401 (+0,70 %),
 
 
 CRYPTO-MONNAIES
-(lecture : 1 min)
+(lecture : 2 min)
 
 Les actifs numériques cotent jour et nuit, week-end compris : ils servent souvent de baromètre d'appétit pour le risque entre deux séances boursières.
 
 Instruments suivis
 Instrument | Dernier | 1 séance | 5 séances | 1 mois | 30 jours | Cours du
-XRP (XRP-USD) | 1,3962 | +4,63 % | +6,58 % | −6,19 % | tendance | 2026-10-21
-Ethereum (ETH-USD) | 2 516,58 | +2,85 % | +4,00 % | −6,23 % | tendance | 2026-10-21
-Solana (SOL-USD) | 108,80 | +2,23 % | +4,32 % | −7,79 % | tendance | 2026-10-21
-Bitcoin (BTC-USD) | 84 669,13 | +2,08 % | +3,89 % | +1,33 % | tendance | 2026-10-21
+Solana (SOL-USD) | 103,06 | −3,50 % | −0,24 % | −12,95 % | tendance | 2026-10-22
+Bitcoin (BTC-USD) | 81 001,00 | −3,58 % | −0,47 % | −4,54 % | tendance | 2026-10-22
+Ethereum (ETH-USD) | 2 373,26 | −3,95 % | −1,11 % | −12,28 % | tendance | 2026-10-22
+XRP (XRP-USD) | 1,3016 | −4,55 % | +0,70 % | −12,88 % | tendance | 2026-10-22
 
-Sur les 4 crypto-monnaies suivies, 4 progressent et 0 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à +2,95 %. XRP mène le groupe (+4,63 %) et Bitcoin ferme la marche (+2,08 %). Sur cinq séances, 4 sur 4 sont en hausse ; sur un mois, 1 sur 4.
+Sur les 4 crypto-monnaies suivies, 0 progressent et 4 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à −3,90 %. Solana mène le groupe (−3,50 %) et XRP ferme la marche (−4,55 %). Sur cinq séances, 1 sur 4 sont en hausse ; sur un mois, 0 sur 4.
 
-Le bitcoin cote 84 669 dollars (+2,08 % sur 24 heures, +3,89 % sur cinq jours, +1,33 % sur un mois). L'ether fait mieux que le bitcoin de 0,11 point de pourcentage sur cinq jours, signe d'un appétit pour le risque plus marqué au sein du secteur.
+Le bitcoin cote 81 001 dollars (−3,58 % sur 24 heures, −0,47 % sur cinq jours, −4,54 % sur un mois). L'ether fait moins bien que le bitcoin de 0,64 point de pourcentage sur cinq jours, signe d'un appétit pour le risque moins marqué au sein du secteur.
 
-Le bitcoin (+2,08 %) et le Nasdaq (+1,28 %) vont dans le même sens sur la dernière séance. Les horaires ne se recouvrent pas (24 heures sur 24 contre une séance), et une seule séance ne suffit pas à conclure à une corrélation.
+Le bitcoin (−3,58 %) et le Nasdaq (−2,64 %) vont dans le même sens sur la dernière séance. Les horaires ne se recouvrent pas (24 heures sur 24 contre une séance), et une seule séance ne suffit pas à conclure à une corrélation.
 
 À la une pour cet univers :
-* Trump to throw spotlight on overseas crypto abuses at White House event
-  CoinDesk — crypto (flux éditeur), Wed, 21 Oct 2026 16:23:44 +0000
-  The administration says its law enforcement agencies have halted about $833 million in crypto connected to the overseas scams, and 503 fraudulent crypto websites have been seized under the watch of the Homeland Security Task Force. It's also informed almost 9,000 U.S. citizens that they're being victimized, the official said. GENIUS pushes yield off-chain; TAM grows to $4B in 3 years.
+* Crypto for Advisors: Stablecoins are ready for prime time
+  CoinDesk — crypto (flux éditeur), Thu, 22 Oct 2026 14:58:31 +0000
+  EY-Parthenon’s 2026 Blockchain Payments Survey of 521 corporate and financial institution decision-makers found that 18% of corporates have used stablecoins in production, double the share reported in our 2025 survey. Meanwhile, a separate global consortia of 21 financial institutions, including Bank of America, Citi, Goldman Sachs and Wells Fargo, announced plans in September 2026 to launch a U.S. dollar stablecoin in the first half of 2027, with euro issuance also a priority.
   Lecture marché : Distinguer les facteurs propres au secteur (réglementation, ETF, liquidations, sécurité) du mouvement général d’appétit pour le risque. Vérifier les flux d’ETF et l’évolution simultanée du dollar, des rendements et des actifs risqués avant d’attribuer une cause.
-  https://www.coindesk.com/policy/2026/10/21/trump-to-throw-spotlight-on-overseas-crypto-abuses-in-white-house-event
+  https://www.coindesk.com/coindesk-indices/2026/10/22/crypto-for-advisors-stablecoins-are-ready-for-prime-time
+
+* Bitcoin hashrate hits seven-month high as AI shift fails to ease mining competition
+  Cointelegraph — crypto (flux éditeur), Thu, 22 Oct 2026 16:50:51 +0000
+  Bitcoin’s mining difficulty increased 5.92% on Oct. BlocksBridge previously reported a 23% decline in publicly traded miners’ realized hashrate, alongside a 52% quarterly increase in their reported AI and high-performance computing revenue. It estimated that the displaced capacity represented roughly $1.5 billion in mining hardware.
+  https://cointelegraph.com/news/bitcoin-mining-difficulty-hashrate-recovery-ai-shift
+
+* Underdog taps zerohash to bring crypto deposits to prediction markets
+  Cointelegraph — crypto (flux éditeur), Thu, 22 Oct 2026 17:24:49 +0000
+  Founded in 2020, Underdog has more than 11 million registered accounts, according to IG Group, which agreed in July to acquire the company in a deal worth up to $1.3 billion. According to DeFiRate data , the company recorded $1.4 billion in trading volume over the 30 days ending Oct. 21, a 133% increase from the previous period, though it remained well behind Kalshi’s $81.5 billion and the combined $17.2 billion recorded by Polymarket’s US and international platforms.
+  https://cointelegraph.com/news/underdog-taps-zerohash-to-bring-crypto-deposits-to-prediction-markets
 
 À l'agenda :
 - mercredi 28 octobre à 21:00 (heure de Madagascar) : Décision de politique monétaire de la Réserve fédérale (FOMC) (confirmé).
 
 
 OBLIGATIONS
-(lecture : 1 min)
+(lecture : 2 min)
 
 Les taux d'intérêt fixent le prix de l'argent : leur niveau, leur pente et leurs variations conditionnent la valorisation de tous les autres actifs.
 
 Instruments suivis
 Instrument | Dernier | 1 séance | 5 séances | 1 mois | 30 jours | Cours du
-US Treasury bond futures (ZB=F) | 105,88 | +0,24 % | +1,62 % | −1,51 % | tendance | 2026-10-21
-US Treasury 10-year note futures (ZN=F) | 105,34 | +0,03 % | +0,45 % | −0,62 % | tendance | 2026-10-21
-US 5-year Treasury yield (^FVX) | 4,933 % | −0,04 % | −1,18 % | +1,88 % | tendance | 2026-10-21
-US 10-year Treasury yield (^TNX) | 5,109 % | −0,16 % | −1,56 % | +2,84 % | tendance | 2026-10-21
-US 30-year Treasury yield (^TYX) | 5,411 % | −0,26 % | −2,06 % | +2,04 % | tendance | 2026-10-21
-US 13-week Treasury bill yield (^IRX) | 4,060 % | −0,49 % | −0,61 % | +1,37 % | tendance | 2026-10-21
+US Treasury bond futures (ZB=F) | 107,75 | +2,10 % | +2,19 % | +1,77 % | tendance | 2026-10-22
+US Treasury 10-year note futures (ZN=F) | 106,45 | +1,28 % | +0,87 % | +1,35 % | tendance | 2026-10-22
+US 13-week Treasury bill yield (^IRX) | 4,018 % | −1,11 % | −1,71 % | −0,25 % | tendance | 2026-10-22
+US 30-year Treasury yield (^TYX) | 5,288 % | −2,78 % | −2,60 % | −2,09 % | tendance | 2026-10-22
+US 10-year Treasury yield (^TNX) | 4,947 % | −3,87 % | −2,79 % | −3,27 % | tendance | 2026-10-22
+US 5-year Treasury yield (^FVX) | 4,755 % | −4,36 % | −2,94 % | −4,84 % | tendance | 2026-10-22
 
-Courbe des taux américains : 3 mois à 4,060 % (−2,0 point de base), 5 ans à 4,933 % (−0,2 point de base), 10 ans à 5,109 % (−0,8 point de base), 30 ans à 5,411 % (−1,4 point de base).
+Courbe des taux américains : 3 mois à 4,018 % (−4,5 points de base), 5 ans à 4,755 % (−20,7 points de base), 10 ans à 4,947 % (−19,1 points de base), 30 ans à 5,288 % (−14,7 points de base).
 
-Pente de la courbe : 10 ans moins 3 mois : +105 points de base ; 30 ans moins 5 ans : +48 points de base ; 10 ans moins 2 ans (Trésor américain, 2026-10-20) : +33 points de base. Une pente négative (courbe inversée) a historiquement précédé les ralentissements ; une pente qui se redresse peut refléter des baisses de taux anticipées ou une prime de terme plus élevée : la pente seule ne tranche pas.
+Pente de la courbe : 10 ans moins 3 mois : +93 points de base ; 30 ans moins 5 ans : +53 points de base ; 10 ans moins 2 ans (Trésor américain, 2026-10-21) : +32 points de base. Une pente négative (courbe inversée) a historiquement précédé les ralentissements ; une pente qui se redresse peut refléter des baisses de taux anticipées ou une prime de terme plus élevée : la pente seule ne tranche pas.
 
-Contrats à terme sur emprunts du Trésor : US Treasury 10-year note futures +0,03 %, US Treasury bond futures +0,24 %. Le prix d'une obligation évolue à l'inverse de son rendement : un contrat qui monte correspond à des taux qui baissent.
+Contrats à terme sur emprunts du Trésor : US Treasury 10-year note futures +1,28 %, US Treasury bond futures +2,10 %. Le prix d'une obligation évolue à l'inverse de son rendement : un contrat qui monte correspond à des taux qui baissent.
 
-Aucune nouvelle suffisamment ciblée n'a été identifiée dans les flux collectés ; ce silence ne dit rien du risque.
+À la une pour cet univers :
+* BlackRock's Rick Rieder sees 'historic' opportunity in high-quality bonds
+  CNBC — marchés et investissement, Wed, 21 Oct 2026 19:54:16 GMT
+  Hypothetically, it's now possible for investors to build a diversified portfolio that yields more than 7% with less than three years of duration and an average credit quality of A-, he said. Alphabet , Amazon , Meta Platforms and Oracle have issued a total of about $228.4 billion in bonds year to date, as of Oct.
+  Lecture marché : La portée de cette nouvelle dépend de ses détails et de la surprise par rapport aux attentes. Identifier les entreprises ou pays concernés, puis vérifier la réaction des prix et les prochaines données qui confirmeraient ou invalideraient l’interprétation.
+  https://www.cnbc.com/2026/10/21/rick-rieder-investment-grade-bonds.html
+
+* France protests: Macron condemns 'stupid' comments from Trump, others as bond market pressure builds
+  CNBC — Europe, Thu, 22 Oct 2026 14:21:56 GMT
+  France is facing a mounting economic crisis that pushed its 10-year government bond yield to a new 24-year high on Thursday.
+  https://www.cnbc.com/2026/10/22/macron-trump-france-protests.html
 
 À l'agenda :
 - mercredi 28 octobre à 21:00 (heure de Madagascar) : Décision de politique monétaire de la Réserve fédérale (FOMC) (confirmé).
@@ -411,26 +433,26 @@ Les fonds indiciels cotés permettent de lire les rotations : grandes contre pet
 
 Instruments suivis
 Instrument | Dernier | 1 séance | 5 séances | 1 mois | 30 jours | Cours du
-Technology Select Sector SPDR ETF (XLK) | 188,88 | +1,86 % | −0,81 % | −3,77 % | tendance | 2026-10-21
-Invesco Nasdaq 100 ETF (QQQ) | 727,20 | +1,33 % | −0,24 % | −2,71 % | tendance | 2026-10-21
-SPDR S&P 500 ETF (SPY) | 774,30 | +0,68 % | +0,61 % | +0,12 % | tendance | 2026-10-21
-Vanguard FTSE Developed Markets ETF (VEA) | 70,24 | +0,66 % | +1,36 % | −3,40 % | tendance | 2026-10-21
-Emerging markets equity ETF (EEM) | 63,66 | +0,54 % | −1,13 % | −7,87 % | tendance | 2026-10-21
-Russell 2000 small-cap equity ETF (IWM) | 277,25 | +0,53 % | +2,17 % | −3,47 % | tendance | 2026-10-21
-Developed markets ex-US equity ETF (EFA) | 104,20 | +0,50 % | +1,42 % | −2,15 % | tendance | 2026-10-21
-Gold ETF (GLD) | 379,44 | +0,47 % | +0,92 % | −5,16 % | tendance | 2026-10-21
-High-yield corporate bond ETF (HYG) | 77,03 | +0,25 % | +0,28 % | −1,66 % | tendance | 2026-10-21
-US Treasury 20+ year ETF (TLT) | 80,28 | +0,18 % | +1,76 % | −1,41 % | tendance | 2026-10-21
-Energy Select Sector SPDR ETF (XLE) | 68,06 | +0,14 % | +0,64 % | +10,17 % | tendance | 2026-10-21
-iShares Core U.S. Aggregate Bond ETF (AGG) | 95,36 | +0,10 % | +0,57 % | −0,57 % | tendance | 2026-10-21
-Vanguard Total Bond Market ETF (BND) | 70,78 | +0,05 % | +0,55 % | −0,52 % | tendance | 2026-10-21
-iShares 7–10 Year Treasury ETF (IEF) | 90,29 | +0,04 % | +0,65 % | −0,61 % | tendance | 2026-10-21
-Investment-grade corporate bond ETF (LQD) | 103,25 | +0,03 % | +0,58 % | −1,32 % | tendance | 2026-10-21
-Vanguard FTSE Emerging Markets ETF (VWO) | 58,24 | −0,01 % | −1,11 % | −4,67 % | tendance | 2026-10-21
+US Treasury 20+ year ETF (TLT) | 81,77 | +1,90 % | +2,24 % | +2,03 % | tendance | 2026-10-22
+iShares 7–10 Year Treasury ETF (IEF) | 91,26 | +1,14 % | +1,01 % | +1,54 % | tendance | 2026-10-22
+Investment-grade corporate bond ETF (LQD) | 104,36 | +1,12 % | +0,84 % | +0,89 % | tendance | 2026-10-22
+iShares Core U.S. Aggregate Bond ETF (AGG) | 96,14 | +0,89 % | +0,77 % | +1,13 % | tendance | 2026-10-22
+Vanguard Total Bond Market ETF (BND) | 71,38 | +0,88 % | +0,80 % | +1,16 % | tendance | 2026-10-22
+High-yield corporate bond ETF (HYG) | 77,06 | +0,10 % | −0,09 % | −0,89 % | tendance | 2026-10-22
+Russell 2000 small-cap equity ETF (IWM) | 275,74 | −0,27 % | +0,24 % | −2,19 % | tendance | 2026-10-22
+Developed markets ex-US equity ETF (EFA) | 103,17 | −0,86 % | −0,49 % | −1,56 % | tendance | 2026-10-22
+Energy Select Sector SPDR ETF (XLE) | 67,41 | −1,10 % | +1,28 % | +8,08 % | tendance | 2026-10-22
+Vanguard FTSE Developed Markets ETF (VEA) | 69,28 | −1,19 % | −0,54 % | −2,99 % | tendance | 2026-10-22
+SPDR S&P 500 ETF (SPY) | 762,69 | −1,35 % | −1,18 % | −0,67 % | tendance | 2026-10-22
+Gold ETF (GLD) | 369,93 | −2,38 % | −3,34 % | −5,84 % | tendance | 2026-10-22
+Vanguard FTSE Emerging Markets ETF (VWO) | 56,79 | −2,39 % | −3,40 % | −5,54 % | tendance | 2026-10-22
+Invesco Nasdaq 100 ETF (QQQ) | 704,78 | −2,82 % | −3,19 % | −4,91 % | tendance | 2026-10-22
+Emerging markets equity ETF (EEM) | 61,67 | −2,99 % | −3,58 % | −8,92 % | tendance | 2026-10-22
+Technology Select Sector SPDR ETF (XLK) | 182,27 | −3,33 % | −3,66 % | −6,69 % | tendance | 2026-10-22
 
-Sur les 16 ETF suivis, 15 progressent et 1 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à +0,46 %. Technology Select Sector SPDR ETF mène le groupe (+1,86 %) et Vanguard FTSE Emerging Markets ETF ferme la marche (−0,01 %). Sur cinq séances, 12 sur 16 sont en hausse ; sur un mois, 2 sur 16.
+Sur les 16 ETF suivis, 6 progressent et 10 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à −0,79 %. US Treasury 20+ year ETF mène le groupe (+1,90 %) et Technology Select Sector SPDR ETF ferme la marche (−3,33 %). Sur cinq séances, 7 sur 16 sont en hausse ; sur un mois, 6 sur 16.
 
-Rotations sur cinq séances, lues par différence de performance : petites capitalisations face aux grandes : +1,56 point de pourcentage sur cinq séances (les petites valeurs, plus sensibles aux taux et au crédit, devancent le marché large) ; technologie face à l'énergie : −1,45 point de pourcentage sur cinq séances (l'énergie fait mieux que la technologie) ; émergents face aux pays développés hors États-Unis : −2,55 points de pourcentage sur cinq séances (les marchés développés sont préférés aux émergents) ; crédit à haut rendement face aux emprunts d'État : −0,37 point de pourcentage sur cinq séances (le crédit risqué sous-performe les emprunts d'État, signe de prudence) ; or face aux actions américaines : +0,31 point de pourcentage sur cinq séances (le refuge or devance les actions).
+Rotations sur cinq séances, lues par différence de performance : petites capitalisations face aux grandes : +1,42 point de pourcentage sur cinq séances (les petites valeurs, plus sensibles aux taux et au crédit, devancent le marché large) ; technologie face à l'énergie : −4,94 points de pourcentage sur cinq séances (l'énergie fait mieux que la technologie) ; émergents face aux pays développés hors États-Unis : −3,09 points de pourcentage sur cinq séances (les marchés développés sont préférés aux émergents) ; crédit à haut rendement face aux emprunts d'État : −1,10 point de pourcentage sur cinq séances (le crédit risqué sous-performe les emprunts d'État, signe de prudence) ; or face aux actions américaines : −2,16 points de pourcentage sur cinq séances (les actions devancent le refuge or).
 
 Aucune nouvelle suffisamment ciblée n'a été identifiée dans les flux collectés ; ce silence ne dit rien du risque.
 
@@ -440,45 +462,46 @@ Aucune nouvelle suffisamment ciblée n'a été identifiée dans les flux collect
 
 
 FONDS D'INVESTISSEMENT
-(lecture : 1 min)
+(lecture : 2 min)
 
 Les fonds communs ne publient qu'une valeur liquidative par jour : leur variation reflète la clôture, pas la séance en cours.
 
 Instruments suivis
 Instrument | Dernier | 1 séance | 5 séances | 1 mois | 30 jours | Cours du
-T. Rowe Price Capital Appreciation Fund (gestion active) (PRWCX) | 39,18 | +0,44 % | −0,08 % | +0,28 % | tendance | 2026-10-20
-Vanguard Total Stock Market Index Fund Admiral Shares (VTSAX) | 183,51 | +0,40 % | −1,13 % | −0,82 % | tendance | 2026-10-20
-Vanguard Emerging Markets Stock Index Fund Admiral Shares (VEMAX) | 48,49 | +0,39 % | −2,04 % | −4,57 % | tendance | 2026-10-20
-Vanguard 500 Index Fund Admiral Shares (VFIAX) | 711,99 | +0,29 % | −1,18 % | −0,62 % | tendance | 2026-10-20
-Fidelity 500 Index Fund (FXAIX) | 268,06 | +0,28 % | −1,18 % | −0,61 % | tendance | 2026-10-20
-Vanguard Wellington Fund (VWELX) | 47,13 | +0,26 % | −0,67 % | −0,49 % | tendance | 2026-10-20
-Fidelity Balanced Fund (FBALX) | 32,40 | +0,19 % | −0,83 % | −0,94 % | tendance | 2026-10-20
-Fidelity Total Bond Fund (FTBFX) | 9,1700 | +0,11 % | +0,44 % | −0,92 % | tendance | 2026-10-20
-Vanguard Total Bond Market Index Fund Admiral Shares (VBTLX) | 9,3000 | +0,11 % | +0,43 % | −0,60 % | tendance | 2026-10-20
+Fidelity 500 Index Fund (FXAIX) | 269,62 | +0,58 % | +0,51 % | −0,03 % | tendance | 2026-10-21
+Vanguard 500 Index Fund Admiral Shares (VFIAX) | 716,11 | +0,58 % | +0,50 % | −0,04 % | tendance | 2026-10-21
+Vanguard Total Stock Market Index Fund Admiral Shares (VTSAX) | 184,57 | +0,58 % | +0,64 % | −0,29 % | tendance | 2026-10-21
+Fidelity Balanced Fund (FBALX) | 32,54 | +0,43 % | +0,34 % | −0,57 % | tendance | 2026-10-21
+Vanguard Wellington Fund (VWELX) | 47,32 | +0,40 % | +0,51 % | −0,08 % | tendance | 2026-10-21
+T. Rowe Price Capital Appreciation Fund (gestion active) (PRWCX) | 39,27 | +0,23 % | +0,51 % | +0,54 % | tendance | 2026-10-21
+Fidelity Total Bond Fund (FTBFX) | 9,1700 | 0,00 % | +0,33 % | −0,92 % | tendance | 2026-10-21
+Vanguard Total Bond Market Index Fund Admiral Shares (VBTLX) | 9,3000 | 0,00 % | +0,32 % | −0,60 % | tendance | 2026-10-21
+Vanguard Emerging Markets Stock Index Fund Admiral Shares (VEMAX) | 48,47 | −0,04 % | −0,94 % | −4,64 % | tendance | 2026-10-21
 
-Sur les 9 fonds suivis, 9 progressent et 0 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à +0,27 %. T. Rowe Price Capital Appreciation Fund (gestion active) mène le groupe (+0,44 %) et Vanguard Total Bond Market Index Fund Admiral Shares ferme la marche (+0,11 %). Sur cinq séances, 2 sur 9 sont en hausse ; sur un mois, 1 sur 9.
+Sur les 9 fonds suivis, 6 progressent et 1 reculent sur la dernière séance ; la variation moyenne, non pondérée, ressort à +0,31 %. Fidelity 500 Index Fund mène le groupe (+0,58 %) et Vanguard Emerging Markets Stock Index Fund Admiral Shares ferme la marche (−0,04 %). Sur cinq séances, 8 sur 9 sont en hausse ; sur un mois, 1 sur 9.
 
 Un fonds commun est valorisé une fois par jour, après la clôture américaine : sa variation de séance reflète la veille de bourse, et la date indiquée dans le tableau fait foi. Pour juger l'écart entre gestion indicielle et gestion active, comparer sur plusieurs mois plutôt que sur une journée.
 
-Contrôle de cohérence : le fonds indiciel VFIAX affiche −1,18 % sur cinq séances, l'ETF SPY +0,61 % : les deux répliquent le même indice, l'écart doit rester minime.
+Contrôle de cohérence : le fonds indiciel VFIAX affiche +0,50 % sur cinq séances, l'ETF SPY −1,18 % : les deux répliquent le même indice, l'écart doit rester minime.
 
 À la une pour cet univers :
 * This Janus Henderson fund manager owns CoreWeave debt — here's why he's sticking with it
   CNBC — marchés et investissement, Wed, 21 Oct 2026 00:12:44 GMT
   Revenue and Ebitda will ramp up next year, hitting $26.5 billion and $16.7 billion respectively, analysts estimate. The company has roughly $51.6 billion in total debt, including about $35 billion in notes, bonds and loans. Its stock has tumbled 20% over the past week, while the spread on its five-year credit default swaps is nearly 1,081 basis points — lower than earlier in the session but up 13% week over week. Spreads of 1,000 basis points and above are generally a sign of credit distress.
+  Lecture marché : Pour l’action concernée, comparer chiffre d’affaires, bénéfice, marges et prévisions de direction aux attentes, puis regarder la réaction du cours. Une publication en hausse peut faire baisser le titre si les attentes étaient plus élevées; l’effet sur l’indice dépend du poids de l’entreprise.
   https://www.cnbc.com/2026/10/20/coreweave-debt-janus-henderson-lloyd.html
 
 
 SCÉNARIOS ET LISTE DE SURVEILLANCE
-(lecture : 1 min)
+(lecture : 2 min)
 
 Ces scénarios sont conditionnels : ils décrivent ce qu'il faudrait observer, pas ce qui va se produire. Les niveaux cités sont les niveaux actuels, utilisés comme repères d'invalidation.
 
-Scénario A — poursuite de la hausse
-Le momentum se prolonge : le VIX reste contenu autour de 16,6, les rendements ne dépassent pas 5,11 % et le dollar reste stable près de 101,7. Les indices progressent avec une participation large entre secteurs.
+Scénario A — prolongement de la prudence
+Le scénario de baisse serait renforcé si le VIX dépasse durablement son niveau actuel de 19,3, si les rendements à 10 ans remontent au-dessus de 4,95 % et si le dollar se raffermit près ou au-dessus de 101,6. La confirmation la plus directe serait une nouvelle clôture des indices sous leurs récents creux ; sans ces confirmations, le biais reste une hypothèse et non un fait établi.
 
-Scénario B — consolidation
-Les indices marquent une pause : les gains récents se digèrent, le VIX remonte légèrement au-dessus de 16,6. Les hausses rapides sont souvent suivies de phases latérales.
+Scénario B — rebond technique et retour au centre
+Le scénario de rebond gagnerait en crédibilité si le VIX repasse sous son niveau actuel de 19,3, si les rendements à 10 ans se détendent et si le S&P 500 reprend une partie de sa baisse. Un rebond isolé ne suffirait pas à établir la fin de la correction : il faudrait aussi observer une amélioration durable des clôtures et de la participation des marchés.
 
 Scénario C — choc de volatilité
 Une surprise de taux, une tension géopolitique ou budgétaire, ou un événement de crédit fait bondir le VIX, rompt les corrélations habituelles et provoque un mouvement refuge (dollar, yen, franc suisse, or, emprunts d'État). Le prochain test majeur est : mercredi 28 octobre à 21:00 (heure de Madagascar) : Décision de politique monétaire de la Réserve fédérale (FOMC) (confirmé).
@@ -486,15 +509,16 @@ Une surprise de taux, une tension géopolitique ou budgétaire, ou un événemen
 Liste de surveillance :
 Liste de surveillance
 Instrument | Univers | Séance | Pourquoi le surveiller | Priorité
-GBP/USD (GBPUSD=X) | Devises | +0,70 % | Mouvement de 2,1 écart-type par rapport à sa volatilité habituelle | Élevée
-XRP (XRP-USD) | Crypto-monnaies | +4,63 % | Mouvement de 2,0 écart-type par rapport à sa volatilité habituelle | Élevée
-SAP (SAP.DE) | Actions | +3,52 % | Mouvement de 2,0 écart-type par rapport à sa volatilité habituelle | Moyenne
-Natural gas futures (NG=F) | Matières premières | −5,77 % | Mouvement de 1,9 écart-type par rapport à sa volatilité habituelle | Moyenne
-Tesla (TSLA) | Actions | +3,48 % | Mouvement de 1,8 écart-type par rapport à sa volatilité habituelle | Moyenne
-Euro Stoxx 50 (^STOXX50E) | Indices boursiers | +1,40 % | Mouvement de 1,7 écart-type par rapport à sa volatilité habituelle | Moyenne
-US Dollar Index (DX-Y.NYB) | Devises | −0,08 % | Événement à venir (mercredi 28 octobre) : Décision de politique monétaire de la Réserve fédérale (FOMC) | Élevée
-EUR/USD (EURUSD=X) | Devises | +0,22 % | Événement à venir (jeudi 29 octobre) : Décision de politique monétaire de la Banque centrale européenne | Élevée
-USD/JPY (USDJPY=X) | Devises | −0,25 % | Événement à venir (vendredi 30 octobre) : Banque du Japon : décision de politique monétaire et rapport trimestri | Élevée
+US 5-year Treasury yield (^FVX) | Obligations | −4,36 % | Mouvement de 3,4 écart-type par rapport à sa volatilité habituelle | Élevée
+US Treasury 10-year note futures (ZN=F) | Obligations | +1,28 % | Mouvement de 3,4 écart-type par rapport à sa volatilité habituelle | Élevée
+US 10-year Treasury yield (^TNX) | Obligations | −3,87 % | Mouvement de 3,3 écart-type par rapport à sa volatilité habituelle | Élevée
+US 30-year Treasury yield (^TYX) | Obligations | −2,78 % | Mouvement de 3,0 écart-type par rapport à sa volatilité habituelle | Élevée
+US Treasury bond futures (ZB=F) | Obligations | +2,10 % | Mouvement de 3,0 écart-type par rapport à sa volatilité habituelle | Élevée
+iShares 7–10 Year Treasury ETF (IEF) | ETF | +1,14 % | Mouvement de 2,7 écart-type par rapport à sa volatilité habituelle | Élevée
+US Dollar Index (DX-Y.NYB) | Devises | −0,18 % | Événement à venir (mercredi 28 octobre) : Décision de politique monétaire de la Réserve fédérale (FOMC) | Élevée
+EUR/USD (EURUSD=X) | Devises | −0,01 % | Événement à venir (jeudi 29 octobre) : Décision de politique monétaire de la Banque centrale européenne | Élevée
+USD/JPY (USDJPY=X) | Devises | −0,83 % | Événement à venir (vendredi 30 octobre) : Banque du Japon : décision de politique monétaire et rapport trimestri | Élevée
+GBP/USD (GBPUSD=X) | Devises | +0,22 % | Événement à venir (jeudi 5 novembre) : Banque d'Angleterre : décision de politique monétaire | Élevée
 
 Il s'agit d'une liste de surveillance fondée sur l'amplitude des mouvements et l'agenda, pas d'un classement de signaux d'achat ou de vente. À la réouverture, confronter ce biais au prix, aux niveaux techniques et à la réaction effective du marché.
 
@@ -506,17 +530,17 @@ Un rapport n'a de valeur que s'il se mesure à la réalité. Chaque prévision e
 
 Résultats de l'audit
 Mesure | Résultat
-Scénarios S&P 500 du matin | 3 prévisions uniques ; 2 arrivées à échéance ; 1 en attente ; 27 relances du même jour ignorées
-Exactitude de la direction | 0,0 % (référence « toujours haussier » : 0,0 %)
-Score de Brier | 0,976 (référence climatologique : 0,000 ; compétence non calculée sous 30 échantillons)
-Règle de momentum par actif, 1 séance | 95 bonnes directions sur 286 (33,2 %) ; toujours hausse : 30,4 % ; persistance : 26,8 % (205 cas)
-Règle de momentum par actif, 5 séances | 3 bonnes directions sur 10 (30,0 %) ; toujours hausse : 60,0 % ; persistance : non évaluable
+Scénarios S&P 500 du matin | 4 prévisions uniques ; 3 arrivées à échéance ; 1 en attente ; 27 relances du même jour ignorées
+Exactitude de la direction | 0,0 % (référence « toujours haussier » : 33,3 %)
+Score de Brier | 0,974 (référence climatologique : 0,444 ; compétence non calculée sous 30 échantillons)
+Règle de momentum par actif, 1 séance | 123 bonnes directions sur 383 (32,1 %) ; toujours hausse : 29,2 % ; persistance : 31,5 % (302 cas)
+Règle de momentum par actif, 5 séances | 23 bonnes directions sur 40 (57,5 %) ; toujours hausse : 40,0 % ; persistance : 30,0 % (10 cas)
 
-> Échantillon insuffisant : 2 prévisions de scénario arrivées à échéance, alors qu'il faut au moins trente séances distinctes pour tirer une conclusion. À ce stade, aucune probabilité de ce rapport ne doit être considérée comme fiable.
+> Échantillon insuffisant : 3 prévisions de scénario arrivées à échéance, alors qu'il faut au moins trente séances distinctes pour tirer une conclusion. À ce stade, aucune probabilité de ce rapport ne doit être considérée comme fiable.
 
-Dernières erreurs à examiner : CAC 40 (1 séance(s), prévu neutre, réalisé hausse, +0,97 %) ; DAX 40 (1 séance(s), prévu baisse, réalisé hausse, +1,45 %) ; VIX volatility index (1 séance(s), prévu hausse, réalisé baisse, −7,05 %).
+Dernières erreurs à examiner : CAC 40 (1 séance(s), prévu neutre, réalisé baisse, −0,80 %) ; DAX 40 (1 séance(s), prévu hausse, réalisé neutre, −0,20 %) ; Nifty 50 (1 séance(s), prévu neutre, réalisé baisse, −0,54 %).
 
-Plusieurs versions de la règle coexistent dans l'historique (v1 : 1 cas, v2 : 1 cas) ; leurs résultats ne doivent pas être mélangés.
+Plusieurs versions de la règle coexistent dans l'historique (v1 : 1 cas, v2 : 2 cas) ; leurs résultats ne doivent pas être mélangés.
 
 
 DONNÉES, SOURCES ET LIMITES
@@ -527,8 +551,7 @@ DONNÉES, SOURCES ET LIMITES
 - Macroéconomie : séries FRED avec replis officiels (BLS ; Réserve fédérale de New York pour le taux effectif ; Trésor américain pour les rendements 2 ans, 10 ans et anticipations d'inflation ; BCE pour le taux de dépôt) ; publications officielles de la Réserve fédérale, du BEA, du Census Bureau, de la BCE, de l'EIA, de la Banque d'Angleterre et de la Banque du Japon ; presse financière (CNBC, Yahoo Finance, Financial Times, Guardian) et recherches Google Actualités à titre de piste seulement.
 - Fondamentaux d'entreprise : API XBRL de la SEC (EDGAR) pour un échantillon de sociétés américaines ; chiffres publiés, sans consensus.
 - Calendrier : fichier data/calendar_manual.json tenu à la main (statut « confirmé » ou « à confirmer ») et, si la clé est fournie, dates officielles relayées par FRED.
-- Cours à vérifier : variation de séance exactement nulle pour Toyota Motor (séance en cours, jour férié ou cours non rafraîchi : ne pas lire cette immobilité comme un signal).
-- Incidents de collecte : 1 flux d'actualités indisponible(s). Une donnée absente n'est pas une donnée nulle.
+- Incidents de collecte : 1 flux d'actualités indisponible(s), 4 séries macroéconomiques indisponible(s). Une donnée absente n'est pas une donnée nulle.
 - Rédaction : cette édition est entièrement produite par des règles de calcul, sans modèle de langage.
 - Temps de lecture : estimé à 220 mots par minute, annexes exclues.
 
