@@ -471,15 +471,52 @@ def frozen_price_suspects(rows: list[Any]) -> list[Any]:
 
 
 def freshness_note(rows: list[Any], now_local: datetime) -> str | None:
-    """Phrase d'avertissement sur le mélange de dates de cotation, ou None si tout est homogène."""
+    """Signale les dates de cotation hétérogènes, anciennes ou anormalement futures."""
     cohorts = date_cohorts(rows)
-    if len(cohorts) <= 1:
-        return None
-    ordered = sorted(cohorts.items(), key=lambda kv: kv[0])
-    parts = [f"{day[8:10]}/{day[5:7]} : {len(t)} instrument{'s' if len(t) > 1 else ''}" for day, t in ordered]
-    return ("Attention : les cours ne sont pas synchronisés (" + " ; ".join(parts) +
-            "). Les comparaisons entre marchés portent sur des séances différentes ; "
-            "elles ne permettent pas, à elles seules, d'établir qu'un actif a réagi simultanément à un autre.")
+    parts: list[str] = []
+    if len(cohorts) > 1:
+        ordered = sorted(cohorts.items(), key=lambda kv: kv[0])
+        distribution = "; ".join(
+            f"{day[8:10]}/{day[5:7]} : {len(t)} instrument{'s' if len(t) > 1 else ''}"
+            for day, t in ordered
+        )
+        parts.append(
+            "Les cours ne sont pas synchronisés (" + distribution + "). "
+            "Les comparaisons entre marchés portent sur des séances différentes et "
+            "ne permettent pas, à elles seules, d'établir une réaction simultanée."
+        )
+
+    from datetime import date
+    stale: list[str] = []
+    future: list[str] = []
+    today = now_local.date()
+    for row in rows:
+        stamp = str(getattr(row, "data_timestamp", "") or "")[:10]
+        if not stamp:
+            continue
+        try:
+            observed = date.fromisoformat(stamp)
+        except ValueError:
+            stale.append(f"{getattr(row, 'name', row.ticker)} (date illisible)")
+            continue
+        age = (today - observed).days
+        if age > 7:
+            stale.append(f"{getattr(row, 'name', row.ticker)} ({stamp}, {age} jours)")
+        elif age < -1:
+            future.append(f"{getattr(row, 'name', row.ticker)} ({stamp})")
+    if stale:
+        examples = ", ".join(stale[:8])
+        suffix = f" ; autres : {len(stale) - 8}" if len(stale) > 8 else ""
+        parts.append(
+            f"ATTENTION : {len(stale)} instrument(s) ont une date de cours vieille de plus de 7 jours calendaires : "
+            f"{examples}{suffix}. Leurs variations ne doivent pas être interprétées comme actuelles."
+        )
+    if future:
+        parts.append(
+            f"ATTENTION : date de cotation dans le futur pour {len(future)} instrument(s) : "
+            + ", ".join(future[:8]) + ". Vérification nécessaire avant interprétation."
+        )
+    return " ".join(parts) if parts else None
 
 
 # --------------------------------------------------------------------------- macro : replis officiels
