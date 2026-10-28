@@ -649,7 +649,7 @@ class ForecastEvaluationTests(unittest.TestCase):
         snapshots = [
             {
                 "report_type": "morning",
-                "scenario_forecast": {"probabilities": {"haussier": 75, "central": 15, "baissier": 10}},
+                "scenario_forecast": {"method_version": "v2", "probabilities": {"haussier": 75, "central": 15, "baissier": 10}},
                 "assets": [{"ticker": "^GSPC", "data_timestamp": "2026-10-01", "price": 100.0}],
             },
             {
@@ -667,6 +667,9 @@ class ForecastEvaluationTests(unittest.TestCase):
         self.assertTrue(result["matured"][0]["correct"])
         self.assertEqual(result["pending"], 0)
         self.assertIsNotNone(result["mean_brier_score"])
+        self.assertEqual(result["current_method_version"], "v2")
+        self.assertEqual(len(result["matured"]), 1)
+        self.assertEqual(result["by_version"]["v2"]["n"], 1)
 
     def test_morning_scenario_remains_pending_until_a_completed_distinct_session_exists(self):
         today = datetime.now(ZoneInfo("Indian/Antananarivo")).date().isoformat()
