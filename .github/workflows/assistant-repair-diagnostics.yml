@@ -6,13 +6,6 @@ on:
     # 06:10 Madagascar time (UTC+3), daily; GitHub cron is UTC.
     - cron: "10 3 * * *"
   push:
-    paths:
-      - ".github/workflows/**"
-      - "src/**"
-      - "tools/**"
-      - "tests/**"
-      - "pyproject.toml"
-      - "requirements*.txt"
 
 permissions:
   contents: read
@@ -59,13 +52,19 @@ jobs:
             echo "## Python files"
             find src tools tests -type f -name '*.py' -print 2>/dev/null | sort
           } > diagnostic-bundle/INVENTORY.md
-          cp -R .github diagnostic-bundle/github-config 2>/dev/null || true
-          cp -R src diagnostic-bundle/src 2>/dev/null || true
-          cp -R tools diagnostic-bundle/tools 2>/dev/null || true
-          cp -R tests diagnostic-bundle/tests 2>/dev/null || true
-          # Exclude secrets, local environment files, generated reports and history data.
-          find diagnostic-bundle -type f \( -name '.env' -o -name '.env.*' -o -name '*secret*' -o -name '*token*' \) -delete
-          find diagnostic-bundle -type d \( -name '.git' -o -name '__pycache__' -o -name '.venv' \) -prune -exec rm -rf {} +
+          # Copy all tracked project files so diagnosis is not limited to src/tools/tests.
+          # Explicitly omit common secret-bearing files before copying them into the artifact.
+          mkdir -p diagnostic-bundle/repository
+          while IFS= read -r -d '' file; do
+            lower="$(printf '%s' "$file" | tr '[:upper:]' '[:lower:]')"
+            case "$lower" in
+              .env|.env.*|*/.env|*/.env.*|*secret*|*token*|*credential*|*.pem|*.key|*service-account*)
+                continue ;;
+            esac
+            mkdir -p "diagnostic-bundle/repository/$(dirname "$file")"
+            cp "$file" "diagnostic-bundle/repository/$file"
+          done < <(git ls-files -z)
+          find diagnostic-bundle -type d \( -name '__pycache__' -o -name '.venv' \) -prune -exec rm -rf {} +
 
       - name: Install project dependencies when a manifest exists
         id: deps
