@@ -102,7 +102,7 @@ jobs:
         run: |
           set -o pipefail
           if [ -d tests ] && find tests -type f \( -name 'test_*.py' -o -name '*_test.py' \) -print -quit | grep -q .; then
-            python -m pytest -q --ignore=diagnostic-bundle 2>&1 | tee diagnostic-bundle/tests.log
+            python -m pytest -q --import-mode=importlib --ignore=diagnostic-bundle 2>&1 | tee diagnostic-bundle/tests.log
           else
             echo "No conventional pytest test files found; test execution skipped." | tee diagnostic-bundle/tests.log
           fi
