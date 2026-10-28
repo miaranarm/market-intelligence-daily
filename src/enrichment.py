@@ -352,9 +352,9 @@ def _contains_move(text: str, word: str) -> bool:
     }
     variants = irregular.get(word)
     if variants:
-        return any(re.search(r"(?<!\\w)" + re.escape(v) + r"(?!\\w)", text.casefold()) for v in variants)
+        return any(re.search(r"(?<!\w)" + re.escape(v) + r"(?!\w)", text.casefold()) for v in variants)
     stem = word[:-1] if word.endswith("e") else word
-    pattern = r"(?<!\\w)" + re.escape(stem) + r"(?:e|es|ed|d|s|ing|ings)?(?!\\w)"
+    pattern = r"(?<!\w)" + re.escape(stem) + r"(?:e|es|ed|d|s|ing|ings)?(?!\w)"
     return re.search(pattern, text.casefold()) is not None
 
 def relevance_score(item: dict[str, str], mover: dict[str, Any]) -> int:
