@@ -660,6 +660,15 @@ class ForecastEvaluationTests(unittest.TestCase):
                 "report_type": "audit",
                 "assets": [{"ticker": "^GSPC", "data_timestamp": "2026-10-02", "price": 102.0}],
             },
+            {
+                "report_type": "morning",
+                "scenario_forecast": {"method_version": "v1", "probabilities": {"haussier": 20, "central": 20, "baissier": 60}},
+                "assets": [{"ticker": "^GSPC", "data_timestamp": "2026-10-02", "price": 102.0}],
+            },
+            {
+                "report_type": "audit",
+                "assets": [{"ticker": "^GSPC", "data_timestamp": "2026-10-03", "price": 101.0}],
+            },
         ]
         result = evaluate_scenario_forecasts(snapshots)
         self.assertEqual(len(result["matured"]), 1)
@@ -668,8 +677,11 @@ class ForecastEvaluationTests(unittest.TestCase):
         self.assertEqual(result["pending"], 0)
         self.assertIsNotNone(result["mean_brier_score"])
         self.assertEqual(result["current_method_version"], "v2")
-        self.assertEqual(len(result["matured"]), 1)
+        self.assertEqual(result["matured_all_versions_count"], 2)
+        self.assertEqual(result["by_version"]["v1"]["n"], 1)
         self.assertEqual(result["by_version"]["v2"]["n"], 1)
+        self.assertEqual(result["by_version"]["v1"]["accuracy_pct"], 0.0)
+        self.assertEqual(result["by_version"]["v2"]["accuracy_pct"], 100.0)
 
     def test_morning_scenario_remains_pending_until_a_completed_distinct_session_exists(self):
         today = datetime.now(ZoneInfo("Indian/Antananarivo")).date().isoformat()
