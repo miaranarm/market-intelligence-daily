@@ -102,7 +102,7 @@ jobs:
         run: |
           set -o pipefail
           if [ -d tests ] && find tests -type f \( -name 'test_*.py' -o -name '*_test.py' \) -print -quit | grep -q .; then
-            python -m pytest -q 2>&1 | tee diagnostic-bundle/tests.log
+            python -m pytest -q --ignore=diagnostic-bundle 2>&1 | tee diagnostic-bundle/tests.log
           else
             echo "No conventional pytest test files found; test execution skipped." | tee diagnostic-bundle/tests.log
           fi
@@ -123,7 +123,7 @@ jobs:
             echo "- Tests: ${TEST_OUTCOME:-not-run}"
             echo
             echo "## Next step"
-            echo "Download this workflow's `assistant-repair-diagnostics` artifact to inspect the exact workflow files, source files and failure logs."
+            echo "Download this workflow's assistant-repair-diagnostics artifact to inspect the exact workflow files, source files and failure logs."
             echo "Secrets and local environment files are excluded from the bundle."
           } > diagnostic-bundle/RESULT.md
 
