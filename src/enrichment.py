@@ -331,17 +331,31 @@ def _contains_term(text: str, term: str) -> bool:
 
 
 def _contains_move(text: str, word: str) -> bool:
-    """Mot de variation, avec ses flexions régulières : « plunge » reconnaît plunges, plunged, plunging.
-    Sans cela, la recherche en mots entiers ratait la plupart des titres (« Broadcom slides », « Nvidia falls »)."""
+    """Recherche un mouvement avec les formes irrégulières anglaises et les variantes françaises."""
     word = re.sub(r"\s+", " ", word.strip().casefold())
     if not word:
         return False
     if " " in word or not word.isascii():
-        return _contains_term(text, word)  # expressions et formes françaises : mot entier
+        return _contains_term(text, word)
+    irregular = {
+        "fall": ("fall", "falls", "fell", "fallen", "falling"),
+        "fell": ("fall", "falls", "fell", "fallen", "falling"),
+        "rise": ("rise", "rises", "rose", "risen", "rising"),
+        "rose": ("rise", "rises", "rose", "risen", "rising"),
+        "lose": ("lose", "loses", "lost", "losing"),
+        "lost": ("lose", "loses", "lost", "losing"),
+        "slide": ("slide", "slides", "slid", "sliding"),
+        "slid": ("slide", "slides", "slid", "sliding"),
+        "sink": ("sink", "sinks", "sank", "sunk", "sinking"),
+        "sank": ("sink", "sinks", "sank", "sunk", "sinking"),
+        "sunk": ("sink", "sinks", "sank", "sunk", "sinking"),
+    }
+    variants = irregular.get(word)
+    if variants:
+        return any(re.search(r"(?<!\\w)" + re.escape(v) + r"(?!\\w)", text.casefold()) for v in variants)
     stem = word[:-1] if word.endswith("e") else word
-    pattern = r"(?<!\w)" + re.escape(stem) + r"(?:e|es|ed|d|s|ing|ings)?(?!\w)"
+    pattern = r"(?<!\\w)" + re.escape(stem) + r"(?:e|es|ed|d|s|ing|ings)?(?!\\w)"
     return re.search(pattern, text.casefold()) is not None
-
 
 def relevance_score(item: dict[str, str], mover: dict[str, Any]) -> int:
     """Une actualité explique un mouvement si elle nomme réellement l'instrument et décrit une variation.
