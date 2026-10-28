@@ -1764,31 +1764,48 @@ def evaluate_scenario_forecasts(snapshots: list[dict[str, Any]]) -> dict[str, An
             "brier_score": round(brier, 4),
         })
 
-    n = len(matured)
-    mean_brier = round(sum(x["brier_score"] for x in matured) / n, 4) if n else None
+    # Never pool scores from different forecast rules: each version is a separate model.
+    all_matured = matured
+    by_version: dict[str, dict[str, Any]] = {}
+    for version in sorted({x["method_version"] for x in all_matured}):
+        sample = [x for x in all_matured if x["method_version"] == version]
+        n_version = len(sample)
+        freq = {k: sum(x["actual"] == k for x in sample) / n_version
+                for k in ("haussier", "central", "baissier")}
+        climatology = round(sum(f * (1 - f) for f in freq.values()), 4)
+        mean_brier_version = round(sum(x["brier_score"] for x in sample) / n_version, 4)
+        by_version[version] = {
+            "n": n_version,
+            "accuracy_pct": round(100 * sum(x["correct"] for x in sample) / n_version, 1),
+            "mean_brier_score": mean_brier_version,
+            "climatology_brier_score": climatology,
+            "baseline_always_up_accuracy_pct": round(100 * freq["haussier"], 1),
+            "brier_skill_score": round(1 - mean_brier_version / climatology, 3)
+                if n_version >= 30 and climatology > 0 else None,
+        }
+
+    # Only the currently active method version feeds the headline score.
+    current_matured = [x for x in all_matured if x["method_version"] == METHOD_VERSION]
+    n = len(current_matured)
+    mean_brier = round(sum(x["brier_score"] for x in current_matured) / n, 4) if n else None
     climatology_brier = None
     skill = None
     always_up = None
     if n:
-        freq = {k: sum(x["actual"] == k for x in matured) / n for k in ("haussier", "central", "baissier")}
+        freq = {k: sum(x["actual"] == k for x in current_matured) / n
+                for k in ("haussier", "central", "baissier")}
         climatology_brier = round(sum(f * (1 - f) for f in freq.values()), 4)
         always_up = round(100 * freq["haussier"], 1)
         if n >= 30 and climatology_brier > 0:
             skill = round(1 - mean_brier / climatology_brier, 3)
-    by_version: dict[str, dict[str, Any]] = {}
-    for version in sorted({x["method_version"] for x in matured}):
-        sample = [x for x in matured if x["method_version"] == version]
-        by_version[version] = {
-            "n": len(sample),
-            "accuracy_pct": round(100 * sum(x["correct"] for x in sample) / len(sample), 1),
-            "mean_brier_score": round(sum(x["brier_score"] for x in sample) / len(sample), 4),
-        }
     return {
         "forecast_count": len(seen_base_dates),
         "duplicates_ignored": duplicates,
-        "matured": matured,
+        "matured": current_matured,
+        "matured_all_versions_count": len(all_matured),
         "pending": pending,
-        "accuracy_pct": round(100 * sum(x["correct"] for x in matured) / n, 1) if n else None,
+        "current_method_version": METHOD_VERSION,
+        "accuracy_pct": round(100 * sum(x["correct"] for x in current_matured) / n, 1) if n else None,
         "mean_brier_score": mean_brier,
         "baseline_always_up_accuracy_pct": always_up,
         "climatology_brier_score": climatology_brier,
