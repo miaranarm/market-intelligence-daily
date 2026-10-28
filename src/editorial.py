@@ -918,10 +918,16 @@ def _audit_blocks(ctx: dict[str, Any]) -> list[dict[str, Any]]:
         {"kind": "p", "text": "Un rapport n'a de valeur que s'il se mesure à la réalité. Chaque prévision est enregistrée avant le résultat, jamais réécrite, puis comparée à la séance qui suit. Surtout, elle est comparée à des règles naïves : une méthode qui ne fait pas mieux que « toujours hausse » ou « même direction qu'hier » n'apporte aucune information."}]
     n = len(se.get("matured", []))
     rows = [[{"t": "Scénarios S&P 500 du matin"},
-             {"t": f"{se.get('forecast_count', 0)} prévisions uniques ; {n} arrivées à échéance ; {se.get('pending', 0)} en attente ; {se.get('duplicates_ignored', 0)} relances du même jour ignorées"}]]
+             {"t": f"{se.get('forecast_count', 0)} prévisions uniques toutes versions confondues ; {n} arrivées à échéance pour {se.get('current_method_version', 'version active')} ; {se.get('pending', 0)} en attente ; {se.get('duplicates_ignored', 0)} relances du même jour ignorées"}],
+            [{"t": "Version évaluée"}, {"t": f"{se.get('current_method_version', 'non précisée')} — les métriques principales ci-dessous excluent les autres versions"}]]
     if n:
         rows.append([{"t": "Exactitude de la direction"}, {"t": f"{fr_num(se.get('accuracy_pct'), 1)} % (référence « toujours haussier » : {fr_num(se.get('baseline_always_up_accuracy_pct'), 1)} %)"}])
         rows.append([{"t": "Score de Brier"}, {"t": f"{fr_num(se.get('mean_brier_score'), 3)} (référence climatologique : {fr_num(se.get('climatology_brier_score'), 3)}" + (f" ; compétence {fr_num(se.get('brier_skill_score'), 2, True)}" if se.get("brier_skill_score") is not None else " ; compétence non calculée sous 30 échantillons") + ")"}])
+    for version, metrics in sorted((se.get("by_version") or {}).items()):
+        if version == se.get("current_method_version"):
+            continue
+        rows.append([{"t": f"Historique séparé — {version}"},
+                     {"t": f"{metrics.get('n', 0)} cas ; exactitude {fr_num(metrics.get('accuracy_pct'), 1)} % ; Brier {fr_num(metrics.get('mean_brier_score'), 3)} ; non inclus dans les métriques principales"}])
     for horizon, label in (("1", "1 séance"), ("5", "5 séances")):
         st = (fe.get("by_horizon") or {}).get(horizon) or {}
         if st.get("n"):
