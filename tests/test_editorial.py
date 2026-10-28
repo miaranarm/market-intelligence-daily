@@ -130,7 +130,7 @@ class ForecastEvaluationFixesTests(unittest.TestCase):
     def snapshot(kind, day, price, vol=None, forecast=True):
         snap = {"report_type": kind, "assets": [{"ticker": "^GSPC", "data_timestamp": day, "price": price, "annualized_vol_pct": vol}]}
         if forecast:
-            snap["scenario_forecast"] = {"probabilities": {"haussier": 40, "central": 35, "baissier": 25}}
+            snap["scenario_forecast"] = {"method_version": "v2", "probabilities": {"haussier": 40, "central": 35, "baissier": 25}}
         return snap
 
     def test_same_day_reruns_are_not_independent_samples(self):
@@ -157,7 +157,7 @@ class ForecastEvaluationFixesTests(unittest.TestCase):
         self.assertEqual(result["baseline_always_up_accuracy_pct"], 100.0)
         self.assertIsNotNone(result["climatology_brier_score"])
         self.assertIsNone(result["brier_skill_score"])  # moins de 30 échantillons
-        self.assertEqual(result["by_version"]["v1"]["n"], 1)
+        self.assertEqual(result["by_version"]["v2"]["n"], 1)
 
     def test_asset_forecasts_report_naive_baselines_and_store_volatility(self):
         dates = ["2026-10-01", "2026-10-02", "2026-10-05", "2026-10-06"]
