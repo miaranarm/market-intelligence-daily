@@ -662,7 +662,7 @@ class ForecastEvaluationTests(unittest.TestCase):
             },
             {
                 "report_type": "morning",
-                "scenario_forecast": {"method_version": "v1", "probabilities": {"haussier": 20, "central": 20, "baissier": 60}},
+                "scenario_forecast": {"method_version": "v1", "probabilities": {"haussier": 60, "central": 20, "baissier": 20}},
                 "assets": [{"ticker": "^GSPC", "data_timestamp": "2026-10-02", "price": 102.0}],
             },
             {
