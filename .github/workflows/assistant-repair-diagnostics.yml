@@ -1,0 +1,135 @@
+name: Assistant repair diagnostics
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 06:10 Madagascar time (UTC+3), daily; GitHub cron is UTC.
+    - cron: "10 3 * * *"
+  push:
+    paths:
+      - ".github/workflows/**"
+      - "src/**"
+      - "tools/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "requirements*.txt"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: assistant-repair-diagnostics-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Create repository and workflow inventory
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p diagnostic-bundle
+          {
+            echo "# Diagnostic bundle"
+            echo
+            echo "- Repository: $GITHUB_REPOSITORY"
+            echo "- Ref: $GITHUB_REF"
+            echo "- Commit: $GITHUB_SHA"
+            echo "- Event: $GITHUB_EVENT_NAME"
+            echo "- UTC time: $(date -u --iso-8601=seconds)"
+            echo
+            echo "## Tracked files"
+            git ls-files
+            echo
+            echo "## Workflow files"
+            find .github/workflows -maxdepth 1 -type f -print 2>/dev/null | sort
+            echo
+            echo "## Python files"
+            find src tools tests -type f -name '*.py' -print 2>/dev/null | sort
+          } > diagnostic-bundle/INVENTORY.md
+          cp -R .github diagnostic-bundle/github-config 2>/dev/null || true
+          cp -R src diagnostic-bundle/src 2>/dev/null || true
+          cp -R tools diagnostic-bundle/tools 2>/dev/null || true
+          cp -R tests diagnostic-bundle/tests 2>/dev/null || true
+          # Exclude secrets, local environment files, generated reports and history data.
+          find diagnostic-bundle -type f \( -name '.env' -o -name '.env.*' -o -name '*secret*' -o -name '*token*' \) -delete
+          find diagnostic-bundle -type d \( -name '.git' -o -name '__pycache__' -o -name '.venv' \) -prune -exec rm -rf {} +
+
+      - name: Install project dependencies when a manifest exists
+        id: deps
+        shell: bash
+        run: |
+          set -o pipefail
+          if [ -f requirements.txt ]; then
+            python -m pip install --upgrade pip
+            python -m pip install -r requirements.txt
+          elif [ -f pyproject.toml ]; then
+            python -m pip install --upgrade pip
+            python -m pip install .
+          else
+            echo "No requirements.txt or pyproject.toml found; dependency installation skipped."
+          fi 2>&1 | tee diagnostic-bundle/dependency-install.log
+
+      - name: Compile Python source
+        id: compile
+        shell: bash
+        run: |
+          set -o pipefail
+          files="$(find src tools tests -type f -name '*.py' 2>/dev/null || true)"
+          if [ -z "$files" ]; then
+            echo "No Python source/test files found." | tee diagnostic-bundle/python-compile.log
+            exit 0
+          fi
+          python -m compileall -q src tools tests 2>&1 | tee diagnostic-bundle/python-compile.log
+
+      - name: Run available tests
+        id: tests
+        shell: bash
+        run: |
+          set -o pipefail
+          if [ -d tests ] && find tests -type f \( -name 'test_*.py' -o -name '*_test.py' \) -print -quit | grep -q .; then
+            python -m pytest -q 2>&1 | tee diagnostic-bundle/tests.log
+          else
+            echo "No conventional pytest test files found; test execution skipped." | tee diagnostic-bundle/tests.log
+          fi
+
+      - name: Record outcome summary
+        if: always()
+        shell: bash
+        env:
+          DEPENDENCY_OUTCOME: ${{ steps.deps.outcome }}
+          COMPILE_OUTCOME: ${{ steps.compile.outcome }}
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
+        run: |
+          {
+            echo "# Diagnostic outcome"
+            echo
+            echo "- Dependency installation: ${DEPENDENCY_OUTCOME:-not-run}"
+            echo "- Python compilation: ${COMPILE_OUTCOME:-not-run}"
+            echo "- Tests: ${TEST_OUTCOME:-not-run}"
+            echo
+            echo "## Next step"
+            echo "Download this workflow's `assistant-repair-diagnostics` artifact to inspect the exact workflow files, source files and failure logs."
+            echo "Secrets and local environment files are excluded from the bundle."
+          } > diagnostic-bundle/RESULT.md
+
+      - name: Upload diagnostic bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: assistant-repair-diagnostics
+          path: diagnostic-bundle/
+          if-no-files-found: error
+          retention-days: 14
