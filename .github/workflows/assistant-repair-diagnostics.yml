@@ -94,6 +94,9 @@ jobs:
           fi
           python -m compileall -q src tools tests 2>&1 | tee diagnostic-bundle/python-compile.log
 
+      - name: Ensure pytest is available
+        run: python -m pip install pytest
+
       - name: Run available tests
         id: tests
         shell: bash
