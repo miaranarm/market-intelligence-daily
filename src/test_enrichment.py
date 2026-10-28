@@ -36,7 +36,9 @@ class MoverTests(unittest.TestCase):
     def test_attach_news_states_absence(self):
         movers = [{"ticker": "AVGO", "name": "Broadcom"}, {"ticker": "TSLA", "name": "Tesla"}]
         news = [{"ticker": "AVGO", "title": "Broadcom shares plunge", "summary": "Broadcom shares fell after earnings guidance.", "url": "u1", "published": "Mon, 19 Oct 2026 08:00:00 GMT"}, {"ticker": "AVGO", "title": "Broadcom shares plunge", "summary": "Broadcom shares fell after earnings guidance.", "url": "u2", "published": "Mon, 19 Oct 2026 08:01:00 GMT"}]
-        out = enrichment.attach_news_to_movers(movers, news)
+        # Ce test vérifie le rattachement et la déduplication, pas la fenêtre de fraîcheur.
+        with patch.object(enrichment, "is_recent", return_value=True):
+            out = enrichment.attach_news_to_movers(movers, news)
         self.assertEqual(len(out[0]["news"]), 1)  # doublon de titre écarté
         self.assertEqual(out[1]["news"], [])
 
@@ -171,7 +173,9 @@ class RealReportRegressionTests(unittest.TestCase):
                    "summary": "The Invesco QQQ Trust (QQQ), down 6%, fell last week.", "url": "u", "ticker": "QQQ"}
         selloff = {"title": "Tech Stock Sell-Off: 1 Unstoppable Nasdaq ETF to Buy", "published": "Mon, 19 Oct 2026 08:05:00 GMT",
                    "summary": "The Nasdaq-100 ETF QQQ fell.", "url": "v", "ticker": "QQQ"}
-        out = enrichment.attach_news_to_movers([mover], [moderna, selloff])
+        # Dates figées pour une régression historique : isoler le test de pertinence de l'horloge.
+        with patch.object(enrichment, "is_recent", return_value=True):
+            out = enrichment.attach_news_to_movers([mover], [moderna, selloff])
         self.assertEqual([n["url"] for n in out[0]["news"]], ["v"])
 
     def test_old_articles_are_not_attached(self):
@@ -198,7 +202,9 @@ class RealReportRegressionTests(unittest.TestCase):
         mover = {"ticker": "^KS11", "name": "KOSPI", "asset_class": "South Korean equity index"}
         general = [{"title": "Bitcoin, Korea's Kospi and Nasdaq futures rally as China GDP beats estimates", "published": "Mon, 19 Oct 2026 08:00:00 GMT",
                     "summary": "Asian stocks rally.", "url": "g", "source": "CoinDesk"}]
-        out = enrichment.attach_news_to_movers([mover], [], general)
+        # Le scénario teste le rattachement sémantique, pas la fraîcheur d'une date historique.
+        with patch.object(enrichment, "is_recent", return_value=True):
+            out = enrichment.attach_news_to_movers([mover], [], general)
         self.assertEqual(out[0]["news"][0]["url"], "g")
 
     def test_breakeven_accepts_tc_prefix_for_real_yields(self):
