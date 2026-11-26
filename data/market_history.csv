@@ -12098,3 +12098,100 @@ run_time_utc,report_type,ticker,name,asset_class,price,daily_pct,five_day_pct,on
 2026-11-26T01:14:32+00:00,audit,^DJI,Dow Jones,US equity index,50182.9492,0.33,-0.03,-4.19,43.48,-2.12,-2.71,22.15,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
 2026-11-26T01:14:32+00:00,audit,^IXIC,Nasdaq Composite,US equity index,23585.8027,-0.62,-3.46,-10.92,38.59,-4.56,-9.21,36.52,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
 2026-11-26T01:14:32+00:00,audit,^GSPC,S&P 500,US equity index,7182.7798,-0.25,-1.92,-6.99,39.72,-3.24,-5.52,26.57,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,KC=F,Coffee futures,Agricultural commodity,275.65,2.64,-1.89,-6.16,43.88,-1.24,-4.18,31.56,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,ZC=F,Corn futures,Agricultural commodity,439.75,1.32,0.98,-2.01,39.89,-0.65,-7.11,15.27,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,ZS=F,Soybean futures,Agricultural commodity,1244.0,0.81,2.24,1.2,55.36,2.28,-0.93,15.87,Mixte / tendance à confirmer,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,ZW=F,Wheat futures,Agricultural commodity,565.5,-0.75,-0.79,-7.33,31.17,-3.97,-11.61,20.76,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,005930.KS,Samsung Electronics,Asian equity,171300.0,0.35,-13.0,-29.21,34.31,-13.51,-24.33,70.79,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,TSM,TSMC (ADR),Asian equity,342.34,-1.96,-5.59,-21.64,38.87,-9.79,-18.15,75.38,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,0700.HK,Tencent,Asian equity,341.0,1.07,-2.12,-12.02,27.86,-10.87,-15.51,38.93,Baisse / sous les MM20 et MM50,2026-11-26,RSI faible
+2026-11-26T11:17:45+00:00,morning,7203.T,Toyota Motor,Asian equity,3377.0,-0.85,-0.41,8.34,57.89,1.82,8.33,55.46,Hausse / au-dessus des MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^AXJO,S&P/ASX 200,Australian equity index,8763.7998,0.82,0.38,-0.94,45.57,-1.5,-0.55,14.22,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,FBALX,Fidelity Balanced Fund,Balanced mutual fund,31.19,-0.03,-0.67,-3.88,41.1,-1.65,-3.03,15.58,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,PRWCX,T. Rowe Price Capital Appreciation Fund (gestion active),Balanced mutual fund,38.36,-0.05,-0.16,-2.29,45.41,-0.95,-1.33,14.69,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,VWELX,Vanguard Wellington Fund,Balanced mutual fund,45.3,0.04,-1.03,-4.05,41.04,-1.9,-3.02,16.82,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,LQD,Investment-grade corporate bond ETF,Bond ETF,104.29,0.48,1.11,0.38,59.81,0.54,1.15,6.71,Hausse / au-dessus des MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,TLT,US Treasury 20+ year ETF,Bond ETF,82.24,0.92,2.52,1.17,63.49,1.51,2.99,12.02,Hausse / au-dessus des MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,BND,Vanguard Total Bond Market ETF,Bond ETF,71.6,0.34,1.03,0.77,64.36,0.6,1.33,5.11,Hausse / au-dessus des MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,IEF,iShares 7–10 Year Treasury ETF,Bond ETF,92.06,0.46,1.53,1.4,65.47,0.96,1.98,6.86,Hausse / au-dessus des MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,AGG,iShares Core U.S. Aggregate Bond ETF,Bond ETF,96.55,0.38,1.07,0.84,64.05,0.64,1.4,5.31,Hausse / au-dessus des MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,ZN=F,US Treasury 10-year note futures,Bond futures,107.0156,-0.16,1.08,1.15,59.89,0.55,1.26,6.28,Hausse / au-dessus des MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,ZB=F,US Treasury bond futures,Bond futures,108.0938,-0.49,1.71,1.26,58.33,0.71,2.05,10.64,Hausse / au-dessus des MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,FTBFX,Fidelity Total Bond Fund,Bond mutual fund,9.28,0.32,0.87,0.81,60.82,0.4,1.14,5.4,Hausse / au-dessus des MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,VBTLX,Vanguard Total Bond Market Index Fund Admiral Shares,Bond mutual fund,9.41,0.32,0.97,0.79,62.15,0.46,1.22,5.27,Hausse / au-dessus des MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^GSPTSE,S&P/TSX Composite,Canadian equity index,34180.0,0.64,-1.15,-5.51,39.68,-3.35,-4.0,20.08,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,BZ=F,Brent crude oil futures,Commodity,91.02,-3.79,-1.04,-21.07,39.76,-4.9,-10.92,56.23,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,HG=F,Copper futures,Commodity,5.4495,2.19,-3.12,-17.95,29.75,-9.05,-14.17,30.51,Baisse / sous les MM20 et MM50,2026-11-26,RSI faible
+2026-11-26T11:17:45+00:00,morning,GC=F,Gold futures,Commodity,3585.2,1.4,-2.72,-11.51,33.11,-6.86,-11.44,29.69,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,NG=F,Natural gas futures,Commodity,3.622,10.8,10.83,28.58,63.98,13.84,17.61,66.39,Hausse / au-dessus des MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,SI=F,Silver futures,Commodity,41.615,3.9,-6.1,-22.15,31.29,-12.4,-23.73,50.37,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,CL=F,WTI crude oil futures,Commodity,84.46,0.93,1.5,-17.82,41.83,-3.77,-8.72,49.7,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,HYG,High-yield corporate bond ETF,Credit ETF,76.52,0.12,-0.17,-0.88,42.29,-0.52,-0.51,4.39,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,BTC-USD,Bitcoin,Crypto,60544.9414,0.28,0.75,-20.27,28.23,-8.18,-18.93,39.17,Baisse / sous les MM20 et MM50,2026-11-26,RSI faible
+2026-11-26T11:17:45+00:00,morning,ETH-USD,Ethereum,Crypto,1695.8,0.3,0.81,-24.11,30.14,-8.61,-21.76,54.11,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,SOL-USD,Solana,Crypto,70.58,0.27,0.52,-20.82,31.55,-6.95,-22.67,53.28,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,XRP-USD,XRP,Crypto,0.9502,1.41,2.02,-21.21,35.36,-4.02,-19.5,53.46,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,EFA,Developed markets ex-US equity ETF,ETF,99.18,0.3,-1.08,-4.26,40.51,-2.91,-3.94,21.24,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,EEM,Emerging markets equity ETF,ETF,56.4,-0.51,-2.56,-9.79,38.5,-4.99,-10.76,39.37,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,GLD,Gold ETF,ETF,327.45,0.61,-4.03,-12.04,31.71,-7.51,-11.75,29.72,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,QQQ,Invesco Nasdaq 100 ETF,ETF,633.93,-0.65,-3.88,-12.11,38.59,-4.92,-10.34,41.06,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,IWM,Russell 2000 small-cap equity ETF,ETF,268.87,0.65,-0.46,-4.04,45.01,-2.01,-2.99,26.91,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,SPY,SPDR S&P 500 ETF,ETF,716.7,-0.29,-1.85,-6.88,39.85,-3.19,-5.43,26.52,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,VEA,Vanguard FTSE Developed Markets ETF,ETF,65.67,0.21,-1.51,-6.02,38.24,-3.59,-5.58,23.09,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,VWO,Vanguard FTSE Emerging Markets ETF,ETF,52.78,-0.17,-1.82,-7.13,38.63,-3.82,-8.06,29.74,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,YM=F,Dow Jones E-mini futures,Equity index futures,50318.0,0.18,2.31,-4.51,43.76,-1.83,-2.76,22.17,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,NQ=F,Nasdaq 100 E-mini futures,Equity index futures,26166.5,0.25,-1.63,-12.72,38.54,-4.28,-10.29,40.12,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,RTY=F,Russell 2000 E-mini futures,Equity index futures,2713.7,0.28,1.89,-4.43,45.2,-1.64,-3.0,26.12,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,ES=F,S&P 500 E-mini futures,Equity index futures,7223.25,0.38,0.36,-7.19,40.49,-2.66,-5.37,26.3,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,ASML.AS,ASML,European equity,1163.6,2.83,-9.67,-21.89,37.66,-10.25,-18.85,63.98,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,MC.PA,LVMH,European equity,401.2,2.61,2.37,4.21,53.71,0.61,2.01,24.14,Hausse / au-dessus des MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,SAP.DE,SAP,European equity,192.3,1.31,2.82,-8.95,41.53,-5.41,-2.96,32.62,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,TTE.PA,TotalEnergies,European equity,78.34,1.37,-1.04,-6.29,43.88,-2.37,-1.58,22.71,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^STOXX50E,Euro Stoxx 50,European equity index,6004.96,1.87,-1.78,-2.64,41.96,-2.88,-3.13,20.57,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,AUDUSD=X,AUD/USD,FX,0.6632,-0.03,-1.2,-5.66,21.58,-2.78,-4.33,7.67,Baisse / sous les MM20 et MM50,2026-11-26,RSI faible
+2026-11-26T11:17:45+00:00,morning,EURGBP=X,EUR/GBP,FX,0.837,0.12,0.3,0.11,47.72,0.22,-0.72,2.79,Mixte / tendance à confirmer,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,EURUSD=X,EUR/USD,FX,1.0973,0.1,0.01,-1.4,34.84,-0.99,-2.0,5.23,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,GBPUSD=X,GBP/USD,FX,1.3107,-0.04,-0.31,-1.5,37.66,-1.23,-1.31,5.88,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,NZDUSD=X,NZD/USD,FX,0.548,0.04,-0.16,-3.53,34.57,-1.25,-2.35,7.62,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,DX-Y.NYB,US Dollar Index,FX,103.753,0.08,-0.14,1.53,62.21,0.81,1.52,5.05,Hausse / au-dessus des MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,USDCAD=X,USD/CAD,FX,1.423,-0.3,-0.71,1.28,53.82,0.35,0.53,4.72,Hausse / au-dessus des MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,USDCHF=X,USD/CHF,FX,0.8342,-0.19,-1.1,0.65,53.23,0.44,0.62,6.6,Hausse / au-dessus des MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,USDCNY=X,USD/CNY,FX,6.6501,-0.21,-0.26,-0.27,33.89,-0.26,-0.5,1.86,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,USDINR=X,USD/INR,FX,92.54,-0.29,-0.99,-2.77,26.97,-1.42,-2.52,4.87,Baisse / sous les MM20 et MM50,2026-11-26,RSI faible
+2026-11-26T11:17:45+00:00,morning,USDJPY=X,USD/JPY,FX,159.278,0.01,-0.06,0.81,55.93,0.28,0.68,5.45,Hausse / au-dessus des MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^FCHI,CAC 40,French equity index,8117.8999,1.72,0.46,2.93,51.51,-0.42,1.29,15.53,Mixte / tendance à confirmer,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^GDAXI,DAX 40,German equity index,25147.5996,1.8,-1.24,-2.16,43.59,-2.89,-1.67,20.59,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^HSI,Hang Seng,Hong Kong equity index,22226.8809,1.19,-2.69,-3.76,32.63,-5.21,-6.81,20.98,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^VIX,VIX volatility index,Implied volatility,27.43,-3.04,-3.55,62.21,56.4,16.07,42.42,279.33,Hausse / au-dessus des MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^NSEI,Nifty 50,Indian equity index,25884.5,0.25,2.6,13.76,72.27,4.69,9.61,15.85,Hausse / au-dessus des MM20 et MM50,2026-11-26,RSI élevé
+2026-11-26T11:17:45+00:00,morning,^N225,Nikkei 225,Japanese equity index,57499.1602,0.86,-2.58,-7.54,38.69,-4.54,-9.59,36.45,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,FXAIX,Fidelity 500 Index Fund,Mutual fund,249.94,-0.25,-1.9,-6.89,39.89,-3.18,-5.42,26.53,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,VFIAX,Vanguard 500 Index Fund Admiral Shares,Mutual fund,663.84,-0.25,-1.89,-6.89,39.89,-3.18,-5.42,26.55,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,VEMAX,Vanguard Emerging Markets Stock Index Fund Admiral Shares,Mutual fund,43.69,-0.14,-2.04,-7.79,37.25,-4.12,-8.48,27.44,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,VTSAX,Vanguard Total Stock Market Index Fund Admiral Shares,Mutual fund,171.99,-0.11,-1.74,-6.5,40.34,-3.02,-5.11,26.29,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^TNX,US 10-year Treasury yield,Rates,4.848,-1.14,-4.3,-2.9,37.3,-2.44,-4.4,20.49,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^IRX,US 13-week Treasury bill yield,Rates,4.155,-0.31,0.24,2.85,64.94,1.77,2.47,9.97,Hausse / au-dessus des MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^TYX,US 30-year Treasury yield,Rates,5.235,-1.08,-3.27,-1.32,36.56,-1.93,-3.42,15.37,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^FVX,US 5-year Treasury yield,Rates,4.66,-1.1,-4.59,-3.72,38.98,-2.42,-4.52,23.59,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,XLE,Energy Select Sector SPDR ETF,Sector ETF,60.9,0.74,-0.64,-10.72,38.62,-3.88,-5.46,28.74,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,XLK,Technology Select Sector SPDR ETF,Sector ETF,155.79,-0.83,-4.9,-17.78,36.96,-7.2,-14.81,52.04,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^KS11,KOSPI,South Korean equity index,4711.21,0.29,-8.3,-21.64,35.5,-9.31,-20.0,55.84,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^FTSE,FTSE 100,UK equity index,10576.9297,1.44,1.19,-1.1,47.0,-0.88,-0.82,13.5,Baisse / sous les MM20 et MM50,2026-11-26,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,GOOGL,Alphabet,US equity,273.1,-2.13,-3.31,-14.81,36.93,-3.51,-14.18,49.48,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,AMZN,Amazon,US equity,244.43,-3.12,-8.71,-3.43,41.96,-4.96,-4.19,43.67,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,AAPL,Apple,US equity,355.58,0.43,0.89,2.52,58.04,2.02,3.72,24.73,Hausse / au-dessus des MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,BAC,Bank of America,US equity,48.54,-0.04,-0.76,-4.22,39.15,-2.32,-6.76,24.56,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,AVGO,Broadcom,US equity,300.86,-0.07,-15.02,-12.11,40.75,-7.99,-11.65,72.27,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,CAT,Caterpillar,US equity,543.69,0.57,-2.7,-23.78,34.66,-6.11,-22.2,57.6,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,COST,Costco,US equity,1086.8101,-0.45,1.89,12.79,70.24,3.92,11.92,20.61,Hausse / au-dessus des MM20 et MM50,2026-11-25,RSI élevé
+2026-11-26T11:17:45+00:00,morning,LLY,Eli Lilly,US equity,1392.22,-1.09,0.68,8.74,56.34,-0.47,8.71,36.42,Mixte / tendance à confirmer,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,XOM,Exxon Mobil,US equity,158.08,-0.09,-1.56,-11.58,36.19,-5.29,-5.88,29.58,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,JPM,JPMorgan Chase,US equity,316.74,-0.11,-2.27,-5.67,37.07,-5.07,-5.42,27.4,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,META,Meta Platforms,US equity,609.89,3.4,-1.05,-1.66,45.71,-0.87,-9.3,46.08,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,MSFT,Microsoft,US equity,489.93,-1.25,-3.43,-7.61,38.99,-5.12,-5.54,33.32,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,NVDA,Nvidia,US equity,149.3,-3.91,-1.1,-31.49,37.45,-13.44,-26.69,113.71,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,TSLA,Tesla,US equity,380.14,-1.18,-0.93,-6.7,50.31,-0.53,0.79,65.02,Mixte / tendance à confirmer,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,WMT,Walmart,US equity,131.94,-0.28,3.6,10.58,70.2,3.81,11.79,22.92,Hausse / au-dessus des MM20 et MM50,2026-11-25,RSI élevé
+2026-11-26T11:17:45+00:00,morning,^DJI,Dow Jones,US equity index,50182.9492,0.33,-0.03,-4.19,43.48,-2.12,-2.71,22.15,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^IXIC,Nasdaq Composite,US equity index,23585.8008,-0.62,-3.46,-10.92,38.59,-4.56,-9.21,36.52,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
+2026-11-26T11:17:45+00:00,morning,^GSPC,S&P 500,US equity index,7182.7798,-0.25,-1.92,-6.99,39.72,-3.24,-5.52,26.57,Baisse / sous les MM20 et MM50,2026-11-25,Aucun extrême RSI détecté
